@@ -1,0 +1,96 @@
+---
+name: Husayn Jessa
+title: "Assignment 1"
+output: html_document
+date: '2022-09-25'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Goal of assignment: To understand country differences in the life expectancy at birth for females
+
+Question 1: Draw a preliminary DAG for the following variables: LEBF, GDPPC
+ HXPC, total fertility rate, and any other covarites of relevance;ensure
+relationships between the other independent variables is included
+
+
+Question 2: What does your DAG tell you about interpreting any regression coefficients
+causally 
+
+
+Question 3: Make a table providing summary statistics for your variables;
+table should include the mean, standard deviation and sample size for each variable
+
+```{r load dataset}
+Dataset1 <- read.csv("Dataset-1_Clean.csv")
+library(tidyverse); library(vtable)
+vtable(Dataset1)
+```
+
+
+```{r summary table}
+library(psych)
+describe(Dataset1)
+summary_table <- describe(Dataset1[ ,c("LEBF20052","maxINFM20052","GDPPCUS2005", "HXPC2005","PctHXPUB2005",
+                   "TotFertRate2005","AdolFertRt2005","FtoMPrimaryEnrl2005ONY",
+                   "PctUrb2005", "Sanitation2005ONY","ImprWaterUrb2005ONY",
+                   "ImpWatRur2005ONY", "FLFPR2005", "PctPop0142005", "PctPop65Pl2005")],
+                  fast=TRUE) 
+summary_table
+```
+Question 4 Regress LEBF on HXPC - Report the coefficients, standard errors, confidence
+intervals, p-values, R^2 and sample size in a regression table - Interperet the table, 
+noting the economic and statistical significance of the relationship
+What is the association between a 1,000 unit increase in GDPPC and LEBF
+
+
+```{r first regression}
+library(modelsummary)
+library(fixest)
+attach(Dataset1)
+first_regression <- lm(LEBF20052~HXPC2005, Dataset1)
+Regression_table1 <- msummary(first_regression, 
+                              stars=c('*' = .1, '**' = .05, '***' = .01))         
+Regression_table1
+```
+
+the table shows that Health expenditure has a significant effect on the life expectancy at birth for females,
+this is economically significant because it show that there is a relationship between these
+things and thus increased health expenditure is correlated with greater life expectancy
+
+```{r second regression}
+second_regression <- lm(LEBF20052~GDPPCUS2005, Dataset1)
+Regression_table2 <- msummary(list(first_regression, second_regression),
+                              stars=c('*' = .1, '**' = .05, '***' = .01),
+                              fmt = 5)
+        
+Regression_table2 
+```
+the second regression shows the effect of GDPPC on LEBF. If there is a 1000 unit increase
+in GDPPC then the would be a a 0.37 unit increase in the life expectancy at birth for females
+
+
+
+
+
+Question 5 - Regress LEBF on HXPC and GDPPC - Discuss the results of this regression relative
+to those from Question 4
+```{r third regression}
+
+third_regression <- lm(LEBF20052~HXPC2005+GDPPCUS2005, Dataset1)
+Regression_table3 <- msummary(list(first_regression,second_regression,third_regression), 
+                              stars=c('*' = .1, '**' = .05, '***' = .01),
+                              fmt = 5)
+Regression_table3
+```
+
+the results of this regression show that when both HXPC and GDPPC are included, the effects
+of HXPC are no longer significant but the effect of GDPPC is still significant. The effect of 
+HXPC becomes reduced in this new model as it goes from 0.004 to -0.001. In comparison, GDPPC's
+effect becomes larger as it increases from 0.00037 to 0.00053. 
+
+
+
+
