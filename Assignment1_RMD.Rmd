@@ -56,9 +56,6 @@ Regression_table1 <- msummary(first_regression,
 Regression_table1
 ```
 
-the table shows that Health expenditure has a significant effect on the life expectancy at birth for females,
-this is economically significant because it show that there is a relationship between these
-things and thus increased health expenditure is correlated with greater life expectancy
 
 ```{r second regression}
 second_regression <- lm(LEBF20052~GDPPCUS2005, Dataset1)
@@ -86,10 +83,7 @@ Regression_table3 <- msummary(list(first_regression,second_regression,third_regr
 Regression_table3
 ```
 
-the results of this regression show that when both HXPC and GDPPC are included, the effects
-of HXPC are no longer significant but the effect of GDPPC is still significant. The effect of 
-HXPC becomes reduced in this new model as it goes from 0.004 to -0.001. In comparison, GDPPC's
-effect becomes larger as it increases from 0.00037 to 0.00053. 
+
 
 
 
