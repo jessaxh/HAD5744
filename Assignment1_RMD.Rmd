@@ -9,6 +9,59 @@ date: '2022-09-25'
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r Assignment Intro}
+
+name <- Sys.info()
+name[7]
+
+### Load the packages we will need for this file ####
+
+library(tidyverse) # load the installed package for each new session of R
+library(broom) # helps for storing regression output
+library(here) # for file organization
+library(modelsummary) # For making regression tables
+library(dagitty) # for creating DAGs
+
+
+# enter file path identifiers
+here("Desktop", "Graduate Studies", "4. Courses", "Fall 2022", "HAD5744H", "Assignments", "Assignment 1")
+
+assign_data <- read.csv("Dataset 1.csv") # assign data to an object
+
+```
+
+```{r Clean Data}
+
+# Scan through dataframe to see variable class types
+for(values in names(assign_data)){
+  print(names(assign_data[values]))
+  name <- names(assign_data[values])
+  print(class(assign_data[,values]))
+}
+
+# Convert all to character
+assign_data[, 1:19] <- lapply(assign_data[, 1:19], as.character)
+
+# Assign the NAs in dataset to NA
+assign_data <- mutate_at(.tbl = assign_data, 
+                                .vars = vars(Country:PctPop65Pl2005), 
+                                .funs = ~case_when(. == "#N/A" ~ NA_character_,
+                                                   . == "-" ~ NA_character_,
+                                                   TRUE ~ .,
+                                                   TRUE ~ as.character(NA_character_)))
+
+# Save cleaned data
+write.csv(assign_data, "Dataset 1_Clean.csv", row.names = FALSE)
+
+# Read in cleaned data
+Dataset1 <- read.csv("Dataset 1_Clean.csv")
+
+# Convert to numerics (aside from Country)
+Dataset1[, 2:19] <- lapply(Dataset1[, 2:19], as.numeric)
+```
+
+
+
 Goal of assignment: To understand country differences in the life expectancy at birth for females
 
 Question 1: Draw a preliminary DAG for the following variables: LEBF, GDPPC
@@ -22,12 +75,6 @@ causally
 
 Question 3: Make a table providing summary statistics for your variables;
 table should include the mean, standard deviation and sample size for each variable
-
-```{r load dataset}
-Dataset1 <- read.csv("Dataset-1_Clean.csv")
-library(tidyverse); library(vtable)
-vtable(Dataset1)
-```
 
 
 ```{r summary table}
@@ -82,8 +129,39 @@ Regression_table3 <- msummary(list(first_regression,second_regression,third_regr
                               fmt = 5)
 Regression_table3
 ```
+When controlling for GDPPC, the relationship between HXPC and LEBF is not statistically significant. Comparing this relationship with the results from (4), HXPC was significantly associated with a positive increase in LEBF, which makes sense that the current output is not statistically significant as we would expect an increase in health expenditure to be associated with an increase in life expectancy.
+When controlling for HXPC, GDPPC is associated with a 0.005 increase in LEBF. Compared with results from (4), controlling for health expenditure slightly increases the magnitude of association between GDPPC and LEBF.
 
 
+```{r Question No.6}
+
+```
+
+
+```{r Question No.7}
+
+```
+
+
+```{r Quesiton No.8}
+
+```
+
+
+```{r Question No.9}
+
+```
+
+
+```{r Question No.10}
+
+```
+
+
+```{r Citations, include=FALSE}
+knitr::write_bib(file = 'packages.bib') # Constructs a citation file for all packages used in this lecture. 
+
+```
 
 
 
