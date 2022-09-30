@@ -21,7 +21,8 @@ library(broom) # helps for storing regression output
 library(here) # for file organization
 library(modelsummary) # For making regression tables
 library(dagitty) # for creating DAGs
-
+library(psych)
+library(RCurl)
 
 # enter file path identifiers
 here("Desktop", "Graduate Studies", "4. Courses", "Fall 2022", "HAD5744H", "Assignments", "Assignment 1")
@@ -67,18 +68,20 @@ Goal of assignment: To understand country differences in the life expectancy at 
 Question 1: Draw a preliminary DAG for the following variables: LEBF, GDPPC
  HXPC, total fertility rate, and any other covarites of relevance;ensure
 relationships between the other independent variables is included
+```{r Question No.1}
+
+```
 
 
 Question 2: What does your DAG tell you about interpreting any regression coefficients
 causally 
+```{r Question No.2}
 
+```
 
 Question 3: Make a table providing summary statistics for your variables;
 table should include the mean, standard deviation and sample size for each variable
-
-
 ```{r summary table}
-library(psych)
 describe(Dataset1)
 summary_table <- describe(Dataset1[ ,c("LEBF20052","maxINFM20052","GDPPCUS2005", "HXPC2005","PctHXPUB2005",
                    "TotFertRate2005","AdolFertRt2005","FtoMPrimaryEnrl2005ONY",
@@ -87,16 +90,12 @@ summary_table <- describe(Dataset1[ ,c("LEBF20052","maxINFM20052","GDPPCUS2005",
                   fast=TRUE) 
 summary_table
 ```
+
 Question 4 Regress LEBF on HXPC - Report the coefficients, standard errors, confidence
 intervals, p-values, R^2 and sample size in a regression table - Interperet the table, 
 noting the economic and statistical significance of the relationship
 What is the association between a 1,000 unit increase in GDPPC and LEBF
-
-
 ```{r first regression}
-library(modelsummary)
-library(fixest)
-attach(Dataset1)
 first_regression <- lm(LEBF20052~HXPC2005, Dataset1)
 Regression_table1 <- msummary(first_regression, 
                               stars=c('*' = .1, '**' = .05, '***' = .01))         
