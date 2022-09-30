@@ -1,5 +1,5 @@
 ---
-name: Husayn Jessa and Aidan Bodner
+name: Group - Husayn Jessa and Aidan Bodner
 title: "Assignment 1"
 output: html_document
 date: '2022-09-30'
