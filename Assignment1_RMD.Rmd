@@ -1,8 +1,8 @@
 ---
-name: Husayn Jessa
+name: Husayn Jessa and Aidan Bodner
 title: "Assignment 1"
 output: html_document
-date: '2022-09-25'
+date: '2022-09-30'
 ---
 
 ```{r setup, include=FALSE}
@@ -133,26 +133,50 @@ When controlling for GDPPC, the relationship between HXPC and LEBF is not statis
 When controlling for HXPC, GDPPC is associated with a 0.005 increase in LEBF. Compared with results from (4), controlling for health expenditure slightly increases the magnitude of association between GDPPC and LEBF.
 
 
+
+Question 6 - Do you recommend a nonlinear transformation for either GDPPC, HXPC, or LEBF? If so, defend your choice and repeat the regression in (5) with the appropriate transformations. Interpret how your results have changed. [10 points]
 ```{r Question No.6}
+
+# Visually, look and see how well the observations fit the linear model
+
+ggplot(Dataset1, aes(x = HXPC2005, y = LEBF20052)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red")
+
+ggplot(Dataset1, aes(x = GDPPCUS2005, y = LEBF20052)) + 
+  geom_point() +
+  stat_smooth(method = "lm", col = "red")
+
+# model does not fit observations well at all. for HXPC and LEBF, the majority of the observations are centred around 1
+# We can also use goodness of fit (R^2) to check and see if our model is fitting the data
+# R^2 from question 4 shows that R^2 between HXPC and lEBF is 0.203 and R^2 between GDPPC and LEBF is 0.256 numerically indicating that the fit can likely be improved.
+
+
 
 ```
 
 
+
+Question 7 - How might these results differ by geography? Create a variable that assigns each observation to a geographic region (e.g., continent) and report a regression that builds on (6) by including the appropriate dummy variables. Interpret your results.
 ```{r Question No.7}
 
 ```
 
 
+Question 8 - Finally, include an interaction term between HXPC and the indicator for African countries. What are you measuring with this interaction, and why might it be meaningful? Interpret the results of this coefficient. 
 ```{r Quesiton No.8}
 
 ```
 
 
+Question 9 - Why is establishing the causal relationship between GDDPC, HXPC, and LEBF difficult in a simple regression such as this? If possible, provide one key figure that highlights an identification problem in this scenario.
 ```{r Question No.9}
 
 ```
 
 
+
+Question 10 - What do your results from (9) and intuition suggest about the standard errors in your specification? Either justify the use of homoscedastic standard errors or implement a full specification with another, more robust method (e.g., heteroskedasticity-robust or clustered SEs). How does this change the results?
 ```{r Question No.10}
 
 ```
