@@ -13,7 +13,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 name <- Sys.info()
 name[7]
-hi
 
 ### Load the packages we will need for this file ####
 
@@ -21,8 +20,9 @@ library(tidyverse) # load the installed package for each new session of R
 library(broom) # helps for storing regression output
 library(here) # for file organization
 library(modelsummary) # For making regression tables
-library(dagitty) # for creating DAGs
 library(psych)
+
+
 
 # enter file path identifiers
 here("Desktop", "Graduate Studies", "4. Courses", "Fall 2022", "HAD5744H", "Assignments", "Assignment 1")
@@ -70,25 +70,33 @@ Question 1: Draw a preliminary DAG for the following variables: LEBF, GDPPC
 relationships between the other independent variables is included
 ```{r Question No.1}
 
-```
 
+```
+See attached DAG.
 
 Question 2: What does your DAG tell you about interpreting any regression coefficients
 causally 
 ```{r Question No.2}
 
 ```
+Our DAG does not indicate that we can interpret any regression coefficients causally.
+
+
+
 
 Question 3: Make a table providing summary statistics for your variables;
 table should include the mean, standard deviation and sample size for each variable
 ```{r summary table}
-describe(Dataset1)
+
 summary_table <- describe(Dataset1[ ,c("LEBF20052","maxINFM20052","GDPPCUS2005", "HXPC2005","PctHXPUB2005",
                    "TotFertRate2005","AdolFertRt2005","FtoMPrimaryEnrl2005ONY",
                    "PctUrb2005", "Sanitation2005ONY","ImprWaterUrb2005ONY",
                    "ImpWatRur2005ONY", "FLFPR2005", "PctPop0142005", "PctPop65Pl2005")],
                   fast=TRUE) 
-summary_table
+summary_table <- summary_table[ ,-(1), drop = FALSE] #drop first column which corresponds to variable number in dataframe
+summary_table # output summary table
+
+
 ```
 
 Question 4 Regress LEBF on HXPC - Report the coefficients, standard errors, confidence
@@ -101,7 +109,7 @@ Regression_table1 <- msummary(first_regression,
                               stars=c('*' = .1, '**' = .05, '***' = .01))         
 Regression_table1
 ```
-
+A one unit increase in health expenditure per capita is significantly associated with a 0.004 increase in life expectancy at birth for females.
 
 ```{r second regression}
 second_regression <- lm(LEBF20052~GDPPCUS2005, Dataset1)
@@ -111,10 +119,8 @@ Regression_table2 <- msummary(list(first_regression, second_regression),
         
 Regression_table2 
 ```
-the second regression shows the effect of GDPPC on LEBF. If there is a 1000 unit increase
+The second regression shows the effect of GDPPC on LEBF. If there is a 1000 unit increase
 in GDPPC then the would be a a 0.37 unit increase in the life expectancy at birth for females
-
-
 
 
 
@@ -138,6 +144,13 @@ Question 6 - Do you recommend a nonlinear transformation for either GDPPC, HXPC,
 
 # Visually, look and see how well the observations fit the linear model
 
+vtable(Dataset1)
+attach(Dataset1)
+hist(GDPPCUS2005)        
+hist(log(GDPPCUS2005))
+hist(HXPC2005)
+hist(log(HXPC2005))
+
 ggplot(Dataset1, aes(x = HXPC2005, y = LEBF20052)) + 
   geom_point() +
   stat_smooth(method = "lm", col = "red")
@@ -146,16 +159,6 @@ ggplot(Dataset1, aes(x = GDPPCUS2005, y = LEBF20052)) +
   geom_point() +
   stat_smooth(method = "lm", col = "red")
 
-# model does not fit observations well at all. for HXPC and LEBF, the majority of the observations are centred around 1
-# We can also use goodness of fit (R^2) to check and see if our model is fitting the data
-# R^2 from question 4 shows that R^2 between HXPC and lEBF is 0.203 and R^2 between GDPPC and LEBF is 0.256 numerically indicating that the fit can likely be improved.
-
-vtable(Dataset1)
-attach(Dataset1)
-hist(GDPPCUS2005)        
-hist(log(GDPPCUS2005))
-hist(HXPC2005)
-hist(log(HXPC2005))
 
 #The histograms of GDPPC and HXPC2005 show that their data is rightly skewed and thus is likely 
 #to produce outliers. This can effect how well the regression model behaves and make it 
@@ -165,7 +168,17 @@ hist(log(HXPC2005))
 #The histograms of the log transformed variables show that when a log transformation is performed
 #the data looks more like a normal distribution. 
 
+
+# model does not fit observations well at all. for HXPC and LEBF, the majority of the observations are centred around 1
+# We can also use goodness of fit (R^2) to check and see if our model is fitting the data
+# R^2 from question 4 shows that R^2 between HXPC and lEBF is 0.203 and R^2 between GDPPC and LEBF is 0.256 numerically indicating that the fit can likely be improved.
+
+
+
 ```
+The histograms of GDPPC and HXPC show that their data is rightly skewed and thus is likely to produce outliers. Additionally, looking at how well the observations fit around the regression line, we can see that the plots for both GDDPC and HXPC do not fit the regression line well. We recommend, doing a log transformation of these two variables because it will make the big observations in the data smaller and thus closer to the other variables in the data. This will help reduce the skew and help the model behave more effectively.The histograms of the log transformed variables show that when a log transformation is performed the data looks approximately fits a normal distribution which is helpful for drawing statistical inference. 
+
+
 
 ```{r fourth regression pt 2}
 fourth_regression <- lm(LEBF20052~log(HXPC2005)+log(GDPPCUS2005), Dataset1)
@@ -174,6 +187,13 @@ Regression_table4 <- msummary(list(third_regression, fourth_regression),
                               fmt = "%.4f")
 Regression_table4
 ```
+Applying a non-linear transformation is necessary in order to reduce the extreme effects of outliers on our regression outputs. Log transforming the predictor variables in the regression model is one way in which we can achieve this. It makes sense to log transform the independent variables in the model by applying a natural log, as we can directly compare the regression output to those in (5) as the output stays in the same units. We are also able to apply the natural log as we do not have any zero-valued data.
+
+When we log transform our model, we see a change in direction for the relationship between HXPC and LEBF (when holding GDPPC constant), however, the relationship continues to be not statistically significant. For the log-transformed relationship between GDPPC and LEBF (when keeping HXPC constant), we continue to see a positive significant relationship; however, a 10% increase in GDDPC is significantly associated with a 4.1144 increase in LEBF which is a dramatic increase from the non-transformed model where GDDPC was significantly associated with a 0.0005 increase in LEBF.
+
+
+
+
 
 Question 7 - How might these results differ by geography? Create a variable that assigns each observation to a geographic region (e.g., continent) and report a regression that builds on (6) by including the appropriate dummy variables. Interpret your results.
 ```{r Question No.7}
