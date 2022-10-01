@@ -20,9 +20,9 @@ library(tidyverse) # load the installed package for each new session of R
 library(broom) # helps for storing regression output
 library(here) # for file organization
 library(modelsummary) # For making regression tables
-library(psych)
-
-
+library(psych) # For making summary statistics tables
+library(countrycode) # To get continents from countries
+library(fastDummies) # To make dummy variables
 
 # enter file path identifiers
 here("Desktop", "Graduate Studies", "4. Courses", "Fall 2022", "HAD5744H", "Assignments", "Assignment 1")
@@ -61,9 +61,7 @@ Dataset1 <- read.csv("Dataset 1_Clean.csv")
 Dataset1[, 2:19] <- lapply(Dataset1[, 2:19], as.numeric)
 ```
 
-
-
-Goal of assignment: To understand country differences in the life expectancy at birth for females
+--------------------------------------------------------------------------------
 
 Question 1: Draw a preliminary DAG for the following variables: LEBF, GDPPC
  HXPC, total fertility rate, and any other covarites of relevance;ensure
@@ -74,15 +72,13 @@ relationships between the other independent variables is included
 ```
 See attached DAG.
 
+--------------------------------------------------------------------------------
 Question 2: What does your DAG tell you about interpreting any regression coefficients
 causally 
-```{r Question No.2}
 
-```
-Our DAG does not indicate that we can interpret any regression coefficients causally.
+A DAG may only allow for causal interpretations of regression coefficients if all the assumptions used in creating and determining relationships are correct (i.e., all variables in model are justified and the relationships between them are correct), as well as if all open back door paths are closed (or have a collider on them). When examining our DAG, we are not able to interpret the regression coefficients causally as we cannot guarantee that all of our assumptions are indeed correct; however, we would be one step closer to any causal interpretation by controlling for variation along paths that we are not interested in (closing open back doors).
 
-
-
+--------------------------------------------------------------------------------
 
 Question 3: Make a table providing summary statistics for your variables;
 table should include the mean, standard deviation and sample size for each variable
@@ -99,33 +95,22 @@ summary_table # output summary table
 
 ```
 
-Question 4 Regress LEBF on HXPC - Report the coefficients, standard errors, confidence
-intervals, p-values, R^2 and sample size in a regression table - Interperet the table, 
-noting the economic and statistical significance of the relationship
-What is the association between a 1,000 unit increase in GDPPC and LEBF
+--------------------------------------------------------------------------------
+
+Question 4 - Regress LEBF on HXPC. Report the coefficients,standard errors, confidence intervals, p-values, R2, and sample size in a regression table. Interpret the table, noting the economic and statistical significance of the relationship. What is the association between a 1,000-unit increase in HXPC and LEBF? (Note that HXPC is measured in dollars.)
 ```{r first regression}
 first_regression <- lm(LEBF20052~HXPC2005, Dataset1)
 Regression_table1 <- msummary(first_regression, 
                               stars=c('*' = .1, '**' = .05, '***' = .01))         
 Regression_table1
 ```
-A one unit increase in health expenditure per capita is significantly associated with a 0.004 increase in life expectancy at birth for females.
-
-```{r second regression}
-second_regression <- lm(LEBF20052~GDPPCUS2005, Dataset1)
-Regression_table2 <- msummary(list(first_regression, second_regression),
-                              stars=c('*' = .1, '**' = .05, '***' = .01),
-                              fmt = 5)
-        
-Regression_table2 
-```
-The second regression shows the effect of GDPPC on LEBF. If there is a 1000 unit increase
-in GDPPC then the would be a a 0.37 unit increase in the life expectancy at birth for females
+HXPC is positively and significantly associated with LEBF. A $1,000 increase in HXPC is significantly associated with a 4 unit increase in LEBF.
 
 
+--------------------------------------------------------------------------------
 
-Question 5 - Regress LEBF on HXPC and GDPPC - Discuss the results of this regression relative
-to those from Question 4
+Question 5 - Regress LEBF on HXPC and GDPPC. Discuss the results of this regression relative
+to those from (4).
 ```{r third regression}
 
 third_regression <- lm(LEBF20052~HXPC2005+GDPPCUS2005, Dataset1)
@@ -134,10 +119,10 @@ Regression_table3 <- msummary(list(first_regression,second_regression,third_regr
                               fmt = 5)
 Regression_table3
 ```
-When controlling for GDPPC, the relationship between HXPC and LEBF is not statistically significant. Comparing this relationship with the results from (4), HXPC was significantly associated with a positive increase in LEBF, which makes sense that the current output is not statistically significant as we would expect an increase in health expenditure to be associated with an increase in life expectancy.
+When controlling for GDPPC, the relationship between HXPC and LEBF shows a negative relationship which is not statistically significant. Comparing this relationship with the results from (4), HXPC was significantly associated with a positive increase in LEBF, which makes sense that the current output is not statistically significant as we would expect an increase in health expenditure to be associated with an increase in life expectancy.
 When controlling for HXPC, GDPPC is associated with a 0.005 increase in LEBF. Compared with results from (4), controlling for health expenditure slightly increases the magnitude of association between GDPPC and LEBF.
 
-
+--------------------------------------------------------------------------------
 
 Question 6 - Do you recommend a nonlinear transformation for either GDPPC, HXPC, or LEBF? If so, defend your choice and repeat the regression in (5) with the appropriate transformations. Interpret how your results have changed. [10 points]
 ```{r Question No.6}
@@ -178,7 +163,7 @@ ggplot(Dataset1, aes(x = GDPPCUS2005, y = LEBF20052)) +
 ```
 The histograms of GDPPC and HXPC show that their data is rightly skewed and thus is likely to produce outliers. Additionally, looking at how well the observations fit around the regression line, we can see that the plots for both GDDPC and HXPC do not fit the regression line well. We recommend, doing a log transformation of these two variables because it will make the big observations in the data smaller and thus closer to the other variables in the data. This will help reduce the skew and help the model behave more effectively.The histograms of the log transformed variables show that when a log transformation is performed the data looks approximately fits a normal distribution which is helpful for drawing statistical inference. 
 
-
+--------------------------------------------------------------------------------
 
 ```{r fourth regression pt 2}
 fourth_regression <- lm(LEBF20052~log(HXPC2005)+log(GDPPCUS2005), Dataset1)
@@ -189,19 +174,12 @@ Regression_table4
 ```
 Applying a non-linear transformation is necessary in order to reduce the extreme effects of outliers on our regression outputs. Log transforming the predictor variables in the regression model is one way in which we can achieve this. It makes sense to log transform the independent variables in the model by applying a natural log, as we can directly compare the regression output to those in (5) as the output stays in the same units. We are also able to apply the natural log as we do not have any zero-valued data.
 
-When we log transform our model, we see a change in direction for the relationship between HXPC and LEBF (when holding GDPPC constant), however, the relationship continues to be not statistically significant. For the log-transformed relationship between GDPPC and LEBF (when keeping HXPC constant), we continue to see a positive significant relationship; however, a 10% increase in GDDPC is significantly associated with a 4.1144 increase in LEBF which is a dramatic increase from the non-transformed model where GDDPC was significantly associated with a 0.0005 increase in LEBF.
+When we log transform our model, we see a change in direction for the relationship between HXPC and LEBF with a one unit increase in HXPC associated with a 0.0014 unit decrease in LEBF (when holding GDPPC constant), however, the relationship continues to be not statistically significant. For the log-transformed relationship between GDPPC and LEBF (when keeping HXPC constant), we continue to see a positive significant relationship; however, a 10% increase in GDDPC is significantly associated with a 0.3921442 increase in LEBF which is a dramatic increase from the non-transformed model where GDDPC was significantly associated with a 0.0005 increase in LEBF.
 
-
-
-
+--------------------------------------------------------------------------------
 
 Question 7 - How might these results differ by geography? Create a variable that assigns each observation to a geographic region (e.g., continent) and report a regression that builds on (6) by including the appropriate dummy variables. Interpret your results.
 ```{r Question No.7}
-
-install.packages("countrycode") 
-#https://stackoverflow.com/questions/47510141/get-continent-name-from-country-name-in-r
-#used^ code to know how to get continents from countries
-library(countrycode)
 
 Dataset1$continent <- countrycode(sourcevar = Dataset1[,"Country"],
                                       origin = "country.name",
@@ -210,9 +188,8 @@ Dataset1$continent <- countrycode(sourcevar = Dataset1[,"Country"],
 view(Dataset1)
 unique(Dataset1[c("continent")])
 
-install.packages("fastDummies")
-library(fastDummies)
-Dataset1 <- dummy_cols(Dataset1, select_columns = "continent") #used fast dummies to make dummy variables
+
+Dataset1 <- dummy_cols(Dataset1, select_columns = "continent") 
 
 continet_regression <- lm(LEBF20052~log(HXPC2005)+log(GDPPCUS2005) + continent_Africa +
                             continent_Americas + continent_Asia + continent_Europe
@@ -223,13 +200,19 @@ Regression_table5 <- msummary(continet_regression,
                                fmt = 5)
 Regression_table5
 
-```
 
+
+
+```
+When including variables that assign each observation to a geographic region (and holding them constant), the relationship between HXPC and LEBF shows a 10% increase in HXPC is associated with a 0.00821955 increase in LEBF, but this remains not statistically significant. The relationship between GDPPC and LEBF sees a 10% increase in GDDPC significantly associated with a 0.3164069 increase in LEBF which is a slight decrease from the output reported in (6) where a 10% increase in GDDPC was significantly associated with a 0.3921442 increase in LEBF.
+
+
+--------------------------------------------------------------------------------
 
 Question 8 - Finally, include an interaction term between HXPC and the indicator for African countries. What are you measuring with this interaction, and why might it be meaningful? Interpret the results of this coefficient. 
 ```{r Quesiton No.8}
 interaction_regression <- lm(LEBF20052~log(HXPC2005) 
-                          +log(GDPPCUS2005) 
+                          + log(GDPPCUS2005) 
                           + continent_Africa 
                           + continent_Americas 
                           + continent_Asia 
@@ -244,19 +227,25 @@ Regression_table6 <- msummary(interaction_regression,
 Regression_table6
 ```
 
+With this interaction term we are measuring effect of HXPC specific to African countries. It might be meaningful to include this interaction term as it would allow us to determine how much stronger the effect of HXPC on LEBF is when the continent is Africa. The interaction term shows that for an African country, a 10% increase in health expenditure increases LEBF by 0.006318112, however this relationship is not statistically significant.
 
-Question 9 - Why is establishing the causal relationship between GDDPC, HXPC, and LEBF difficult in a simple regression such as this? If possible, provide one key figure that highlights an identification problem in this scenario.
+
+--------------------------------------------------------------------------------
+
+Question 9 - Why is establishing the causal relationship between GDDPC, HXPC, and LEBF difficult in a simple regression such as this? If possible, provide one key figure that highlights an identification problem in this scenario. (Note that there are multiple possible answers for this problem; the goal is to think critically about the causal identification.)
 ```{r Question No.9}
 
 ```
 
 
+--------------------------------------------------------------------------------
 
 Question 10 - What do your results from (9) and intuition suggest about the standard errors in your specification? Either justify the use of homoscedastic standard errors or implement a full specification with another, more robust method (e.g., heteroskedasticity-robust or clustered SEs). How does this change the results?
 ```{r Question No.10}
 
 ```
 
+--------------------------------------------------------------------------------
 
 ```{r Citations, include=FALSE}
 knitr::write_bib(file = 'packages.bib') # Constructs a citation file for all packages used in this lecture. 
