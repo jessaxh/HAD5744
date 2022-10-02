@@ -98,7 +98,7 @@ summary_table # output summary table
 --------------------------------------------------------------------------------
 
 Question 4 - Regress LEBF on HXPC. Report the coefficients,standard errors, confidence intervals, p-values, R2, and sample size in a regression table. Interpret the table, noting the economic and statistical significance of the relationship. What is the association between a 1,000-unit increase in HXPC and LEBF? (Note that HXPC is measured in dollars.)
-```{r first regression}
+```{r Question No.4}
 first_regression <- lm(LEBF20052~HXPC2005, Dataset1)
 Regression_table1 <- msummary(first_regression, 
                               stars=c('*' = .1, '**' = .05, '***' = .01))         
@@ -111,16 +111,16 @@ HXPC is positively and significantly associated with LEBF. A $1,000 increase in 
 
 Question 5 - Regress LEBF on HXPC and GDPPC. Discuss the results of this regression relative
 to those from (4).
-```{r third regression}
+```{r Question No.5}
 
-third_regression <- lm(LEBF20052~HXPC2005+GDPPCUS2005, Dataset1)
-Regression_table3 <- msummary(list(first_regression,second_regression,third_regression), 
+second_regression <- lm(LEBF20052~HXPC2005+GDPPCUS2005, Dataset1)
+Regression_table2 <- msummary(list(first_regression,third_regression), 
                               stars=c('*' = .1, '**' = .05, '***' = .01),
                               fmt = 5)
-Regression_table3
+Regression_table2
 ```
 When controlling for GDPPC, the relationship between HXPC and LEBF shows a negative relationship which is not statistically significant. Comparing this relationship with the results from (4), HXPC was significantly associated with a positive increase in LEBF, which makes sense that the current output is not statistically significant as we would expect an increase in health expenditure to be associated with an increase in life expectancy.
-When controlling for HXPC, GDPPC is associated with a 0.005 increase in LEBF. Compared with results from (4), controlling for health expenditure slightly increases the magnitude of association between GDPPC and LEBF.
+When controlling for HXPC, GDPPC is associated with a 0.0005 increase in LEBF. 
 
 --------------------------------------------------------------------------------
 
@@ -165,16 +165,16 @@ The histograms of GDPPC and HXPC show that their data is rightly skewed and thus
 
 --------------------------------------------------------------------------------
 
-```{r fourth regression pt 2}
-fourth_regression <- lm(LEBF20052~log(HXPC2005)+log(GDPPCUS2005), Dataset1)
-Regression_table4 <- msummary(list(third_regression, fourth_regression), 
+```{r Question No. 6 pt 2}
+third_regression <- lm(LEBF20052~log(HXPC2005)+log(GDPPCUS2005), Dataset1)
+Regression_table3 <- msummary(list(third_regression, fourth_regression), 
                               stars=c('*' = .1, '**' = .05, '***' = .01),
                               fmt = "%.4f")
-Regression_table4
+Regression_table3
 ```
 Applying a non-linear transformation is necessary in order to reduce the extreme effects of outliers on our regression outputs. Log transforming the predictor variables in the regression model is one way in which we can achieve this. It makes sense to log transform the independent variables in the model by applying a natural log, as we can directly compare the regression output to those in (5) as the output stays in the same units. We are also able to apply the natural log as we do not have any zero-valued data.
 
-When we log transform our model, we see a change in direction for the relationship between HXPC and LEBF with a one unit increase in HXPC associated with a 0.0014 unit decrease in LEBF (when holding GDPPC constant), however, the relationship continues to be not statistically significant. For the log-transformed relationship between GDPPC and LEBF (when keeping HXPC constant), we continue to see a positive significant relationship; however, a 10% increase in GDDPC is significantly associated with a 0.3921442 increase in LEBF which is a dramatic increase from the non-transformed model where GDDPC was significantly associated with a 0.0005 increase in LEBF.
+When we log transform our model, we see a change in direction for the relationship between HXPC and LEBF with a one unit increase in HXPC associated with a 0.0014 unit decrease in LEBF (when holding GDPPC constant), however, the relationship continues to be not statistically significant. For the log-transformed relationship between GDPPC and LEBF (when keeping HXPC constant), we continue to see a positive significant relationship; however, a 10% increase in GDDPC is significantly associated with a 0.3921442 increase in LEBF which is a dramatic increase from the non-transformed model where GDDPC was significantly associated with a 0.0005 increase in LEBF.  <-- I think we need to change this answer because the regression with log results are different than what is noted.
 
 --------------------------------------------------------------------------------
 
@@ -195,10 +195,10 @@ continet_regression <- lm(LEBF20052~log(HXPC2005)+log(GDPPCUS2005) + continent_A
                             continent_Americas + continent_Asia + continent_Europe
                           + continent_Oceania, Dataset1)
 
-Regression_table5 <- msummary(continet_regression,
+Regression_table4 <- msummary(continet_regression,
                               stars=c('*' = .1, '**' = .05, '***' = .01),
                                fmt = 5)
-Regression_table5
+Regression_table4
 
 
 
@@ -220,11 +220,11 @@ interaction_regression <- lm(LEBF20052~log(HXPC2005)
                           + continent_Oceania 
                           + log(HXPC2005):continent_Africa, Dataset1)
 
-Regression_table6 <- msummary(interaction_regression,
+Regression_table5 <- msummary(interaction_regression,
                               stars=c('*' = .1, '**' = .05, '***' = .01),
                               fmt = 5)
 
-Regression_table6
+Regression_table5
 ```
 
 With this interaction term we are measuring effect of HXPC specific to African countries. It might be meaningful to include this interaction term as it would allow us to determine how much stronger the effect of HXPC on LEBF is when the continent is Africa. The interaction term shows that for an African country, a 10% increase in health expenditure increases LEBF by 0.006318112, however this relationship is not statistically significant.
