@@ -227,7 +227,7 @@ Regression_table5 <- msummary(interaction_regression,
 Regression_table5
 ```
 
-With this interaction term we are measuring effect of HXPC specific to African countries. It might be meaningful to include this interaction term as it would allow us to determine how much stronger the effect of HXPC on LEBF is when the continent is Africa. The interaction term shows that for an African country, a 10% increase in health expenditure increases LEBF by 0.006318112, however this relationship is not statistically significant.
+With this interaction term we are measuring effect of HXPC specific to African countries. It might be meaningful to include this interaction term as it would allow us to determine how much stronger the effect of HXPC on LEBF is when the continent is Africa. The interaction term shows that for an African country, a 10% increase in health expenditure increases LEBF by 0.038514, however this relationship is not statistically significant.
 
 
 --------------------------------------------------------------------------------
