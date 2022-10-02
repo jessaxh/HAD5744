@@ -204,7 +204,7 @@ Regression_table4
 
 
 ```
-When including variables that assign each observation to a geographic region (and holding them constant), the relationship between HXPC and LEBF shows a 10% increase in HXPC is associated with a 0.00821955 increase in LEBF, but this remains not statistically significant. The relationship between GDPPC and LEBF sees a 10% increase in GDDPC significantly associated with a 0.3164069 increase in LEBF which is a slight decrease from the output reported in (6) where a 10% increase in GDDPC was significantly associated with a 0.3921442 increase in LEBF.
+When including variables that assign each observation to a geographic region (and holding them constant), the relationship between HXPC and LEBF shows a 10% increase in HXPC is associated with a 0.008624 increase in LEBF, but this remains not statistically significant. The relationship between GDPPC and LEBF sees a 10% increase in GDDPC significantly associated with a 0.331976 increase in LEBF which is a slight decrease from the output reported in (6) where a 10% increase in GDDPC was significantly associated with a 0.4114 increase in LEBF. In this regression model we can also see that the Oceania serves as the reference continent that all the other geographic regions are compared to. The data indicates that only the continent of Africa has a regression coefficient that is significant in comparison to the other continents. 
 
 
 --------------------------------------------------------------------------------
