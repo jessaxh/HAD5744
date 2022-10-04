@@ -24,6 +24,7 @@ library(psych) # For creating summary statistics table
 library(countrycode) # Used to get continents from countries
 library(fastDummies) # To create dummy variables
 library(vtable)
+
 # enter file path identifiers
 here("Desktop", "Graduate Studies", "4. Courses", "Fall 2022", "HAD5744H", "Assignments", "Assignment 1")
 
@@ -259,7 +260,15 @@ Establishing the causal relationship between GDDPC, HXPC, and LEBF in a simple r
 
 Question 10 - What do your results from (9) and intuition suggest about the standard errors in your specification? Either justify the use of homoscedastic standard errors or implement a full specification with another, more robust method (e.g., heteroskedasticity-robust or clustered SEs). How does this change the results?
 ```{r Question No.10}
-#i hope this works
+# Plug the original data into the model and find fitted values and
+# residuals/errors
+fitted_data <- augment(model1, data = Dataset1)
+
+# Look at relationship between fitted values and residuals
+ggplot(fitted_data, aes(x = .fitted, y = .resid)) + 
+  geom_point() +
+  geom_smooth(method = "lm")
+
 ```
 
 
