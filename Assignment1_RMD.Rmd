@@ -226,18 +226,19 @@ Question 9 - Why is establishing the causal relationship between GDDPC, HXPC, an
 q.9_regression.1 <- lm(LEBF20052~log(GDPPCUS2005), Dataset1)
 q.9_regression.2 <- lm(LEBF20052~log(HXPC2005), Dataset1)
 
-q.9_table <- msummary(list(q.9_regression.1, q.9_regression.2), fmt = "%.4f",
+q.9_table <- msummary(list(q.9_regression.1, q.9_regression.2, third_regression), fmt = "%.4f",
                       stars=c('*' = .1, '**' = .05, '***' = .01))         
 q.9_table
 ```
 
 Establishing the causal relationship between GDDPC, HXPC, and LEBF in a simple regression such as this is difficult as there are many sources of variation that can complicate the causal pathway between these three variables (as shown in the DAG in Question 1). From our DAG we can see a substantial number of different sources of variation coming from GDPPC (which ultimately includes HXPC). Both GDPPC and HXPC account for a substantial amount of variation in LEBF (when we examine R^2 in the regressions for both explanatory variables on LEBF), but using theory (seen through our DAG) we can realize that there are other contributors within the data generating process that are not captured through this process. 
 
+#would we potentially want to also talk about when GDDPC AND HXPC are included in a regression the effects change and this may show indication about why it isnt easy to make causal suggestions (e.g. when we control for GDDPC, HXPC is no loner significant - I included the third regression into the model summary just to show that it may be something we may want to speak on )
 --------------------------------------------------------------------------------
 
 Question 10 - What do your results from (9) and intuition suggest about the standard errors in your specification? Either justify the use of homoscedastic standard errors or implement a full specification with another, more robust method (e.g., heteroskedasticity-robust or clustered SEs). How does this change the results?
 ```{r Question No.10}
-
+#i hope this works
 ```
 
 
