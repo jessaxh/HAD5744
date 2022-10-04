@@ -100,7 +100,8 @@ summary_table <- summary_table[ ,-(1), drop = FALSE] #drop first column which co
 summary_table
 ```
 
-#Does anything of concern stand out to you? <- we have to add this
+What raises concern with the outputs of the table is the large standard deviation and standard error for GDPPC and HXPC. This indicates that large spread of data around the mean and that the sample mean is not a good representation of the populaiton.
+
 --------------------------------------------------------------------------------
 
 Question 4 - Regress LEBF on HXPC. Report the coefficients,standard errors, confidence intervals, p-values, R2, and sample size in a regression table. Interpret the table, noting the economic and statistical significance of the relationship. What is the association between a 1,000-unit increase in HXPC and LEBF? (Note that HXPC is measured in dollars.)
