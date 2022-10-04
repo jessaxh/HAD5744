@@ -23,7 +23,7 @@ library(modelsummary) # For making regression tables
 library(psych) # For creating summary statistics table
 library(countrycode) # Used to get continents from countries
 library(fastDummies) # To create dummy variables
-
+library(vtable)
 # enter file path identifiers
 here("Desktop", "Graduate Studies", "4. Courses", "Fall 2022", "HAD5744H", "Assignments", "Assignment 1")
 
@@ -185,6 +185,7 @@ Dataset1 <- dummy_cols(Dataset1, select_columns = "continent") #used fast dummie
 continet_regression <- lm(LEBF20052~log(HXPC2005)+log(GDPPCUS2005) + continent_Africa +
                             continent_Americas + continent_Asia + continent_Europe
                           + continent_Oceania, Dataset1)
+#all dummy variables are in the regression - to let R decide which one to drop
 
 Regression_table4 <- msummary(continet_regression,
                               stars=c('*' = .1, '**' = .05, '***' = .01),
