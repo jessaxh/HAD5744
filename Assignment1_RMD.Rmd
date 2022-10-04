@@ -108,7 +108,10 @@ Question 4 - Regress LEBF on HXPC. Report the coefficients,standard errors, conf
 ```{r first regression}
 first_regression <- lm(LEBF20052~HXPC2005, Dataset1)
 Regression_table1 <- msummary(first_regression, fmt = "%.4f",
-                              stars=c('*' = .1, '**' = .05, '***' = .01))         
+                              stars=c('*' = .1, '**' = .05, '***' = .01), 
+                              statistic = c("conf.int",  "standard error = {std.error}", 
+                                            "p-value = {p.value}")
+)         
 Regression_table1
 ```
 
@@ -123,7 +126,9 @@ to those from Question 4
 second_regression <- lm(LEBF20052~HXPC2005+GDPPCUS2005, Dataset1)
 Regression_table2 <- msummary(list(first_regression,second_regression), 
                               stars=c('*' = .1, '**' = .05, '***' = .01),
-                              fmt = "%.4f")
+                              fmt = "%.4f",  statistic = c("conf.int",  "standard error 
+                                                           ={std.error}", 
+                                            "p-value = {p.value}"))
 Regression_table2
 ```
 
@@ -159,7 +164,9 @@ The histograms of GDPPC and HXPC show that their data is rightly skewed and thus
 third_regression <- lm(LEBF20052~log(HXPC2005)+log(GDPPCUS2005), Dataset1)
 Regression_table3 <- msummary(list(second_regression, third_regression), 
                               stars=c('*' = .1, '**' = .05, '***' = .01),
-                              fmt = "%.4f")
+                              fmt = "%.4f",  statistic = c("conf.int",  "standard error 
+                                                           ={std.error}", 
+                                            "p-value = {p.value}"))
 Regression_table3
 ```
 
@@ -189,7 +196,8 @@ continet_regression <- lm(LEBF20052~log(HXPC2005)+log(GDPPCUS2005) + continent_A
 
 Regression_table4 <- msummary(continet_regression,
                               stars=c('*' = .1, '**' = .05, '***' = .01),
-                               fmt = 5)
+                               fmt = 5,  statistic = c("conf.int",  "standard error = {std.error}", 
+                                            "p-value = {p.value}"))
 Regression_table4
 
 ```
@@ -212,7 +220,9 @@ interaction_regression <- lm(LEBF20052~log(HXPC2005)
 
 Regression_table5 <- msummary(interaction_regression,
                               stars=c('*' = .1, '**' = .05, '***' = .01),
-                              fmt = 5)
+                              fmt = 5,  statistic = c("conf.int",  
+                                                      "standard error = {std.error}", 
+                                            "p-value = {p.value}"))
 
 
 Regression_table5
@@ -230,7 +240,10 @@ q.9_regression.1 <- lm(LEBF20052~log(GDPPCUS2005), Dataset1)
 q.9_regression.2 <- lm(LEBF20052~log(HXPC2005), Dataset1)
 
 q.9_table <- msummary(list(q.9_regression.1, q.9_regression.2, third_regression), fmt = "%.4f",
-                      stars=c('*' = .1, '**' = .05, '***' = .01))         
+                      stars=c('*' = .1, '**' = .05, '***' = .01),  statistic = c("conf.int",
+                                                                                 "standard error = 
+                                                                                 {std.error}", 
+                                            "p-value = {p.value}"))         
 q.9_table
 ```
 
