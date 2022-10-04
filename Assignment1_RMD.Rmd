@@ -231,7 +231,8 @@ q.9_table <- msummary(list(q.9_regression.1, q.9_regression.2, third_regression)
 q.9_table
 ```
 
-Establishing the causal relationship between GDDPC, HXPC, and LEBF in a simple regression such as this is difficult as there are many sources of variation that can complicate the causal pathway between these three variables (as shown in the DAG in Question 1). From our DAG we can see a substantial number of different sources of variation coming from GDPPC (which ultimately includes HXPC). Both GDPPC and HXPC account for a substantial amount of variation in LEBF (when we examine R^2 in the regressions for both explanatory variables on LEBF), but using theory (seen through our DAG) we can realize that there are other contributors within the data generating process that are not captured through this process. 
+Establishing the causal relationship between GDDPC, HXPC, and LEBF in a simple regression such as this is difficult as there are many sources of variation that can complicate the causal pathway between these three variables (as shown in the DAG in Question 1). From our DAG we can see a substantial number of different sources of variation coming from GDPPC (which ultimately includes HXPC). Both GDPPC and HXPC account for a substantial amount of variation in LEBF (when we examine R^2 in the regressions for both explanatory variables on LEBF), but using theory (seen through our DAG) we can realize that there are other contributors within the data generating process that are not captured through this relationship. Additionally, when constructing a bivariate model, we can see that the R^2 is still lower than the univariate model examining LEBF and GDPPC, indicating that the inclusion of HXPC does not help in identifying what is associated with variation in LEBF. Moreover in this bivariate model, when controlling for GDPPC, HXPC decreases substantially from the univariate (LEBF~HXPC) model and becomes statistically insignificant. This indicates that HXPC likely has a much smaller role to play in the relationship between HXPC, GDPPC, and LEBF when GDPPC is taken into consideration. From this, we can appreciate that the DAG can help us to form testable assumptions and the models can help us to check those assumptions (to a point), but ultimately unless we are certain that we have accounted for all the variation in our outcome (through the DAG we construct), we cannot establish a causal relationship between HXPC, GDPPC, and LEBF.
+
 
 #would we potentially want to also talk about when GDDPC AND HXPC are included in a regression the effects change and this may show indication about why it isnt easy to make causal suggestions (e.g. when we control for GDDPC, HXPC is no loner significant - I included the third regression into the model summary just to show that it may be something we may want to speak on )
 --------------------------------------------------------------------------------
@@ -245,7 +246,7 @@ Question 10 - What do your results from (9) and intuition suggest about the stan
 --------------------------------------------------------------------------------
 
 ```{r Citations, include=FALSE}
-knitr::write_bib(file = 'packages.bib') # Constructs a citation file for all packages used in this lecture. 
+knitr::write_bib(file = 'packages.bib') # Constructs a citation file for all packages used in this assignment. 
 
 ```
 
