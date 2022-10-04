@@ -244,7 +244,8 @@ q.9_table <- msummary(list(q.9_regression.1, q.9_regression.2, third_regression)
                       stars=c('*' = .1, '**' = .05, '***' = .01),  statistic = c("conf.int",
                                                                                  "standard error = 
                                                                                  {std.error}", 
-                                            "p-value = {p.value}"))         
+                                            "p-value = {p.value}"))  
+#added pvalues 
 q.9_table
 ```
 
