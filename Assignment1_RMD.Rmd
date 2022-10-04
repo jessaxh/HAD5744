@@ -87,7 +87,7 @@ the correct assumptions within our DAG nor if they are the right ones to depict 
 --------------------------------------------------------------------------------
 
 Question 3: Make a table providing summary statistics for your variables;
-table should include the mean, standard deviation and sample size for each variable
+table should include the mean, standard deviation and sample size for each variable Does anything of concern stand out to you? 
 ```{r summary table}
 describe(Dataset1)
 summary_table <- describe(Dataset1[ ,c("LEBF20052","maxINFM20052","GDPPCUS2005", "HXPC2005","PctHXPUB2005",
@@ -100,6 +100,7 @@ summary_table <- summary_table[ ,-(1), drop = FALSE] #drop first column which co
 summary_table
 ```
 
+#Does anything of concern stand out to you? <- we have to add this
 --------------------------------------------------------------------------------
 
 Question 4 - Regress LEBF on HXPC. Report the coefficients,standard errors, confidence intervals, p-values, R2, and sample size in a regression table. Interpret the table, noting the economic and statistical significance of the relationship. What is the association between a 1,000-unit increase in HXPC and LEBF? (Note that HXPC is measured in dollars.)
