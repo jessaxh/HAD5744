@@ -116,6 +116,7 @@ Regression_table1
 ```
 
 The table shows that Health expenditure has a significant effect on the life expectancy at birth for females.This is economically significant because it shows that investment in Health expenditure is related to a longer life expectancy for females at birth. This provides the government with information on potential resource allocation. The table shows that a one unit increase in health expenditure leads to a 0.0040 increase in the life expectancy of females at birth. If there was a $1000 increase in health expenditure the life expectancy of females at birth would increase by 4 units. 
+#maybe we need to talk about the standard errors/pvalues?
 
 --------------------------------------------------------------------------------
 
