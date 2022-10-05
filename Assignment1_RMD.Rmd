@@ -67,29 +67,46 @@ Dataset1[, 2:19] <- lapply(Dataset1[, 2:19], as.numeric)
 
 --------------------------------------------------------------------------------
 
-Question 1: Draw a preliminary DAG for the following variables: LEBF, GDPPC
- HXPC, total fertility rate, and any other covarites of relevance;ensure
-relationships between the other independent variables is included
-```{r Question No.1}
+Question 1: Draw a preliminary DAG suggesting a relationship between the following variables and LEBF: gross domestic product per capita (GDPPC), health expenditure per capita (HXPC), and total fertility rate. Include any other covariates in the data set you think are relevant (note that you do not have to include all of the variables in the data). Justify your DAG with text. 
 
-```
+[Insert "Table 1: Initial Variables Included in DAG"]
+
+[Insert "Table 2: Final Variables Included in DAG"]
+
+[Insert "FINAL DAG"]
+
+Our DAG begins with a pathway with Country and Age. Age is a derived variable, collapsing PctPop0142005 and PctPop65Pl2005. For a given country, there will be a different age distribution, thus we believe this to be the first relationship in the pathway. 
+
+From Age, there are three new pathways, one to GDPPC, one to PctUrb, and one to a derived variable TotFertRate. As the distribution of age within a country will determine the proportion of adults able to participate within the workforce and contribute to economic productivity, we propose a pathway from Age through GDPPC. Next, we propose a pathway from Age to PctUrb as the proportion of younger people in a country will likely determine the percentage of the population that is urban dwelling as younger people are typically drawn to urban centres to pursue economic, social, and educational opportunities. Next, the pathway between Age and TotFertRate is a pathway to another derived variable (TotFertRate). TotFertRate collapses AdolFertRt to simplify the causal pathway through TotFertRate. We propose this relationship as countries with greater proportion of young people will likely see a higher total fertility rate.
+
+Moving to GDPPC, there are four pathways leading away from the variable: to FtoMPrimaryEnrl, HXPC, UtilityInfr, and TotFertRate.  The pathway from GDPPC to FtoMPrimaryEnrl is proposed as economic output will likely increase overall educational resources within a country giving women/girls greater opportunity to receive a primary school education. Next, the pathway between GDPPC and HXPC. HXPC collapses PctHXPUB2005 within it to indicate overall health expenditure within a given country, thereby simplifying the interpretation of the pathways. The pathway is proposed as GDPPC will determine a country's overall spending capacity, including spending on the healthcare system. Next, the pathway between GDPPC and UtilityInfr. UtilityInfr is also a derived variable, collapsing Sanitation2005ONY, ImprWaterUrb2005ONY, and ImprWaterRur2005ONY. This derived variable subsumes the beforementioned variables to simplify understanding of the pathway between economic output and a country's utility infrastructure (in this case water and sanitation). We propose this relationship in a similar vein to that between GDPPC and HXPC, the extent of GDPPC will determine the extent that a country can attain and maintain utility based infrastructure. Next, the relationship between GDPPC and TotFertRate is proposed as higher GDPPC nations will likely see a general increase in the cost of raising children, leading to a decrease in the proportion of newborns. Similarly, higher GDPPC would suggest greater economic independence for women, minimizing traditional domestic roles.
+
+Moving to PctUrb, there are three pathways leading away from the variable to GDPPC, FtoMPrimaryEnrl, and HXPC. The pathway between PctUrb and GDPPC is proposed as nations with a higher percentage of urban residents would be assumed to have higher economic activity. Next, PctUrb to FtoMPrimaryEnrl is proposed as nations with a higher percentage of urban residents likely have greater centralization of educational resources, and thus more women/girls who can access those resources. Next, PctUrb to HXPC is proposed as nations with a higher percentage of urban residents may see more health related issues due to urbanization (crime, disease spread, resource allocation) - although health resources may be more centralized in urban centres - influencing the extent of healthcare spending.
+
+Moving to FtoMPrimaryEnrl, the pathway continues on from PctUrb with further relationships proposed onto FLPR and TotFertRate. The pathway between FtoMPrimaryEnrl and FLPR is proposed as it is expected that the more women who receive education the more they will be able to participate in the workforce. There is a furhter pathway directly to TotFertRate where we expect greater education to generally lead to lower fertility due to greater knowledge regarding family planning and sexual health. Similarly, we propose FLPR as a mediator through an indirect pathway from FtoMPrimaryEnrl through FLPR to TotFertRate where we would expect workforce involvement to result in greater financial independence and greater ability for women to negotiate sex.
+
+Moving to TotFertRate, we suggest that the previously mentioned pathways from FtoMPrimaryEnrl, FLPR, GDPPC, and Age all are associated with TotFertRate, which then is ultimately associated with the extent of maxINFM. We propose that TotFertRate is associated with maxINFM as the more infants that are born the greater the likelihood that there may be mortality at birth.
+
+Moving to UtilityInfr, we believe there are three pathways leading away from the variable, towards HXPC, maxINFM, and LEBF. We propose a pathway from UtilityInfr to HXPC as the likelihood of water born disease is increased as the amount and quality of utility infrastructure decreases, leading to greater healthcare spending to account for a greater morbidity burden. Next, we propose a pathway towards maxINFM for similar reasons, lack of clean water and sanitation will likely lead directly to infant mortality. Next, we suggest a direct pathway to LEBF as lack of clean water and sanitation will likely lead directly to mortality for women. 
+
+Moving to HXPC, there are pathways from PctUrb, GDPPC, UtilityInfr leading through the variable. We propose that HXPC is associated with maxINFM as well as directly with LEBF. The pathway with maxINFM is suggested as higher health expenditures generally indicates more health resources, allowing for more infants to receive healthcare services, thereby reducing infant mortality. The pathway between HXPC and LEBF is proposed as as higher health expenditures generally indicates more health resources, allowing for more women to receive healthcare services, increasing life expectancy for women.
+
+Lastlly, the pathway from maxINFM to LEBF is suggested as an externality of infant mortality during childbirth is often maternal mortality, indicating the higher the infant mortality, the greater the likelihood for maternal mortality, thereby decreasing female life-expectancy.
 
 --------------------------------------------------------------------------------
 
-Question 2: What does your DAG tell you about interpreting any regression coefficients
-causally 
+Question 2: Make sure that your DAG includes relationships between independent variables in (1), if needed. What does your DAG tell you about interpreting any regression coefficients (between LEBF, GDPPC, and HXPC) causally? 
 
 A DAG can allow for causal interpretations of regression coefficient if all the back door paths
 represented in the DAG are closed and if the assumptions that are made to design and create the 
 relationships within the DAG are correct (all the variable positions in the DAG are justified and
 how their relationships are depicted are correct). When examining our DAG, we are not able to 
 interpret our regression coefficients causally because we are unable to confirm that we have made
-the correct assumptions within our DAG nor if they are the right ones to depict the relationship at hand. 
+the correct assumptions within our DAG nor if they are the right ones to depict the relationship at hand. More specifically, in terms of the relationships between LEBF, GDPPC, and HXPC, due to the number of potential pathways leading towards LEBF that are not from GDPPC or HXPC, it would be unwise to assume a causal relationship between either GDPPC or HXPC and LEBF.
 
 --------------------------------------------------------------------------------
 
-Question 3: Make a table providing summary statistics for your variables;
-table should include the mean, standard deviation and sample size for each variable Does anything of concern stand out to you? 
+Question 3: Make a table providing summary statistics for the variables listed in (1). Your table should include the mean, standard deviation, and sample size for each variable. Does anything of concern stand out to you? 
 ```{r summary table}
 describe(Dataset1)
 summary_table <- describe(Dataset1[ ,c("LEBF20052","maxINFM20052","GDPPCUS2005", "HXPC2005","PctHXPUB2005",
@@ -122,8 +139,7 @@ The table shows that Health expenditure has a significant effect on the life exp
 
 --------------------------------------------------------------------------------
 
-Question 5 - Regress LEBF on HXPC and GDPPC - Discuss the results of this regression relative
-to those from Question 4
+Question 5 - Now regress LEBF on HXPC and GDPPC. Discuss the results of this regression relative to those from (4).
 ```{r Question No.5}
 
 second_regression <- lm(LEBF20052~HXPC2005+GDPPCUS2005, Dataset1)
@@ -140,7 +156,7 @@ of HXPC are no longer statistically significant.The regression coefficient of HX
 
 --------------------------------------------------------------------------------
 
-Question 6 - Do you recommend a nonlinear transformation for either GDPPC, HXPC, or LEBF? If so, defend your choice and repeat the regression in (5) with the appropriate transformations. Interpret how your results have changed. [10 points]
+Question 6 - Do you recommend a nonlinear transformation for either GDPPC, HXPC, or LEBF? If so, defend your choice and repeat the regression in (5) with the appropriate transformations. Interpret how your results have changed.
 ```{r Question No.6}
 
 # Visually, look and see how well the observations fit the linear model
@@ -181,7 +197,6 @@ By log transforming both HXPC and GDPPC we are provided with new regression coef
 --------------------------------------------------------------------------------
 
 Question 7 - How might these results differ by geography? Create a variable that assigns each observation to a geographic region (e.g., continent) and report a regression that builds on (6) by including the appropriate dummy variables. Interpret your results.
-
 ```{r regression with continents}
 
 Dataset1$continent <- countrycode(sourcevar = Dataset1[,"Country"],
@@ -211,7 +226,6 @@ When including variables that assign each observation to a geographic region (an
 --------------------------------------------------------------------------------
 
 Question 8 - Finally, include an interaction term between HXPC and the indicator for African countries. What are you measuring with this interaction, and why might it be meaningful? Interpret the results of this coefficient. 
-
 ```{r interaction regression}
 interaction_regression <- lm(LEBF20052~log(HXPC2005) 
                           +log(GDPPCUS2005) 
@@ -238,7 +252,7 @@ With this interaction term we are measuring effect of HXPC specific to African c
 
 --------------------------------------------------------------------------------
 
-Question 9 - Why is establishing the causal relationship between GDDPC, HXPC, and LEBF difficult in a simple regression such as this? If possible, provide one key figure that highlights an identification problem in this scenario.
+Question 9 - Why is establishing the causal relationship between GDDPC, HXPC, and LEBF difficult in a simple regression such as this? If possible, provide one key figure that highlights an identification problem in this scenario. (Note that there are multiple possible answers for this problem; the goal is to think critically about the causal identification.)
 ```{r Question No.9}
 q.9_regression.1 <- lm(LEBF20052~log(GDPPCUS2005), Dataset1)
 q.9_regression.2 <- lm(LEBF20052~log(HXPC2005), Dataset1)
@@ -275,7 +289,7 @@ lmtest::bptest(third_regression)
 lmtest::dwtest(third_regression)
 
 #a test for autocorrelation showed that there is no autocorrelation among the residuals either as the p value is greater than 0.05 and the test statistic for the Durbin-Watson test is close to 2. 
-https://www.codingprof.com/3-easy-ways-to-test-for-autocorrelation-in-r-examples/?fbclid=IwAR0vNkTqYZcCfr9z-5JfsaLAGNColblMiHqXQoSS4PnmBu_egLh5u3j0r3I#:~:text=In%20R%2C%20the%20easiest%20way,or%20the%20Breusch%2DGodfrey%20test
+#https://www.codingprof.com/3-easy-ways-to-test-for-autocorrelation-in-r-examples/?fbclid=IwAR0vNkTqYZcCfr9z-5JfsaLAGNColblMiHqXQoSS4PnmBu_egLh5u3j0r3I #:~:text=In%20R%2C%20the%20easiest%20way,or%20the%20Breusch%2DGodfrey%20test
 
 fixedse<- msummary( third_regression,
          stars=c('*' = .1, '**' = .05, '***' = .01), vcov ="Neweywest",
