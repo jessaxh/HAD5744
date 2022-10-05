@@ -24,6 +24,7 @@ library(psych) # For creating summary statistics table
 library(countrycode) # Used to get continents from countries
 library(fastDummies) # To create dummy variables
 library(vtable)
+library(lmtest)
 
 # enter file path identifiers
 here("Desktop", "Graduate Studies", "4. Courses", "Fall 2022", "HAD5744H", "Assignments", "Assignment 1")
@@ -164,7 +165,8 @@ The histograms of GDPPC and HXPC show that their data is rightly skewed and thus
 
 ```{r Question No. 6 pt 2}
 third_regression <- lm(LEBF20052~log(HXPC2005)+log(GDPPCUS2005), Dataset1)
-Regression_table3 <- msummary(list(second_regression, third_regression), 
+Regression_table3 <- msummary(list("non_log_reg" =second_regression, 
+                                   "log_reg"= third_regression), 
                               stars=c('*' = .1, '**' = .05, '***' = .01),
                               fmt = "%.4f",  statistic = c("conf.int",  "standard error 
                                                            ={std.error}", 
@@ -196,7 +198,7 @@ continet_regression <- lm(LEBF20052~log(HXPC2005)+log(GDPPCUS2005) + continent_A
                           + continent_Oceania, Dataset1)
 #all dummy variables are in the regression - to let R decide which one to drop
 
-Regression_table4 <- msummary(continet_regression,
+Regression_table4 <- msummary(list("continent_reg"=continet_regression),
                               stars=c('*' = .1, '**' = .05, '***' = .01),
                                fmt = 5,  statistic = c("conf.int",  "standard error = {std.error}", 
                                             "p-value = {p.value}"))
@@ -220,7 +222,7 @@ interaction_regression <- lm(LEBF20052~log(HXPC2005)
                           + continent_Oceania 
                           + log(HXPC2005):continent_Africa, Dataset1)
 
-Regression_table5 <- msummary(interaction_regression,
+Regression_table5 <- msummary(list("interaction_reg"=interaction_regression),
                               stars=c('*' = .1, '**' = .05, '***' = .01),
                               fmt = 5,  statistic = c("conf.int",  
                                                       "standard error = {std.error}", 
@@ -241,12 +243,12 @@ Question 9 - Why is establishing the causal relationship between GDDPC, HXPC, an
 q.9_regression.1 <- lm(LEBF20052~log(GDPPCUS2005), Dataset1)
 q.9_regression.2 <- lm(LEBF20052~log(HXPC2005), Dataset1)
 
-q.9_table <- msummary(list(q.9_regression.1, q.9_regression.2, third_regression), fmt = "%.4f",
-                      stars=c('*' = .1, '**' = .05, '***' = .01),  statistic = c("conf.int",
-                                                                                 "standard error = 
-                                                                                 {std.error}", 
+q.9_table <- msummary(list("LEBF_log(GDP)"=q.9_regression.1, "LEBF_log(HXPC)"=q.9_regression.2,
+                           "LEBF_log(GDP)+log(HXPC)"= third_regression), fmt = "%.4f",
+                      stars=c('*' = .1, '**' = .05, '***' = .01),  
+                      statistic = c("conf.int", "standard error = {std.error}", 
                                             "p-value = {p.value}"))  
-#added pvalues 
+
 q.9_table
 ```
 
@@ -258,11 +260,13 @@ Establishing the causal relationship between GDDPC, HXPC, and LEBF in a simple r
 Question 10 - What do your results from (9) and intuition suggest about the standard errors in your specification? Either justify the use of homoscedastic standard errors or implement a full specification with another, more robust method (e.g., heteroskedasticity-robust or clustered SEs). How does this change the results?
 ```{r Question No.10}
 
+#the third_regression is the regression of LEBF on log(HXPC) + log(GDDPC)
+
 par(mfrow = c(2, 2))
 plot(third_regression)
 
 #test for heteroskedasticity 
-library(lmtest)
+
 lmtest::bptest(third_regression)
 #the bptest is showing that the we cannot reject the null that the residuals are distributed with equal variance (homoscedasticty) as there is a low test statistic (BP = 4.8241) and a p value > 0.05, therefore we assume that the residuals are homoscedastic
 #https://www.codingprof.com/3-easy-ways-to-test-for-heteroscedasticity-in-r-examples/#:~:text=In%20R%2C%20the%20easiest%20way,Test%20or%20the%20White%20Test.
