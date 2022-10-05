@@ -247,7 +247,8 @@ Regression_table5
 
 ```
 
-With this interaction term we are measuring effect of HXPC specific to African countries. It might be meaningful to include this interaction term as it would allow us to determine how much stronger the effect of HXPC on LEBF is when the continent is Africa. The interaction term shows that for an African country, a 10% increase in health expenditure increases LEBF by 0.038514, however this relationship is not statistically significant. When we look at the interaction between HXPC and the continent of Africa we see that the regression coefficient is 0.32, which indicates that for Africa, a 10% increase in health expenditure leads to an additional 0.032 life years on top of the general effect of health expenditure which would be 0.0066 life years for ever 10% increase in health expenditure.
+With this interaction term we are measuring effect of HXPC specific to African countries. It might be meaningful to include this interaction term as it would allow us to determine how much stronger the effect of HXPC on LEBF is when the continent is Africa. The interaction term shows that for an African country, a 10% increase in health expenditure increases LEBF by 0.038514, however this relationship is not statistically significant. 
+When we look at the interaction between HXPC and the continent of Africa we see that the regression coefficient is 0.32, which indicates that for Africa, a 10% increase in health expenditure leads to an additional 0.032 life years on top of the general effect of health expenditure which would be 0.0066 life years for ever 10% increase in health expenditure. It is the combination of these two values that lets us identify that the cumulative effect of a 10% increase in health expenditure in Aftica increases LEBF by 0.0385.
 
 
 --------------------------------------------------------------------------------
@@ -284,9 +285,8 @@ plot(third_regression)
 
 #specification using both robust corrections for standard errors and autocorrelation
 se_corrections<- msummary(list("homoscedastic" = third_regression,
-                               "robust_se" =third_regression, 
-                               "autocorrelation_se" = third_regression),
-          stars=c('*' = .1, '**' = .05, '***' = .01), vcov =c("classical","robust", "Neweywest"),
+                               "robust_se" =third_regression),
+          stars=c('*' = .1, '**' = .05, '***' = .01), vcov =c("classical","robust"),
           fmt = "%.4f")
 
 se_corrections
@@ -299,21 +299,14 @@ lmtest::bptest(third_regression)
 #https://www.codingprof.com/3-easy-ways-to-test-for-heteroscedasticity-in-r-examples/#:~:text=In%20R%2C%20the%20easiest%20way,Test%20or%20the%20White%20Test.
 
 
-#test for autocorrelation
-lmtest::dwtest(third_regression)
-
-#a test for autocorrelation showed that there is no autocorrelation among the residuals either as the p value is greater than 0.05 and the test statistic for the Durbin-Watson test is close to 2. 
-#https://www.codingprof.com/3-easy-ways-to-test-for-autocorrelation-in-r-examples/?fbclid=IwAR0vNkTqYZcCfr9z-5JfsaLAGNColblMiHqXQoSS4PnmBu_egLh5u3j0r3I #:~:text=In%20R%2C%20the%20easiest%20way,or%20the%20Breusch%2DGodfrey%20test
-
 ```
 
 The results from quesiton 9, and our intuition suggest that the standard errors in our specification are not homoscedastic. To check if it is accurate to use homoscedastic errors, a plot was created to look at the residual vs fitted values of our model. In this residual plot, we can see that the data is not randomly spread around the 0 line and thus indicative that the use of homoscedastic standard errors may not be best practice. As a result of the results seen in this plot, we tried to implement both a correction for heteroskedasticity and autocorrelation within our model. 
 
 When we used the heteroskedasticity-robust method for our standard errors we observed the standard errors for log(HXPC) and log(GDPPC) increased from 1.54 and 1.66 to 2.19 and 2.39 respectively. The standard errors increasing indicates that our standard errors are potentially becoming more accurate however the variation of the data on the regression line is quite large. 
 
-When we used the Neweywest method to try and adjust for autocorrelation in our standard errors we observed similar results to that of the heteroskedasticity model. In this model the standard errors for log(HXPC) and log(GDPPC) increased from 1.54 and 1.66 to 1.87 and 2.03. Again the standard errors increased and thus potentially indicate that we have a more accurate representation of the variability around our regression line. 
 
-To confirm if adjusting our standard errors for heteroskedasticity or autocorrelation was the right strategy a Breusch-Pagan test and a Durbin-Watson test were conducted. The Breusch-Pagan test results, showed that we cannot reject the null that the residuals are distributed with equal variance (homoscedasticty). The Durbin-Watson test results, showed that there is no autocorrelation present among the residuals in our model. As a result, both methods to correct for the standard errors in our inital model were not as effective as we hoped they would be. We can conclude that although the results of our specifications with both a heteroskedastic-robust correction and Neweywest correction had an effect on our standard errors, they are not the right corrections to account for the variance we observed in our residual-fitted plot. 
+To confirm if adjusting our standard errors for heteroskedasticity was the right strategy a Breusch-Pagan test was conducted. The Breusch-Pagan test results, showed that we cannot reject the null that the residuals are distributed with equal variance (homoscedasticty). As a result, the method to correct for the standard errors in our inital model was not as effective as we hoped it would be. We can conclude that although the results of our specification with  a heteroskedastic-robust correction had an effect on our standard errors, they are not the right corrections to account for the variance we observed in our residual-fitted plot. 
 
 --------------------------------------------------------------------------------
 
