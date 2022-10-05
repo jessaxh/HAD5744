@@ -117,8 +117,7 @@ Regression_table1 <- msummary(first_regression, fmt = "%.4f",
 Regression_table1
 ```
 
-The table shows that Health expenditure has a significant effect on the life expectancy at birth for females.This is economically significant because it shows that investment in Health expenditure is related to a longer life expectancy for females at birth. This provides the government with information on potential resource allocation. The table shows that a one unit increase in health expenditure leads to a 0.0040 increase in the life expectancy of females at birth. If there was a $1000 increase in health expenditure the life expectancy of females at birth would increase by 4 units. 
-#maybe we need to talk about the standard errors/pvalues?
+The table shows that Health expenditure has a significant effect on the life expectancy at birth for females. This is economically significant because it shows that investment in Health expenditure is related to a longer life expectancy for females at birth. This provides the government with information on potential resource allocation. The table shows that a one unit increase in health expenditure leads to a 0.0040 increase in the life expectancy of females at birth. If there was a $1000 increase in health expenditure the life expectancy of females at birth would increase by 4 units. 
 
 --------------------------------------------------------------------------------
 
@@ -262,9 +261,25 @@ Question 10 - What do your results from (9) and intuition suggest about the stan
 par(mfrow = c(2, 2))
 plot(third_regression)
 
+#test for heteroskedasticity 
 library(lmtest)
 lmtest::bptest(third_regression)
 #the bptest is showing that the we cannot reject the null that the residuals are distributed with equal variance (homoscedasticty) as there is a low test statistic (BP = 4.8241) and a p value > 0.05, therefore we assume that the residuals are homoscedastic
+#https://www.codingprof.com/3-easy-ways-to-test-for-heteroscedasticity-in-r-examples/#:~:text=In%20R%2C%20the%20easiest%20way,Test%20or%20the%20White%20Test.
+
+#test for autocorrelation
+lmtest::dwtest(third_regression)
+
+#a test for autocorrelation showed that there is no autocorrelation among the residuals either as the p value is greater than 0.05 and the test statistic for the Durbin-Watson test is close to 2. 
+https://www.codingprof.com/3-easy-ways-to-test-for-autocorrelation-in-r-examples/?fbclid=IwAR0vNkTqYZcCfr9z-5JfsaLAGNColblMiHqXQoSS4PnmBu_egLh5u3j0r3I#:~:text=In%20R%2C%20the%20easiest%20way,or%20the%20Breusch%2DGodfrey%20test
+
+fixedse<- msummary( third_regression,
+         stars=c('*' = .1, '**' = .05, '***' = .01), vcov ="Neweywest",
+          fmt = "%.4f")
+
+fixedse
+#adjusting standard errors with autocrrelation did not lead to a reduction in the standard errors
+
 ```
 
 
