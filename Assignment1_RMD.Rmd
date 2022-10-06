@@ -2,9 +2,7 @@
 title: "Assignment 1"
 name: Husayn Jessa and Aidan Bodner
 date: '2022-10-05'
-output:
-  word: default
-  
+output: word
 ---
 
 ```{r setup, include=FALSE}
