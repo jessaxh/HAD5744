@@ -1,8 +1,8 @@
 ---
-name: Husayn Jessa and Aidan Bodner
 title: "Assignment 1"
-output: html_document
+name: Husayn Jessa and Aidan Bodner
 date: '2022-10-05'
+output:
 ---
 
 ```{r setup, include=FALSE}
@@ -27,6 +27,7 @@ library(vtable) #Shows information about the variables in your data set
 library(lmtest) #A collection of tests, data sets, and examples for diagnostic checking in linear regression models
 
 # enter file path identifiers
+
 here("Desktop", "Graduate Studies", "4. Courses", "Fall 2022", "HAD5744H", "Assignments", "Assignment 1")
 
 assign_data <- read.csv("Dataset 1.csv") # assign data to an object
@@ -256,7 +257,7 @@ Regression_table5
 ```
 
 With this interaction term we are measuring effect of HXPC specific to African countries. It might be meaningful to include this interaction term as it would allow us to determine how much stronger the effect of HXPC on LEBF is when the continent is Africa. The interaction term shows that for an African country, a 10% increase in health expenditure increases LEBF by 0.038514, however this relationship is not statistically significant. 
-When we look at the interaction between HXPC and the continent of Africa we see that the regression coefficient is 0.32, which indicates that for Africa, a 10% increase in health expenditure leads to an additional 0.032 life years on top of the general effect of health expenditure which would be 0.0066 life years for ever 10% increase in health expenditure. It is the combination of these two values that lets us identify that the cumulative effect of a 10% increase in health expenditure in Aftica increases LEBF by 0.0385.
+When we look at the interaction between HXPC and the continent of Africa we see that the regression coefficient is 0.32, which indicates that for Africa, a 10% increase in health expenditure leads to an additional 0.032 life years on top of the general effect of health expenditure which would be 0.0066 life years for ever 10% increase in health expenditure. It is the combination of these two values that lets us identify that the cumulative effect of a 10% increase in health expenditure in Africa increases LEBF by 0.0385.
 
 
 --------------------------------------------------------------------------------
@@ -310,7 +311,7 @@ se_corrections
 
 The results from quesiton 9, and our intuition suggest that the standard errors in our specification are not homoscedastic. To check if it is accurate to use homoscedastic errors, a plot was created to look at the residual vs fitted values of our model. In this residual plot, we can see that the data is not randomly spread around the 0 line and thus indicative that the use of homoscedastic standard errors may not be best practice. To confirm what we saw in the residual vs fitted plot, we conducted a Breusch-Pagan test to test for heteroskedasticity in our model. The results of our Breusch-Pagan test displayed a high test statistic and a p value < 0.5. Therefore, we reject the null hypothesis and can confirm that this regression model violates the homoscedasticity assumption
 As a result of the results seen in this plot, and the Breusch-Pagan test we implemented a correction for heteroskedasticity within our model. We did not implement a correction for autocorrelation as our data was not collected over multiple time periods so it would not make sense for autocorrelation to have an impact. When we used the heteroskedasticity-robust method for our standard errors we observed that the standard errors for log(HXPC) and log(GDPPC) increased from 1.45 and 1.50 to 2.06 and 2.28 respectively. The standard errors increasing indicates that our standard errors are becoming more accurate in describing th data. We can also see that within our data that the regression coefficient for log(GDPPC) is no longer significant after this method is employed. This result is expected because the larger standard error, 2.78, observed leads to a test statistic that is smaller. Smaller test statistics are associated with larger p-values thus the loss of significance of the regression coefficient for log(GDDPC)  as a result of the heteroskedasticity-robust method employed makes sense. 
-
+#i didnt talk about the other standard errors for the continents - idk if i should but get some funky things that idk how to explain like standard errors going down not up haha
 
 
 --------------------------------------------------------------------------------
