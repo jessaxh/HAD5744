@@ -26,9 +26,7 @@ library(fastDummies) # To create dummy variables
 library(vtable) #Shows information about the variables in your data set
 library(lmtest) #A collection of tests, data sets, and examples for diagnostic checking in linear regression models
 
-# enter file path identifiers
-
-here("Desktop", "Graduate Studies", "4. Courses", "Fall 2022", "HAD5744H", "Assignments", "Assignment 1")
+# set working directory
 here()
 
 assign_data <- read.csv("Dataset 1.csv") # assign data to an object
