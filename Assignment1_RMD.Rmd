@@ -2,7 +2,8 @@
 title: "Assignment 1"
 name: Husayn Jessa and Aidan Bodner
 date: '2022-10-05'
-output: word
+output:
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -25,6 +26,7 @@ library(countrycode) # Used to get continents from countries
 library(fastDummies) # To create dummy variables
 library(vtable) #Shows information about the variables in your data set
 library(lmtest) #A collection of tests, data sets, and examples for diagnostic checking in linear regression models
+library(flextable) #Create pretty tables for 'HTML', 'PDF', 'Microsoft Word', 'Microsoft PowerPoint' documents from 'R Markdown' 
 
 # set working directory
 here()
