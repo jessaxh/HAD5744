@@ -2,7 +2,6 @@
 title: "Assignment 1"
 name: Husayn Jessa and Aidan Bodner
 date: '2022-10-05'
-output: word_document
 ---
 
 ```{r setup, include=FALSE}
@@ -13,6 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 name <- Sys.info()
 name[7]
+
+#Husayn Jessa and Aidan Bodner worked on this assignment together
 
 ### Load the packages we will need for this file ####
 
@@ -70,6 +71,7 @@ Dataset1[, 2:19] <- lapply(Dataset1[, 2:19], as.numeric)
 
 Question 1: Draw a preliminary DAG suggesting a relationship between the following variables and LEBF: gross domestic product per capita (GDPPC), health expenditure per capita (HXPC), and total fertility rate. Include any other covariates in the data set you think are relevant (note that you do not have to include all of the variables in the data). Justify your DAG with text. 
 
+Please view DAG and tables supporting Dag in supporting documents
 [Insert "Table 1: Initial Variables Included in DAG"]
 
 [Insert "Table 2: Final Variables Included in DAG"]
