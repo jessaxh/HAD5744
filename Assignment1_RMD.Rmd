@@ -1,8 +1,8 @@
 ---
 title: "Assignment 1"
-name: "Husayn Jessa and Aidan Bodner"
+name: Husayn Jessa and Aidan Bodner
 date: '2022-10-05'
-
+output: word_document
 ---
 
 ```{r setup, include=FALSE}
