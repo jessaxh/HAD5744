@@ -1,9 +1,8 @@
 ---
 title: "Assignment 1"
-name: Husayn Jessa and Aidan Bodner
+name: "Husayn Jessa and Aidan Bodner"
 date: '2022-10-05'
-output:
-  word_document: default
+
 ---
 
 ```{r setup, include=FALSE}
@@ -110,7 +109,7 @@ the correct assumptions within our DAG nor if they are the right ones to depict 
 
 Question 3: Make a table providing summary statistics for the variables listed in (1). Your table should include the mean, standard deviation, and sample size for each variable. Does anything of concern stand out to you? 
 ```{r summary table}
-describe(Dataset1)
+
 summary_table <- describe(Dataset1[ ,c("LEBF20052","maxINFM20052","GDPPCUS2005", "HXPC2005","PctHXPUB2005",
                    "TotFertRate2005","AdolFertRt2005","FtoMPrimaryEnrl2005ONY",
                    "PctUrb2005", "Sanitation2005ONY","ImprWaterUrb2005ONY",
@@ -163,7 +162,6 @@ Question 6 - Do you recommend a nonlinear transformation for either GDPPC, HXPC,
 
 # Visually, look and see how well the observations fit the linear model
 
-vtable(Dataset1)
 attach(Dataset1)
 hist(GDPPCUS2005)        
 hist(log(GDPPCUS2005))
