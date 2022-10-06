@@ -1,7 +1,7 @@
 ---
 title: "Assignment 1"
-name: Husayn Jessa and Aidan Bodner
-date: '2022-10-05'
+name: "Husayn Jessa and Aidan Bodner"
+date: '2022-10-07'
 ---
 
 ```{r setup, include=FALSE}
@@ -72,11 +72,6 @@ Dataset1[, 2:19] <- lapply(Dataset1[, 2:19], as.numeric)
 Question 1: Draw a preliminary DAG suggesting a relationship between the following variables and LEBF: gross domestic product per capita (GDPPC), health expenditure per capita (HXPC), and total fertility rate. Include any other covariates in the data set you think are relevant (note that you do not have to include all of the variables in the data). Justify your DAG with text. 
 
 Please view DAG and tables supporting Dag in supporting documents
-[Insert "Table 1: Initial Variables Included in DAG"]
-
-[Insert "Table 2: Final Variables Included in DAG"]
-
-[Insert "FINAL DAG"]
 
 Our DAG begins with a pathway with Country and Age. Age is a derived variable, collapsing PctPop0142005 and PctPop65Pl2005. For a given country, there will be a different age distribution, thus we believe this to be the first relationship in the pathway. 
 
