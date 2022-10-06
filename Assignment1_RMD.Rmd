@@ -121,7 +121,7 @@ summary_table <- summary_table[ ,-(1), drop = FALSE] #drop first column which co
 summary_table
 ```
 
-What raises concern with the outputs of the table is the large standard deviation and standard error for GDPPC and HXPC. This indicates that large spread of data around the mean and that the sample mean is not a good representation of the population.
+What raises concern with the outputs of the table is the large standard deviation and standard error for GDPPC and HXPC. This indicates that large spread of data around the mean and that the sample mean is not a good representation of the population. The mean AdolFertRt2005 is also of concern as it is very high at 56.09. This is in large contrast to the mean of TotFertRate2005 which is 3.04. This is a concern because it would be expected that adolescent fertility rate would not vary this much from total fertility rate and thus how both these rates were calculated is an area for further inquiry.  
 
 --------------------------------------------------------------------------------
 
@@ -137,7 +137,7 @@ Regression_table1 <- msummary(first_regression, fmt = "%.4f",
 Regression_table1
 ```
 
-The table shows that Health expenditure has a significant effect on the life expectancy at birth for females. This is economically significant because it shows that investment in Health expenditure is related to a longer life expectancy for females at birth. This provides the government with information on potential resource allocation. The table shows that a one unit increase in health expenditure leads to a 0.0040 increase in the life expectancy of females at birth. If there was a $1000 increase in health expenditure the life expectancy of females at birth would increase by 4 units. 
+The table shows that Health expenditure has a significant effect on the life expectancy at birth for females. This is economically significant because it shows that investment in Health expenditure is related to a longer life expectancy for females at birth. This provides the government with information on potential resource allocation. The table shows that a one unit increase in health expenditure leads to a 0.0040 increase in the life expectancy of females at birth. If there was a $1000 increase in health expenditure the life expectancy of females at birth would increase by 4 units (years). 
 
 --------------------------------------------------------------------------------
 
@@ -145,7 +145,7 @@ Question 5 - Now regress LEBF on HXPC and GDPPC. Discuss the results of this reg
 ```{r Question No.5}
 
 second_regression <- lm(LEBF20052~HXPC2005+GDPPCUS2005, Dataset1)
-Regression_table2 <- msummary(list(first_regression,second_regression), 
+Regression_table2 <- msummary(list("Q.4_reg"=first_regression,"Q.5_reg"=second_regression), 
                               stars=c('*' = .1, '**' = .05, '***' = .01),
                               fmt = "%.4f",  statistic = c("conf.int",  "standard error 
                                                            ={std.error}", 
@@ -154,7 +154,7 @@ Regression_table2
 ```
 
 The results of this regression show that when GDPPC is controlled for the effects
-of HXPC are no longer statistically significant.The regression coefficient of HXPC becomes reduced in this new model, going from 0.004 to -0.001. The new coefficient for Health Expenditure is negative which would mean increased health expenditure is related to a reduction in life expectancy. We would generally expect an increase in health expenditure to be positively related to life expectancy, thus it makes sense why these results are no longer significant. The regression coefficient for GDP is 0.0005 and is statistically significant. This provides indication that there is a relationship between GDDPC and LEBF. For every one unit increase in GDP, LEBF will increase by 0.0005 units. 
+of HXPC are no longer statistically significant.The regression coefficient of HXPC becomes reduced in this new model, going from 0.004 to -0.001. The new coefficient for Health Expenditure is negative which would mean increased health expenditure is related to a reduction in life expectancy. We would generally expect an increase in health expenditure to be positively related to life expectancy, thus it makes sense why these results are no longer significant. The regression coefficient for GDP is 0.0005 and is statistically significant. This provides indication that there is a relationship between GDDPC and LEBF when HXPC is controlled for. For every one unit increase in GDP, LEBF will increase by 0.0005 units (years). 
 
 --------------------------------------------------------------------------------
 
@@ -169,6 +169,7 @@ hist(GDPPCUS2005)
 hist(log(GDPPCUS2005))
 hist(HXPC2005)
 hist(log(HXPC2005))
+hist(LEBF20052)
 
 ggplot(Dataset1, aes(x = HXPC2005, y = LEBF20052)) + 
   geom_point() +
@@ -186,8 +187,8 @@ ggplot(Dataset1, aes(x = log(GDPPCUS2005), y = LEBF20052)) +
   geom_point() +
   stat_smooth(method = "lm", col = "red")
 ```
-
-The histograms of GDPPC and HXPC show that their data is rightly skewed and thus is likely to produce outliers. Additionally, looking at how well the observations fit around the regression line, we can see that the plots for both GDDPC and HXPC do not fit the regression line well. We recommend, doing a log transformation of these two variables because it will make the big observations in the data smaller and thus closer to the other variables in the data. This will help reduce the skew and help the model behave more effectively.The histograms of the log transformed variables show that when a log transformation is performed the data looks approximately fits a normal distribution which is helpful for drawing statistical inference. The plots for both log(GDDPC) and log(HXPC) also add support for the use of a log transformation. These plots show that the regression line fits the data a lot better and thus a non-linear transformation should be used. 
+The histograms of GDPPC and HXPC show that their data is rightly skewed and thus is likely to produce outliers. Additionally, looking at how well the observations fit around the regression line, we can see that the plots for both GDDPC and HXPC do not fit the regression line well. We recommend, doing a log transformation of these two variables because it will make the big observations in the data smaller and thus closer to the other variables in the data. This will help reduce the skew and help the model behave more effectively.The histograms of the log transformed variables show that when a log transformation is performed the data approximately fits a normal distribution which is helpful for drawing statistical inference. The plots for both log(GDDPC) and log(HXPC) also add support for the use of a log transformation. These plots show that the regression line fits the data a lot better when these variables are transformed and thus a non-linear transformation should be used. 
+We decided to leave LEBF as is because when we look at the histogram for LEBF the data does not produce an exaggerated skew which is indicative that the data is okay to work with, without a transformation. 
 
 ```{r Question No. 6 pt 2}
 third_regression <- lm(LEBF20052~log(HXPC2005)+log(GDPPCUS2005), Dataset1)
@@ -202,7 +203,7 @@ Regression_table3
 
 Applying a non-linear transformation is necessary in order to reduce the extreme effects of outliers on our regression outputs. Log transforming the predictor variables in the regression model is one way in which we can achieve this. It makes sense to log transform the independent variables in the model by applying a natural log, as we can directly compare the regression output to those in (5) as the output stays in the same units. We are also able to apply the natural log as we do not have any zero-valued data.
 
-By log transforming both HXPC and GDPPC we are provided with new regression coefficients. The regression coefficient of log(HXPC2005) is now 0.8886 which is substantially different than the non-log'd coefficient -0.0014. The new regression coefficient indicates that for every 10% increase in HXPC (when GDPPC is held constant), the LEBF will increase by 0.089. Intuitively, life expectancy should increase as there is more health expenditure within a country so these new results make more sense which speaks to the value of transforming the HXPC variable. The results however remain statisically insignificant. The regression coefficient for log(GDPPCUS2005) also changed to 4.114 which is an increase from the non-log'd coefficient of 0.0005. Both coefficients were deemed as statistically significant. The new regression coefficient indicates that for every 10% increase in GDP (when HXPC is held constant) there is a 0.4114 increase in life expectancy at birth for females. We can also see that the R^2 value has increased from 0.252 to 0.493 which indicates that the new regression line fits better to the data.
+By log transforming both HXPC and GDPPC we are provided with new regression coefficients. The regression coefficient of log(HXPC2005) is now 0.8886 which is substantially different than the non-log'd coefficient -0.0014. The new regression coefficient indicates that for every 10% increase in HXPC (when GDPPC is held constant), the LEBF will increase by 0.089. Intuitively, life expectancy should increase as there is more health expenditure within a country so these new results make more sense which speaks to the value of transforming the HXPC variable. The results however remain statistically insignificant. The regression coefficient for log(GDPPCUS2005) also changed to 4.114 which is an increase from the non-log'd coefficient of 0.0005. Both coefficients were deemed as statistically significant. The new regression coefficient indicates that for every 10% increase in GDP (when HXPC is held constant) there is a 0.4114 unit (year) increase in life expectancy at birth for females. We can also see that the R^2 value has increased from 0.252 to 0.493 which indicates that the new regression line fits better to the data.
 
 --------------------------------------------------------------------------------
 
@@ -216,12 +217,14 @@ Dataset1$continent <- countrycode(sourcevar = Dataset1[,"Country"],
 view(Dataset1)
 unique(Dataset1[c("continent")])
 
+#the country code package grouped North and South America into the Americas
+
 Dataset1 <- dummy_cols(Dataset1, select_columns = "continent") #used fast dummies to make dummy variables
 
 continet_regression <- lm(LEBF20052~log(HXPC2005)+log(GDPPCUS2005) + continent_Africa +
                             continent_Americas + continent_Asia + continent_Europe
                           + continent_Oceania, Dataset1)
-#all dummy variables are in the regression - to let R decide which one to drop
+#all dummy variables are in the regression - to let R decide which one to drop (R decided to drop Oceania) to avoid the dummy variable trap
 
 Regression_table4 <- msummary(list("continent_reg"=continet_regression),
                               stars=c('*' = .1, '**' = .05, '***' = .01),
@@ -231,7 +234,8 @@ Regression_table4
 
 ```
 
-When including variables that assign each observation to a geographic region (and holding them constant), the relationship between HXPC and LEBF shows a 10% increase in HXPC is associated with a 0.008624 increase in LEBF, but this remains not statistically significant. The relationship between GDPPC and LEBF sees a 10% increase in GDDPC significantly associated with a 0.331976 increase in LEBF which is a slight decrease from the output reported in (6) where a 10% increase in GDDPC was significantly associated with a 0.4114 increase in LEBF.The association between the continent of Africa and LEBF (when controlling for HXPC, GDDPC, and other continents) is statistically significant and negative (vs. Oceania). Conversely, the other continents have a positive relationship with LEBF although it is not statistically significant. The R^2 for the model of 0.641 shows good model fit and indicates that the variables in the model are able to adequately account for the variation in LEBF.
+When including variables that assign each observation to a geographic region (and holding them constant), the relationship between HXPC and LEBF (when GDPPC is held constant) shows a 10% increase in HXPC is associated with a 0.0086 increase in LEBF, but this remains not statistically significant. The relationship between GDPPC and LEBF (when HXPC is held constant) sees a 10% increase in GDDPC significantly associated with a 0.33 increase in LEBF which is a slight decrease from the output reported in (6) where a 10% increase in GDDPC was significantly associated with a 0.4114 increase in LEBF. The results of our model also demonstrate that when continent dummy variables are included, the OLS line experiences intercept shifts that are contingent on what continent is being examined. 
+The association between the continent of Africa and LEBF (when controlling for HXPC, GDDPC, and other continents) is statistically significant and has a negative intercept shift (vs. Oceania). Conversely, the other continents have positive intercept shifts with LEBF (vs. Oceania) although their regression coefficients are not statistically significant. The R^2 for the model of 0.641 shows good model fit and indicates that the variables in the model are able to adequately account for the variation in LEBF.
 
 --------------------------------------------------------------------------------
 
@@ -257,9 +261,8 @@ Regression_table5
 
 ```
 
-With this interaction term we are measuring effect of HXPC specific to African countries. It might be meaningful to include this interaction term as it would allow us to determine how much stronger the effect of HXPC on LEBF is when the continent is Africa. The interaction term shows that for an African country, a 10% increase in health expenditure increases LEBF by 0.038514, however this relationship is not statistically significant. 
-When we look at the interaction between HXPC and the continent of Africa we see that the regression coefficient is 0.32, which indicates that for Africa, a 10% increase in health expenditure leads to an additional 0.032 life years on top of the general effect of health expenditure which would be 0.0066 life years for ever 10% increase in health expenditure. It is the combination of these two values that lets us identify that the cumulative effect of a 10% increase in health expenditure in Africa increases LEBF by 0.0385.
-
+With this interaction term we are measuring the effect of HXPC specific to African countries. It might be meaningful to include this interaction term as it would allow us to determine how much stronger the effect of HXPC on LEBF is when the continent is Africa. 
+When we look at the interaction between HXPC and the continent of Africa we see that the regression coefficient is 0.32, which indicates that for Africa, a 10% increase in health expenditure leads to an additional 0.032 life years on top of the general effect of health expenditure which would be 0.0066 life years for ever 10% increase in health expenditure (regression coefficient of HXPC is 0.06629). It is the combination of these two values that lets us identify that the effect of a 10% increase in health expenditure in Africa increases LEBF by 0.0385 units (years). It must be noted that these regression coefficients were not statistically significant. 
 
 --------------------------------------------------------------------------------
 
@@ -310,8 +313,8 @@ se_corrections
 
 ```
 
-The results from question 9, and our intuition suggest that the standard errors in our specification are not homoscedastic. To check if it is accurate to use homoscedastic errors, a plot was created to look at the residual vs fitted values of our model that includes continents. We include continents to represent our theoretical assumptions outliine in our DAG, indicating that the variation of GDPPC and HXPC begins from country (continental) variation. In this residual plot, we can see that the data is not randomly spread around the 0 line and thus indicative that the use of homoscedastic standard errors may not be best practice. To confirm what we saw in the residual vs fitted plot, we conducted a Breusch-Pagan test to test for heteroskedasticity in our model. The results of our Breusch-Pagan test displayed a high test statistic and a p value < 0.05. Therefore, we reject the null hypothesis and can confirm that this regression model violates the homoscedasticity assumption.
-As a result of this plot and the Breusch-Pagan test, we implemented a correction for heteroskedasticity within our model. We did not implement a correction for autocorrelation as our data was not collected over multiple time periods so it would not make sense for autocorrelation to have an impact. When we used the heteroskedasticity-robust method for our standard errors we observed that the standard errors for log(HXPC) and log(GDPPC) increased from 1.45 and 1.50 to 2.06 and 2.28 respectively. The standard errors increasing indicates that our standard errors are becoming more accurate in describing th data. We can also see that within our data that the regression coefficient for log(GDPPC) is no longer significant after this method is employed. This result is expected because the larger standard error, 2.78, observed leads to a test statistic that is smaller. Smaller test statistics are associated with larger p-values thus the loss of significance of the regression coefficient for log(GDDPC) as a result of the heteroskedasticity-robust method employed makes sense. 
+The results from question 9, and our intuition suggest that the standard errors in our specification are not homoscedastic. To check if it is accurate to use homoscedastic errors, a plot was created to look at the residual vs fitted values of our model that includes continents. We include continents to represent our theoretical assumptions outlined in our DAG, indicating that the variation of GDPPC and HXPC begins from country (continental) variation. In this residual plot, we can see that the data is not randomly spread around the 0 line and thus indicative that the use of homoscedastic standard errors may not be best practice. To confirm what we saw in the residual vs fitted plot, we conducted a Breusch-Pagan test to test for heteroskedasticity in our model. The results of our Breusch-Pagan test displayed a high test statistic and a p value < 0.05. Therefore, we reject the null hypothesis and can confirm that this regression model violates the homoscedasticity assumption.
+As a result of this plot and the Breusch-Pagan test, we implemented a correction for heteroskedasticity within our model. We did not implement a correction for autocorrelation as our data was not collected over multiple time periods so it would not make sense for autocorrelation to have an impact. When we used the heteroskedasticity-robust method for our standard errors we observed that the standard errors for log(HXPC) and log(GDPPC) increased from 1.45 and 1.50 to 2.06 and 2.28 respectively. The standard errors increasing indicates that our standard errors are becoming more accurate in describing the data. We can also see that within our data that the regression coefficient for log(GDPPC) is no longer significant after this method is employed. This result is expected because the larger standard error, 2.78, observed leads to a test statistic that is smaller. Smaller test statistics are associated with larger p-values thus the loss of significance of the regression coefficient for log(GDDPC) as a result of the heteroskedasticity-robust method employed makes sense. 
 #i didnt talk about the other standard errors for the continents - idk if i should but get some funky things that idk how to explain like standard errors going down not up haha
 
 
