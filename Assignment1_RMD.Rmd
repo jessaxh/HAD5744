@@ -4,7 +4,7 @@ name: Husayn Jessa and Aidan Bodner
 date: '2022-10-05'
 output:
   word: default
-  '': default
+  
 ---
 
 ```{r setup, include=FALSE}
