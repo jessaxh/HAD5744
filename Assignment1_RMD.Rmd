@@ -119,7 +119,7 @@ summary_table <- summary_table[ ,-(1), drop = FALSE] #drop first column which co
 summary_table
 ```
 
-What raises concern with the outputs of the table is the large standard deviation and standard error for GDPPC and HXPC. This indicates that large spread of data around the mean and that the sample mean is not a good representation of the populaiton.
+What raises concern with the outputs of the table is the large standard deviation and standard error for GDPPC and HXPC. This indicates that large spread of data around the mean and that the sample mean is not a good representation of the population.
 
 --------------------------------------------------------------------------------
 
