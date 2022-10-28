@@ -11,10 +11,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r Packages}
-
+library(here)
+library(haven)
+library(tidyr)
 ```
 
 ```{r Data Cleaning}
+here()
+assign_data <- read_dta("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
+
+assign_data %>%
+  summarise_all(funs(sum(is.na(.))))
 
 ```
 
