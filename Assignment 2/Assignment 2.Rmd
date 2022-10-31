@@ -19,12 +19,13 @@ library(gtsummary)
 library(vtable)
 library(MatchIt)
 library(modelsummary)
+library(ggplot2)
 
 ```
 
 ```{r Data Cleaning}
 here()
-assign_data <- read_dta("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
+assign_data <- read_dta("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
 
 assign_data %>%
   summarise_all(funs(sum(is.na(.)))) # Returns no NAs, can probably remove
@@ -35,10 +36,11 @@ assign_data %>%
 vtable(assign_data)
 
 balance_table <- sumtable(data=assign_data,group="hdhp",
+                          out = "return",
                   vars=c("age", "sex", "famsize", "policyholder",
                   "num_hospitalizations", "num_chronicconditions", "num_scrips"),
                   digits=2, group.test=T)
-view(balance_table)
+
 
 install.packages("gtsummary")
 library(gtsummary)
@@ -89,10 +91,22 @@ msummary(question1c_reg)
 question1d_match <- matchit(hdhp ~ num_hospitalizations + age + sex + famsize + policyholder +
                   num_hospitalizations + num_chronicconditions + num_scrips,
                             data = assign_data,
-                            method = "nearest")
+                            method = "nearest",
+                  replace = TRUE,
+                  distance = "scaled_euclidean")
 summary(question1d_match)
 
+qd_match_data <-  match.data(question1d_match)
 
+matched_balance_table <- sumtable(data=qd_match_data,group="hdhp",
+                                  out = "return",
+                  vars=c("age", "sex", "famsize", "policyholder",
+                  "num_hospitalizations", "num_chronicconditions", "num_scrips"),
+                  digits=2, group.test=T)
+
+question1d_reg <- lm(pay ~ hdhp, data = qd_match_data)
+
+msummary(question1d_reg)
 
 ```
 
@@ -100,6 +114,35 @@ summary(question1d_match)
 #Part E
 
 ```{r}
+question1e_match <- matchit(hdhp ~ num_hospitalizations + age + sex + famsize + policyholder +
+                  num_hospitalizations + num_chronicconditions + num_scrips,
+                            data = assign_data,
+                            method = "nearest",
+                   distance='glm', # generalized linear model for propensity,
+                  replace = TRUE
+                  )
+summary(question1e_match)
+
+
+qe_psmmatch_data <- match.data(question1e_match)
+
+
+matched_psm_balance_table <- sumtable(data=qe_psmmatch_data,group="hdhp",
+                                  out = "return",
+                  vars=c("age", "sex", "famsize", "policyholder",
+                  "num_hospitalizations", "num_chronicconditions", "num_scrips"),
+                  digits=2, group.test=T)
+
+question1e_reg <- lm(pay ~ hdhp, data = qe_psmmatch_data)
+
+msummary(question1e_reg)
+
+hist(qe_psmmatch_data$distance) # Look at overall distribution of propensity scores
+
+ggplot(qe_psmmatch_data,aes(x=distance, fill = factor(pay))) + 
+  geom_histogram(binwidth = .05,color='black') + 
+  theme_minimal() +
+  labs(x="Propensity Score", y="Count",fill="pay")
 
 ```
 
