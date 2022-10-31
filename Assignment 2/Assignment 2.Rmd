@@ -15,51 +15,93 @@ library(here)
 library(haven)
 library(tidyr)
 library(dplyr)
+library(gtsummary)
+library(vtable)
+library(MatchIt)
+library(modelsummary)
+
 ```
 
 ```{r Data Cleaning}
 here()
-assign_data <- read_dta("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
+assign_data <- read_dta("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
 
 assign_data %>%
   summarise_all(funs(sum(is.na(.)))) # Returns no NAs, can probably remove
 
 ```
 #Part A
-``` {r question 1 }
+``` {r question 1a }
 vtable(assign_data)
 
 balance_table <- sumtable(data=assign_data,group="hdhp",
                   vars=c("age", "sex", "famsize", "policyholder",
                   "num_hospitalizations", "num_chronicconditions", "num_scrips"),
-                  digits=2,group.test=T)
+                  digits=2, group.test=T)
 view(balance_table)
 
 install.packages("gtsummary")
 library(gtsummary)
 
+tbl_summary(data = assign_data, by = "hdhp",
+            statistic = list(all_continuous() ~ "{mean} ({sd})"),
+            include = c("age", "sex", "famsize", "policyholder",
+                  "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
+  add_p(test = everything() ~ "t.test")
 
 ```
 
 
 #Part B
 
+```{r Question 1b}
+
+oneb_reg_naive <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
+                  num_hospitalizations + num_chronicconditions + num_scrips,
+                  data = assign_data)
+
+msummary(oneb_reg_naive)
+
+```
 
 
 
 #Part C
+```{r Question 1c}
 
+question1c_match <- matchit(hdhp ~ num_hospitalizations,
+                            data = assign_data,
+                            method = "exact")
+summary(question1c_match)
 
+regdata <-  match.data(question1c_match)
 
+question1c_reg <- lm(pay ~ hdhp, data = regdata)
+
+msummary(question1c_reg)
+```
 
 
 #Part D
 
+```{r Question 1d}
 
+question1d_match <- matchit(hdhp ~ num_hospitalizations + age + sex + famsize + policyholder +
+                  num_hospitalizations + num_chronicconditions + num_scrips,
+                            data = assign_data,
+                            method = "nearest")
+summary(question1d_match)
+
+
+
+```
 
 
 #Part E
 
+```{r}
+
+```
 
 
 
@@ -67,6 +109,9 @@ library(gtsummary)
 
 #Part F
 
+```{r}
+
+```
 
 
 
