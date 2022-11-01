@@ -31,23 +31,14 @@ assign_data %>%
   summarise_all(funs(sum(is.na(.)))) # Returns no NAs, can probably remove
 
 ```
-#Part A
-``` {r question 1a }
-vtable(assign_data)
 
+--------------------------------------------------------------------------------
 
-balance_table <- sumtable(data=assign_data,group="hdhp",
-                          out = "return",
-                  vars=c("age", "sex", "famsize", "policyholder",
-                  "num_hospitalizations", "num_chronicconditions", "num_scrips"),
-                  digits=2, group.test=T)
+``` {r Question 1a }
 
+assign_data$sex <- as.factor(assign_data$sex) # Convert sex from a character to a factor
+assign_data$sex <- as.numeric(assign_data$sex) # Convert sex from a character to a numeric
 
-install.packages("gtsummary")
-library(gtsummary)
-
-
-assign_data$sex <- as.factor(assign_data$sex)
 
 tbl_summary(data = assign_data, by = "hdhp",
             type = list(age ~ "continuous",
@@ -65,9 +56,13 @@ tbl_summary(data = assign_data, by = "hdhp",
   add_p(test = everything() ~ "t.test")
 
 ```
+From the p-values obtained from performing the t-test, we can see that there is no statistical differences between people in HDHP compared to other individuals in terms of age, if they are a policyholder, number of hospitalizations, and number of chronic conditions. However, the groups are not comparable in terms of sex, family size, and number of prescriptions.
 
+We might expect to see significant differences in the distribution of HDHP by family size as people with larger families may be incentivized to find innovative ways to save costs. In terms of the number of prescriptions, people who already need more prescriptions will likely enroll in a plan that allows them to save money on future prescriptions. In terms of sex, females are more likely to engage in care seeking or plan for a future medical event than males making it conceivable that they would be statistically likely to be in an HDHP.
 
-#Part B
+# Assumes that 2 is coded as female
+
+--------------------------------------------------------------------------------
 
 ```{r Question 1b}
 
