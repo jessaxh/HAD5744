@@ -66,17 +66,26 @@ We might expect to see significant differences in the distribution of HDHP by fa
 
 ```{r Question 1b}
 
-oneb_reg_naive <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
+one_b_reg_naive <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
                   num_hospitalizations + num_chronicconditions + num_scrips,
                   data = assign_data)
 
-msummary(oneb_reg_naive)
+msummary(one_b_reg_naive)
+
+model_view_1 <- lm(pay~sex, data = assign_data)
+model_view_2 <- lm(pay~famsize, data = assign_data)
+model_view_3 <- lm(pay~num_scrips, data = assign_data)
+
+plot(assign_data$sex, assign_data$pay)                       
+abline(coef(model_view_1), col="gray")
+
 
 ```
+The results from (a) suggest that for characteristics such as age, if they are a policyholder, number of hospitalizations, and number of chronic conditions, we can likely assume that since there is no statistical difference in the means that the fit of the regression is fairly good. However, for characteristics such as sex, family size, and number of prescriptions, there are statistical differences in the means indicating that the regression line likely is not able to fit the observations as well. The differences in these groups shown in (a) show more females than males, higher means family size, and higher number of hospitalizations, indicating that there is likely an overestimate of the true causal effect when comparing people enrolled in HDHP compared to those not enrolled.
 
 
+--------------------------------------------------------------------------------
 
-#Part C
 ```{r Question 1c}
 
 question1c_match <- matchit(hdhp ~ num_hospitalizations,
@@ -92,7 +101,7 @@ msummary(question1c_reg)
 ```
 
 
-#Part D
+--------------------------------------------------------------------------------
 
 ```{r Question 1d}
 
@@ -119,9 +128,9 @@ msummary(question1d_reg)
 ```
 
 
-#Part E
+--------------------------------------------------------------------------------
 
-```{r}
+```{r Question 1e}
 question1e_match <- matchit(hdhp ~ num_hospitalizations + age + sex + famsize + policyholder +
                   num_hospitalizations + num_chronicconditions + num_scrips,
                             data = assign_data,
@@ -156,7 +165,7 @@ ggplot(qe_psmmatch_data,aes(x=distance, fill = factor(pay))) +
 
 
 
-#Part F
+--------------------------------------------------------------------------------
 
 ```{r Question 1f}
 
@@ -242,16 +251,17 @@ msummary(question1f_five_reg)
 ```
 
 
-
-
-
+--------------------------------------------------------------------------------
 #Part G
 
 
 
 
 
+
+--------------------------------------------------------------------------------
 #Part H
+
 
 
 
