@@ -25,7 +25,7 @@ library(ggplot2)
 
 ```{r Data Cleaning}
 here()
-assign_data <- read_dta("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
+assign_data <- read_dta("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
 
 assign_data %>%
   summarise_all(funs(sum(is.na(.)))) # Returns no NAs, can probably remove
@@ -80,13 +80,10 @@ plot(assign_data$sex, assign_data$pay)
 abline(coef(model_view_1), col="gray")
 
 ```
-The results from (a) suggest that for characteristics such as age, if they are a policyholder, number of hospitalizations, and number of chronic conditions, we can likely assume that since there is no statistical difference in the means, that the fit of the regression is fairly good. However, for characteristics such as sex, family size, and number of prescriptions, there are statistical differences in the means indicating that the regression line likely is not able to fit the observations as well. The differences in these groups shown in (a) show more females than males, higher means family size, and higher number of prescriptions for those who enroll in high deductibale health plans (HDHPs). Thus when looking at the reported regression coefficients they do not accurately show the true effect these variables have on the outcome variable as there is a statistically significant difference within these variables for those who are in a HDHP. 
+The results from (a) suggest that for characteristics such as age, if they are a policyholder, number of hospitalizations, and number of chronic conditions, we can likely assume that since there is no statistical difference in the means, that the fit of the regression is fairly good. However, for characteristics such as sex, family size, and number of prescriptions, there are statistical differences in the means indicating that the regression line likely is not able to fit the observations as well. The differences in these groups shown in (a) show more females than males, higher means family size, more likely to be a policyholder, and higher number of prescriptions for those who enroll in high deductibale health plans (HDHPs). Thus when looking at the reported regression coefficients they do not accurately show the true effect these variables have on the outcome variable as there is a statistically significant difference within these variables for those who are in a HDHP. 
 
-#There is an understimated effect for these coefficients as a result because we know that people in HDHPs have statistically significant differences with respect to these variables and we expect for people enrolled in HDHPs to spend more thus these variables underestimate the true causal effect. 
+There is an underestimated effect for these coefficients as a result, as we expect people enrolled in HDHPs to spend more as they are more likely to engage in healthcare seeking due to a higher likelihood of being female, having higher average family sizes, being a policyholder, and having higher average number of prescriptions. Thus these variables underestimate the true causal effect. 
 
-Thus, indicating that there is likely an overestimate of the true causal effect when comparing people enrolled in HDHP compared to those not enrolled.
-
-#we can discuss whether we think it overestimates or underestimates
 --------------------------------------------------------------------------------
 #for question 1c and beyond i used the weights for the regressions he used in class, i think were supposed to and it makes the regression coefficients similar in 1d and 1e which makes more sense as they both match using all variables and their results thus should be similar
 
@@ -125,19 +122,19 @@ question1d_match <- matchit(hdhp ~ num_hospitalizations + age + sex + famsize + 
                             data = assign_data,
                             method = "nearest",
                   replace = TRUE,
-                  distance = "scaled_euclidean")
+                  distance = "scaled_euclidean",
+                  verbose = TRUE)
 summary(question1d_match)
 
-qd_match_data <-  match.data(question1d_match)
+q_d_match_data <-  match.data(question1d_match)
 
-matched_balance_table <- sumtable(data=qd_match_data,group="hdhp",
-                                  out = "return",
-                  vars=c("age", "sex", "famsize", "policyholder",
-                  "num_hospitalizations", "num_chronicconditions", "num_scrips"),
-                  digits=2, group.test=T)
+write.csv(q_d_match_data, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
 
-#try to use balance table for question 1 a to 1d however not working
-matched_balance_table <- tbl_summary(data = question1d_match, by = "hdhp",
+
+q_d_match_data$sex <- as.factor(q_d_match_data$sex) # Convert sex from a character to a factor
+q_d_match_data$sex <- as.numeric(q_d_match_data$sex) # Convert sex from a character to a numeric
+
+matched_balance_table <- tbl_summary(data = q_d_match_data, by = "hdhp",
                         type = list(age ~ "continuous",
                         famsize ~ "continuous",
                         policyholder ~ "categorical",
@@ -152,16 +149,15 @@ matched_balance_table <- tbl_summary(data = question1d_match, by = "hdhp",
                   "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
   add_p(test = everything() ~ "t.test")
 
-question1d_reg <- lm(pay ~ hdhp, data = qd_match_data, weights = weights)
+question1d_reg <- lm(pay ~ hdhp, data = q_d_match_data, weights = weights)
 
 msummary(question1d_reg)
 
 ```
-Looking at the number of observations included in the balance table we can see that there has been a large reduction in the number of people included in our comparison group. It can be observed that the comparison group (non-HDHP) there are 2534 people who have been matched. When all covariates were included and nearest neighbour matching occured, 224,983 people in the control group were unmatched with the treated group. In comparison to the results of c, only 88 people in the control group were unmatched. This shows that when all covariates are matched on and all the variation associated with these covariates is removed the amount of people who look like the HDHP group is a lot smaller. The regression results for this newly matched sample brings us closer to the true causal effect of HDHP on spending. After this more comprehensive match in comparison that of 1c, we can see the regression coefficient for HDHP has increased to 4030.98 and thus shows that being enrolled in HDHP has a much larger effect on spending than earlier noted. 
+Looking at the number of observations included in the balance table we can see that there has been a large reduction in the number of people included in our comparison group. It can be observed that the comparison group (non-HDHP) there are 5189 people who have been matched. When all covariates were included and nearest neighbour matching occurred, 224,983 people in the control group were unmatched with the treated group (### Could just say in the sample since its 224,983 across both groups that weren't matched ###). In comparison to the results of (c), only 88 people in the control group were unmatched. This shows that when all covariates are matched on and all the variation associated with these covariates is removed the amount of people who look like the HDHP group is a lot smaller. The regression results for this newly matched sample brings us closer to the true causal effect of HDHP on spending. After this more comprehensive match in comparison that of (c), we can see the regression coefficient for HDHP has increased to 4030.98, thus showing that being enrolled in HDHP has a much larger effect on spending than earlier noted. 
 
 #used the balance table with the f test but we can change the values once we figure out the t test table here
-When looking at the balance table  we can see that the mean age difference between the two groups is 0.28. the difference in mean of sex is 0.01. The difference in mean family size is 0.03, the difference in mean of policyholder is 0.01, the difference in mean of num_hospitilizations is 0.02, the difference in mean for num_chronicconditions is 0.01 and the difference in num_scrips is 0.06. As we can see there is now very little difference between the two groups and thus we know that the variation for these variables has been removed
-#we will prob have to talk about significance of these differences too when we do t tests
+When looking at the balance table  we can see that the mean age difference between the two groups is 0.28. the difference in mean of sex is 0.01. The difference in mean family size is 0.03, the difference in mean of policyholder is 0.01, the difference in mean of num_hospitilizations is 0.02, the difference in mean for num_chronicconditions is 0.01 and the difference in num_scrips is 0.06. As we can see there is now very little difference between the two groups and thus we know that the variation for these variables has been removed. Moreover, looking at the p-value for the t-tests, we can further see that there is no statistical difference for any of the covariates.
 
 --------------------------------------------------------------------------------
 
