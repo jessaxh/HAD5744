@@ -79,12 +79,16 @@ model_view_3 <- lm(pay~num_scrips, data = assign_data)
 plot(assign_data$sex, assign_data$pay)                       
 abline(coef(model_view_1), col="gray")
 
-
 ```
-The results from (a) suggest that for characteristics such as age, if they are a policyholder, number of hospitalizations, and number of chronic conditions, we can likely assume that since there is no statistical difference in the means that the fit of the regression is fairly good. However, for characteristics such as sex, family size, and number of prescriptions, there are statistical differences in the means indicating that the regression line likely is not able to fit the observations as well. The differences in these groups shown in (a) show more females than males, higher means family size, and higher number of hospitalizations, indicating that there is likely an overestimate of the true causal effect when comparing people enrolled in HDHP compared to those not enrolled.
+The results from (a) suggest that for characteristics such as age, if they are a policyholder, number of hospitalizations, and number of chronic conditions, we can likely assume that since there is no statistical difference in the means, that the fit of the regression is fairly good. However, for characteristics such as sex, family size, and number of prescriptions, there are statistical differences in the means indicating that the regression line likely is not able to fit the observations as well. The differences in these groups shown in (a) show more females than males, higher means family size, and higher number of prescriptions for those who enroll in high deductibale health plans (HDHPs). Thus when looking at the reported regression coefficients they do not accurately show the true effect these variables have on the outcome variable as there is a statistically significant difference within these variables for those who are in a HDHP. 
 
+#There is an understimated effect for these coefficients as a result because we know that people in HDHPs have statistically significant differences with respect to these variables and we expect for people enrolled in HDHPs to spend more thus these variables underestimate the true causal effect. 
 
+Thus, indicating that there is likely an overestimate of the true causal effect when comparing people enrolled in HDHP compared to those not enrolled.
+
+#we can discuss whether we think it overestimates or underestimates
 --------------------------------------------------------------------------------
+#for question 1c and beyond i used the weights for the regressions he used in class, i think were supposed to and it makes the regression coefficients similar in 1d and 1e which makes more sense as they both match using all variables and their results thus should be similar
 
 ```{r Question 1c}
 
@@ -95,11 +99,22 @@ summary(question1c_match)
 
 regdata <-  match.data(question1c_match)
 
-question1c_reg <- lm(pay ~ hdhp, data = regdata)
+question1c_unmatched_reg <- lm(pay ~ hdhp, data = assign_data)
 
-msummary(question1c_reg)
+question1c_reg <- lm(pay ~ hdhp, data = regdata, weights = weights)
+
+msummary(list(question1c_unmatched_reg,question1c_reg))
+
+
+
+onlyhospitalizations_matched_balance_table <- sumtable(data=regdata,group="hdhp",
+                                  out = "return",
+                  vars=c("num_hospitalizations"),
+                  digits=2, group.test=T)
 ```
-
+The back door being closed by matching the HDHP group with the non-HDHP group is the back door associated with inpatient hospitalizations. Through matching both groups on the # of hospitalizations, it is possible to say that both groups are similar with regards to this variable. This means that between the two groups there is no variations with regards to hospitalizations and as a result  we can more accurately depict the relationship between HDHP and spending. With regards to the quality of our match, we can note that there was not many members of the control group that went unmatched (88 people) and there were 0 people discarded from the match. As we noted from 1a. their is no significant differences between the comparison groups and thus as expected there were many matches for the treatment group. The quality of this match is poor because most of the control matched to the treatment group and thus the following regression does not provide any new information prior to the match. 
+#i think its poor but we can discuss
+The regression results show that after matching on inpatient hospitalizations occurred, the regression coefficient of HDHP was 1770.65. Thus, for individuals who are enrolled in the HDHP they had an increased spending of $1770.65 in comparison to those who were not enrolled in an HDHP. In comparison to a regression that looks at the effects of HDHP on spending before matching for inpatient hospitilizations we can see that after matching the effect of HDHP is higher. Prior to matching the regression coefficient was 658.71 which is much lower than 1770.65. 
 
 --------------------------------------------------------------------------------
 
@@ -137,12 +152,16 @@ matched_balance_table <- tbl_summary(data = question1d_match, by = "hdhp",
                   "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
   add_p(test = everything() ~ "t.test")
 
-question1d_reg <- lm(pay ~ hdhp, data = qd_match_data)
+question1d_reg <- lm(pay ~ hdhp, data = qd_match_data, weights = weights)
 
 msummary(question1d_reg)
 
 ```
+Looking at the number of observations included in the balance table we can see that there has been a large reduction in the number of people included in our comparison group. It can be observed that the comparison group (non-HDHP) there are 2534 people who have been matched. When all covariates were included and nearest neighbour matching occured, 224,983 people in the control group were unmatched with the treated group. In comparison to the results of c, only 88 people in the control group were unmatched. This shows that when all covariates are matched on and all the variation associated with these covariates is removed the amount of people who look like the HDHP group is a lot smaller. The regression results for this newly matched sample brings us closer to the true causal effect of HDHP on spending. After this more comprehensive match in comparison that of 1c, we can see the regression coefficient for HDHP has increased to 4030.98 and thus shows that being enrolled in HDHP has a much larger effect on spending than earlier noted. 
 
+#used the balance table with the f test but we can change the values once we figure out the t test table here
+When looking at the balance table  we can see that the mean age difference between the two groups is 0.28. the difference in mean of sex is 0.01. The difference in mean family size is 0.03, the difference in mean of policyholder is 0.01, the difference in mean of num_hospitilizations is 0.02, the difference in mean for num_chronicconditions is 0.01 and the difference in num_scrips is 0.06. As we can see there is now very little difference between the two groups and thus we know that the variation for these variables has been removed
+#we will prob have to talk about significance of these differences too when we do t tests
 
 --------------------------------------------------------------------------------
 
@@ -166,7 +185,7 @@ matched_psm_balance_table <- sumtable(data=qe_psmmatch_data,group="hdhp",
                   "num_hospitalizations", "num_chronicconditions", "num_scrips"),
                   digits=2, group.test=T)
 
-question1e_reg <- lm(pay ~ hdhp, data = qe_psmmatch_data)
+question1e_reg <- lm(pay ~ hdhp, data = qe_psmmatch_data, weights = 1/distance)
 
 msummary(question1e_reg)
 
@@ -178,9 +197,13 @@ ggplot(qe_psmmatch_data,aes(x=distance, fill = factor(pay))) +
   labs(x="Propensity Score", y="Count",fill="pay")
 
 ```
+With a propensity score approach we see similar results with regards to how many members of our control group got matched to the treatment group, 2522 members. Like the nearest neighbour approach in question d, the match results using the propensity approach are much better than that of 1c. 
+Under this approach, the HDHP regression coefficient is now 4518.85 which is close to the regression coefficient of nearest neighbour (4030.98) but a bit higher. 
 
+In the balance table we can see that there is a 0.68 difference in the mean age, a 0.01 difference in the mean sex, no difference between the mean famsize or mean policyholder, there is a 0.06 difference in the mean num_hospitilizations, a 0.05 difference in the num_chronnicconditions, and a 0.21 difference in the mean num_scrips. The results are similar to that of nearest neighbour matching however we can see that the differences for mean age and mean num_scrips have increased in comparison to those for nearest neighbour. 
+#as with 1d this is using the balance table that shows the f stat, also will prob have to talk about if the diff is statisically significant once have t test 
 
-
+#need to still answer if psm assumptions are still valid -- ggplot still not loading with reasonable timing - sad
 --------------------------------------------------------------------------------
 
 ```{r Question 1f}
@@ -251,11 +274,11 @@ match_data_three <- match.data(question1f_three)
 match_data_four <- match.data(question1f_four)
 match_data_five <- match.data(question1f_five)
 
-question1f_one_reg <- lm(pay ~ hdhp, data = match_data_one)
-question1f_two_reg <- lm(pay ~ hdhp, data = match_data_two)
-question1f_three_reg <- lm(pay ~ hdhp, data = match_data_three)
-question1f_four_reg <- lm(pay ~ hdhp, data = match_data_four)
-question1f_five_reg <- lm(pay ~ hdhp, data = match_data_five)
+question1f_one_reg <- lm(pay ~ hdhp, data = match_data_one, weights = weights)
+question1f_two_reg <- lm(pay ~ hdhp, data = match_data_two, weights = weights)
+question1f_three_reg <- lm(pay ~ hdhp, data = match_data_three, weights = weights)
+question1f_four_reg <- lm(pay ~ hdhp, data = match_data_four, weights = weights)
+question1f_five_reg <- lm(pay ~ hdhp, data = match_data_five, weights = weights)
 
 msummary(question1f_one_reg)
 msummary(question1f_two_reg)
