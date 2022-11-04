@@ -197,7 +197,6 @@ q_e_matched_table <- tbl_summary(data = qe_psmmatch_data, by = "hdhp",
                   "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
   add_p(test = everything() ~ "t.test")
 
-tbl_merge(tbls = list(q_e_matched_table, unmatched_table)) # we can get rid of this if we want 
 
 question1e_reg <- lm(pay ~ hdhp, data = qe_psmmatch_data, weights = 1/distance)
 
