@@ -40,7 +40,7 @@ assign_data$sex <- as.factor(assign_data$sex) # Convert sex from a character to 
 assign_data$sex <- as.numeric(assign_data$sex) # Convert sex from a character to a numeric
 
 
-tbl_summary(data = assign_data, by = "hdhp",
+unmatched_table <- tbl_summary(data = assign_data, by = "hdhp",
             type = list(age ~ "continuous",
                         famsize ~ "continuous",
                         policyholder ~ "categorical",
@@ -134,7 +134,7 @@ write.csv(q_d_match_data, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignmen
 q_d_match_data$sex <- as.factor(q_d_match_data$sex) # Convert sex from a character to a factor
 q_d_match_data$sex <- as.numeric(q_d_match_data$sex) # Convert sex from a character to a numeric
 
-q_d_matched_balance_table <- tbl_summary(data = q_d_match_data, by = "hdhp",
+q_d_matched_table <- tbl_summary(data = q_d_match_data, by = "hdhp",
                         type = list(age ~ "continuous",
                         famsize ~ "continuous",
                         policyholder ~ "categorical",
@@ -148,6 +148,8 @@ q_d_matched_balance_table <- tbl_summary(data = q_d_match_data, by = "hdhp",
             include = c("age", "sex", "famsize", "policyholder",
                   "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
   add_p(test = everything() ~ "t.test")
+
+
 
 question1d_reg <- lm(pay ~ hdhp, data = q_d_match_data, weights = weights)
 
@@ -174,11 +176,13 @@ summary(question1e_match)
 
 qe_psmmatch_data <- match.data(question1e_match)
 write.csv(qe_psmmatch_data, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv")
+qe_psmmatch_data <- read.csv("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv")
 
 qe_psmmatch_data$sex <- as.factor(qe_psmmatch_data$sex) # Convert sex from a character to a factor
 qe_psmmatch_data$sex <- as.numeric(qe_psmmatch_data$sex) # Convert sex from a character to a numeric
 
-q_e_matched_balance_table <- tbl_summary(data = qe_psmmatch_data, by = "hdhp",
+
+q_e_matched_table <- tbl_summary(data = qe_psmmatch_data, by = "hdhp",
                         type = list(age ~ "continuous",
                         famsize ~ "continuous",
                         policyholder ~ "categorical",
@@ -193,16 +197,20 @@ q_e_matched_balance_table <- tbl_summary(data = qe_psmmatch_data, by = "hdhp",
                   "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
   add_p(test = everything() ~ "t.test")
 
+tbl_merge(tbls = list(q_e_matched_table, unmatched_table)) # we can get rid of this if we want 
+
 question1e_reg <- lm(pay ~ hdhp, data = qe_psmmatch_data, weights = 1/distance)
 
 msummary(question1e_reg)
 
 hist(qe_psmmatch_data$distance) # Look at overall distribution of propensity scores
 
+
+
 ggplot(qe_psmmatch_data, aes(x=distance, fill = pay)) + 
-  geom_histogram(binwidth = .05,color='black') + 
+  geom_histogram(color='black') + 
   theme_minimal() +
-  labs(x="Propensity Score", y="Count",fill="pay")
+  labs(x="Propensity Score", y="Density",fill="pay")
 
 ```
 With a propensity score approach we see similar results with regards to how many members of our control group got matched to the treatment group, 2522 members. Like the nearest neighbour approach in question (d), the match results using the propensity approach are much better than that of (c). 
@@ -210,7 +218,14 @@ Under this approach, the HDHP regression coefficient is now 4518.85 which is clo
 
 In the balance table we can see that there is a 0.68 difference in the mean age, a 0.01 difference in the mean sex, no difference between the mean famsize or mean policyholder, there is a 0.06 difference in the mean num_hospitilizations, a 0.05 difference in the num_chronnicconditions, and a 0.21 difference in the mean num_scrips. The results are similar to that of nearest neighbour matching however we can see that the differences for mean age and mean num_scrips have increased in comparison to those for nearest neighbour. As with the nearest neighbour matching, there are no statistical differences for any of the covariates apart from the num_hospitalizations. This indicates that while the propensity score approach is able to attain similar results to the number of participants matched, it is not able to do so in as a sophisticated a manner as nearest neighbour matching.
 
-The PSM assumptions are valid as we can see that the propensity socres are evenly distributed across all payment spending.
+Conditional independence assumption. This assumption is met because ... # I have no brain cells to think about backdoors/DAGs right no LOL
+
+Common support assumption. No values are centred around 0 or 1 which is good. To meet the assumption of common support, there must be substantial overlap in the distribution of the propensity score. This is somewhat met as the propensity score distribution has a slight right tail indicating that there is some overlap amongst the propensity score. Moreover, 95% of the treated observations were able to find a match indicating that common support is likely met.
+
+Balance assumption. Looking at the balance table there is sufficient balance given that there are no statistical differences between any of the covariates being matched on apart from the number of prescriptions. This indicates that the balance assumption is mainly met.
+
+
+The PSM assumptions are mainly met.
 
 --------------------------------------------------------------------------------
 
