@@ -25,7 +25,7 @@ library(ggplot2)
 
 ```{r Data Cleaning}
 here()
-assign_data <- read_dta("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
+assign_data <- read_dta("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
 
 assign_data %>%
   summarise_all(funs(sum(is.na(.)))) # Returns no NAs, can probably remove
@@ -83,9 +83,9 @@ abline(coef(model_view_1), col="gray")
 The results from (a) suggest that for characteristics such as age, if they are a policyholder, number of hospitalizations, and number of chronic conditions, we can likely assume that since there is no statistical difference in the means, that the fit of the regression is fairly good. However, for characteristics such as sex, family size, and number of prescriptions, there are statistical differences in the means indicating that the regression line likely is not able to fit the observations as well. The differences in these groups shown in (a) show more females than males, higher means family size, more likely to be a policyholder, and higher number of prescriptions for those who enroll in high deductibale health plans (HDHPs). Thus when looking at the reported regression coefficients they do not accurately show the true effect these variables have on the outcome variable as there is a statistically significant difference within these variables for those who are in a HDHP. 
 
 There is an underestimated effect for these coefficients as a result, as we expect people enrolled in HDHPs to spend more as they are more likely to engage in healthcare seeking due to a higher likelihood of being female, having higher average family sizes, being a policyholder, and having higher average number of prescriptions. Thus these variables underestimate the true causal effect. 
+#we expect that a HDHP exposes these participants to higher fees and thus through higher deductibles these groups will be expected to spend more on health services than those who are not enrolled in these forms of insurance plans. 
 
 --------------------------------------------------------------------------------
-#for question 1c and beyond i used the weights for the regressions he used in class, i think were supposed to and it makes the regression coefficients similar in 1d and 1e which makes more sense as they both match using all variables and their results thus should be similar
 
 ```{r Question 1c}
 
@@ -110,7 +110,6 @@ onlyhospitalizations_matched_balance_table <- sumtable(data=regdata,group="hdhp"
                   digits=2, group.test=T)
 ```
 The back door being closed by matching the HDHP group with the non-HDHP group is the back door associated with inpatient hospitalizations. Through matching both groups on the # of hospitalizations, it is possible to say that both groups are similar with regards to this variable. This means that between the two groups there is no variations with regards to hospitalizations and as a result  we can more accurately depict the relationship between HDHP and spending. With regards to the quality of our match, we can note that there was not many members of the control group that went unmatched (88 people) and there were 0 people discarded from the match. As we noted from 1a. their is no significant differences between the comparison groups and thus as expected there were many matches for the treatment group. The quality of this match is poor because most of the control matched to the treatment group and thus the following regression does not provide any new information prior to the match. 
-#i think its poor but we can discuss
 The regression results show that after matching on inpatient hospitalizations occurred, the regression coefficient of HDHP was 1770.65. Thus, for individuals who are enrolled in the HDHP they had an increased spending of $1770.65 in comparison to those who were not enrolled in an HDHP. In comparison to a regression that looks at the effects of HDHP on spending before matching for inpatient hospitilizations we can see that after matching the effect of HDHP is higher. Prior to matching the regression coefficient was 658.71 which is much lower than 1770.65. 
 
 --------------------------------------------------------------------------------
@@ -158,7 +157,6 @@ msummary(question1d_reg)
 ```
 Looking at the number of observations included in the balance table we can see that there has been a large reduction in the number of people included in our comparison group. It can be observed that the comparison group (non-HDHP) there are 5189 people who have been matched. When all covariates were included and nearest neighbour matching occurred, 224,983 people in the control group were unmatched with the treated group (### Could just say in the sample since its 224,983 across both groups that weren't matched ###). In comparison to the results of (c), only 88 people in the control group were unmatched. This shows that when all covariates are matched on and all the variation associated with these covariates is removed the amount of people who look like the HDHP group is a lot smaller. The regression results for this newly matched sample brings us closer to the true causal effect of HDHP on spending. After this more comprehensive match in comparison that of (c), we can see the regression coefficient for HDHP has increased to 4030.98, thus showing that being enrolled in HDHP has a much larger effect on spending than earlier noted. 
 
-#used the balance table with the f test but we can change the values once we figure out the t test table here
 When looking at the balance table  we can see that the mean age difference between the two groups is 0.28. the difference in mean of sex is 0.01. The difference in mean family size is 0.03, the difference in mean of policyholder is 0.01, the difference in mean of num_hospitilizations is 0.02, the difference in mean for num_chronicconditions is 0.01 and the difference in num_scrips is 0.06. As we can see there is now very little difference between the two groups and thus we know that the variation for these variables has been removed. Moreover, looking at the p-value for the t-tests, we can further see that there is no statistical difference for any of the covariates.
 
 --------------------------------------------------------------------------------
@@ -217,7 +215,9 @@ Under this approach, the HDHP regression coefficient is now 4518.85 which is clo
 
 In the balance table we can see that there is a 0.68 difference in the mean age, a 0.01 difference in the mean sex, no difference between the mean famsize or mean policyholder, there is a 0.06 difference in the mean num_hospitilizations, a 0.05 difference in the num_chronnicconditions, and a 0.21 difference in the mean num_scrips. The results are similar to that of nearest neighbour matching however we can see that the differences for mean age and mean num_scrips have increased in comparison to those for nearest neighbour. As with the nearest neighbour matching, there are no statistical differences for any of the covariates apart from the num_hospitalizations. This indicates that while the propensity score approach is able to attain similar results to the number of participants matched, it is not able to do so in as a sophisticated a manner as nearest neighbour matching.
 
-Conditional independence assumption. This assumption is met because ... # I have no brain cells to think about backdoors/DAGs right no LOL
+Conditional independence assumption. The variables chosen to match our data on is considered to be sufficient to meet this assumption because it is of our belief that these variables close most of the backdoors that are associated with the HDHP and spending relationship. There may be open backdoors associated with geographic location and or education status which may also influence who enrols in an HDHP and who does not. Data for these variables however were not provided and as a result teh backdoors for these variables may still exist. So, it can be assummed that most of the backdoors have been closed based on the matched variables we have however there may be some backdoors left open due to a lack of data to match on. 
+
+#i think this explains CIA haha 
 
 Common support assumption. No values are centred around 0 or 1 which is good. To meet the assumption of common support, there must be substantial overlap in the distribution of the propensity score. This is somewhat met as the propensity score distribution has a slight right tail indicating that there is some overlap amongst the propensity score. Moreover, 95% of the treated observations were able to find a match indicating that common support is likely met.
 
@@ -286,15 +286,107 @@ question1f_five <- matchit(hdhp ~ num_hospitalizations + age + sex + famsize + p
 summary(question1f_five)
 
 
-# ADD IN BALANCE TABLE AFTER THEY ARE COMPLETED HOW TO
-
-
-
 match_data_one <- match.data(question1f_one)
 match_data_two <- match.data(question1f_two)
 match_data_three <- match.data(question1f_three)
 match_data_four <- match.data(question1f_four)
 match_data_five <- match.data(question1f_five)
+
+
+match_data_one$sex <- as.factor(match_data_one$sex) # Convert sex from a character to a factor
+match_data_one$sex <- as.numeric(match_data_one$sex) # Convert sex from a character to a numeric
+
+match_data_two$sex <- as.factor(match_data_two$sex) # Convert sex from a character to a factor
+match_data_two$sex <- as.numeric(match_data_two$sex) # Convert sex from a character to a numeric
+
+match_data_three$sex <- as.factor(match_data_three$sex) # Convert sex from a character to a factor
+match_data_three$sex <- as.numeric(match_data_three$sex) # Convert sex from a character to a numeric
+
+match_data_four$sex <- as.factor(match_data_four$sex) # Convert sex from a character to a factor
+match_data_four$sex <- as.numeric(match_data_four$sex) # Convert sex from a character to a numeric
+
+match_data_five$sex <- as.factor(match_data_five$sex) # Convert sex from a character to a factor
+match_data_five$sex <- as.numeric(match_data_five$sex) # Convert sex from a character to a numeric
+
+
+#Balance Tables for each caliper size 
+
+q_f_1_matched_table <- tbl_summary(data = match_data_one, by = "hdhp",
+                        type = list(age ~ "continuous",
+                        famsize ~ "continuous",
+                        policyholder ~ "categorical",
+                        num_hospitalizations ~ "continuous",
+                        num_chronicconditions ~ "continuous",
+                        num_scrips ~ "continuous",
+                        sex ~ "categorical"),
+            statistic = list(all_continuous() ~ "{mean} ({sd})",
+                             all_categorical() ~ "{n} ({p}%)"),
+            digits = everything() ~ 2,
+            include = c("age", "sex", "famsize", "policyholder",
+                  "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
+  add_p(test = everything() ~ "t.test")
+
+q_f_2_matched_table <- tbl_summary(data = match_data_two, by = "hdhp",
+                        type = list(age ~ "continuous",
+                        famsize ~ "continuous",
+                        policyholder ~ "categorical",
+                        num_hospitalizations ~ "continuous",
+                        num_chronicconditions ~ "continuous",
+                        num_scrips ~ "continuous",
+                        sex ~ "categorical"),
+            statistic = list(all_continuous() ~ "{mean} ({sd})",
+                             all_categorical() ~ "{n} ({p}%)"),
+            digits = everything() ~ 2,
+            include = c("age", "sex", "famsize", "policyholder",
+                  "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
+  add_p(test = everything() ~ "t.test")
+
+q_f_3_matched_table <- tbl_summary(data = match_data_three, by = "hdhp",
+                        type = list(age ~ "continuous",
+                        famsize ~ "continuous",
+                        policyholder ~ "categorical",
+                        num_hospitalizations ~ "continuous",
+                        num_chronicconditions ~ "continuous",
+                        num_scrips ~ "continuous",
+                        sex ~ "categorical"),
+            statistic = list(all_continuous() ~ "{mean} ({sd})",
+                             all_categorical() ~ "{n} ({p}%)"),
+            digits = everything() ~ 2,
+            include = c("age", "sex", "famsize", "policyholder",
+                  "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
+  add_p(test = everything() ~ "t.test")
+
+q_f_4_matched_table <- tbl_summary(data = match_data_four, by = "hdhp",
+                        type = list(age ~ "continuous",
+                        famsize ~ "continuous",
+                        policyholder ~ "categorical",
+                        num_hospitalizations ~ "continuous",
+                        num_chronicconditions ~ "continuous",
+                        num_scrips ~ "continuous",
+                        sex ~ "categorical"),
+            statistic = list(all_continuous() ~ "{mean} ({sd})",
+                             all_categorical() ~ "{n} ({p}%)"),
+            digits = everything() ~ 2,
+            include = c("age", "sex", "famsize", "policyholder",
+                  "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
+  add_p(test = everything() ~ "t.test")
+
+q_f_5_matched_table <- tbl_summary(data = match_data_five, by = "hdhp",
+                        type = list(age ~ "continuous",
+                        famsize ~ "continuous",
+                        policyholder ~ "categorical",
+                        num_hospitalizations ~ "continuous",
+                        num_chronicconditions ~ "continuous",
+                        num_scrips ~ "continuous",
+                        sex ~ "categorical"),
+            statistic = list(all_continuous() ~ "{mean} ({sd})",
+                             all_categorical() ~ "{n} ({p}%)"),
+            digits = everything() ~ 2,
+            include = c("age", "sex", "famsize", "policyholder",
+                  "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
+  add_p(test = everything() ~ "t.test")
+
+
 
 question1f_one_reg <- lm(pay ~ hdhp, data = match_data_one, weights = weights)
 question1f_two_reg <- lm(pay ~ hdhp, data = match_data_two, weights = weights)
