@@ -18,7 +18,6 @@ library(gtsummary) # For some balance tables
 library(MatchIt) # For matching
 library(modelsummary) # For some balance tables
 library(ggplot2) # To create plots
-library(broom)
 
 ```
 
