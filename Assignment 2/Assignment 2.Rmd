@@ -11,21 +11,19 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```{r Packages}
-library(here)
-library(haven)
-library(tidyr)
-library(dplyr)
-library(gtsummary)
-library(vtable)
-library(MatchIt)
-library(modelsummary)
-library(ggplot2)
+library(here) # To set directory
+library(haven) # To import data
+library(dplyr) # For piping
+library(gtsummary) # For some balance tables
+library(MatchIt) # For matching
+library(modelsummary) # For some balance tables
+library(ggplot2) # To create plots
 
 ```
 
 ```{r Data Cleaning}
 here()
-assign_data <- read_dta("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
+assign_data <- read_dta("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
 
 assign_data %>%
   summarise_all(funs(sum(is.na(.)))) # Returns no NAs, can probably remove
@@ -96,11 +94,17 @@ summary(question1c_match)
 
 regdata <-  match.data(question1c_match)
 
+write.csv(regdata, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
+
+regdata <- read.csv("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
+
 question1c_unmatched_reg <- lm(pay ~ hdhp, data = assign_data)
 
 question1c_reg <- lm(pay ~ hdhp, data = regdata, weights = weights)
 
-msummary(list(question1c_unmatched_reg,question1c_reg))
+msummary(list("Unmatched Regression" = question1c_unmatched_reg, 
+              "Exact Matching Regression" = question1c_reg),
+         )
 
 
 
@@ -128,7 +132,7 @@ summary(question1d_match)
 q_d_match_data <-  match.data(question1d_match)
 
 write.csv(q_d_match_data, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
-
+q_d_match_data <- read.csv("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
 
 q_d_match_data$sex <- as.factor(q_d_match_data$sex) # Convert sex from a character to a factor
 q_d_match_data$sex <- as.numeric(q_d_match_data$sex) # Convert sex from a character to a numeric
@@ -204,10 +208,10 @@ hist(qe_psmmatch_data$distance) # Look at overall distribution of propensity sco
 
 
 
-ggplot(qe_psmmatch_data, aes(x=distance, fill = pay)) + 
+ggplot(qe_psmmatch_data, aes(x=distance, fill = factor(hdhp))) + 
   geom_histogram(color='black') + 
   theme_minimal() +
-  labs(x="Propensity Score", y="Density",fill="pay")
+  labs(x="Propensity Score", y="Count",fill="hdhp")
 
 ```
 With a propensity score approach we see similar results with regards to how many members of our control group got matched to the treatment group, 2522 members. Like the nearest neighbour approach in question (d), the match results using the propensity approach are much better than that of (c). 
@@ -219,7 +223,7 @@ Conditional independence assumption. The variables chosen to match our data on i
 
 #i think this explains CIA haha 
 
-Common support assumption. No values are centred around 0 or 1 which is good. To meet the assumption of common support, there must be substantial overlap in the distribution of the propensity score. This is somewhat met as the propensity score distribution has a slight right tail indicating that there is some overlap amongst the propensity score. Moreover, 95% of the treated observations were able to find a match indicating that common support is likely met.
+Common support assumption. No values are centred around 0 or 1 which is good. To meet the assumption of common support, there must be substantial overlap in the distribution of the propensity score. This is mainly met as the propensity score distribution has a slight right tail indicating that there is quite a bit of overlap between propensity score values of 0.01 and 0.015. Moreover, 95% of the treated observations were able to find a match indicating that common support is likely met.
 
 Balance assumption. Looking at the balance table there is sufficient balance given that there are no statistical differences between any of the covariates being matched on apart from the number of prescriptions. This indicates that the balance assumption is mainly met.
 
@@ -387,38 +391,62 @@ q_f_5_matched_table <- tbl_summary(data = match_data_five, by = "hdhp",
   add_p(test = everything() ~ "t.test")
 
 
+caliper_tbls_descr <- tbl_merge(tbls = list(q_f_1_matched_table,
+                                      q_f_2_matched_table,
+                                      q_f_3_matched_table,
+                                      q_f_4_matched_table,
+                                      q_f_5_matched_table),
+                          tab_spanner = c("**Caliper Size - 0.01**",
+                                          "**Caliper Size - 0.1**",
+                                          "**Caliper Size - 0.2**",
+                                          "**Caliper Size - 0.5**",
+                                          "**Caliper Size - 1**"))
 
-question1f_one_reg <- lm(pay ~ hdhp, data = match_data_one, weights = weights)
-question1f_two_reg <- lm(pay ~ hdhp, data = match_data_two, weights = weights)
-question1f_three_reg <- lm(pay ~ hdhp, data = match_data_three, weights = weights)
-question1f_four_reg <- lm(pay ~ hdhp, data = match_data_four, weights = weights)
-question1f_five_reg <- lm(pay ~ hdhp, data = match_data_five, weights = weights)
+question1f_one_reg <- lm(pay ~ hdhp, data = match_data_one, weights = 1/weights)
+question1f_two_reg <- lm(pay ~ hdhp, data = match_data_two, weights = 1/weights)
+question1f_three_reg <- lm(pay ~ hdhp, data = match_data_three, weights = 1/weights)
+question1f_four_reg <- lm(pay ~ hdhp, data = match_data_four, weights = 1/weights)
+question1f_five_reg <- lm(pay ~ hdhp, data = match_data_five, weights = 1/weights)
 
-msummary(question1f_one_reg)
-msummary(question1f_two_reg)
-msummary(question1f_three_reg)
-msummary(question1f_four_reg)
-msummary(question1f_five_reg)
+caliper_tbls_reg <- msummary(list("Caliper Size - 0.01" = question1f_one_reg, 
+                                  "Caliper Size - 0.1" = question1f_two_reg, 
+                                  "Caliper Size - 0.2" = question1f_three_reg, 
+                                  "Caliper Size - 0.5" = question1f_four_reg, 
+                                  "Caliper Size - 1" = question1f_five_reg), 
+                             stars=c('*' = .1, '**' = .05, '***' = .01))
+
+
+caliper_tbls_descr
+caliper_tbls_reg
 
 
 ```
 
+As the caliper size increases, the sample size also increases. However, this is only true when moving between a caliper size of 0.01 and 0.1; when increasing the caliper size after 0.1, the effective sample size stays the same.
+
+Looking at the balance table comparing the five caliper sizes, we can see that after increasing the caliper size from 0.01 onwards, there is no change in the balance of the covariates. The means of all the covariates apart from number of hospitalizations remain not statistically different.
+
+When decreasing the caliper size from 0.01 to 0.1, there is a decrease in total spending for those enrolled in a HDHP from 6236.011 to 6071.649 units. This makes sense because as the caliper increases in size, the more bias we introduce into our matches and estimates. There is no further change in the estimated treatment effect when the caliper size increases after 0.1.
 
 --------------------------------------------------------------------------------
-#Part G
+# Question 1g
 
-
-
-
-
+If we had data on all spenders this would allow us to apply a causal statement about the effect of being enrolled in a HDHP on total spending for everyone that uses health services. However, as HDHPs are more advantageous for people who anticipate primarily requiring preventive services, we may expect individuals who are not in the top 1% of spending to be generally enrolled in these types of plans. Therefore, by including all spenders in our matching, we would not be able to isolate the effect of HDHP enrollment on being a superutilizer as we would now be making a more general conclusion about all utilizers HDHP enrollment on total cost. Due to this reason of not being able to isolate the variation caused from being a superutilizer on costs, I would choose not to utilize all spenders in the study.
 
 --------------------------------------------------------------------------------
-#Part H
+# Question 1h
+
+From the analysis done in the previous sections, I conclude that if a person is enrolled in an HDHP it results in higher total costs than if the person is not enrolled in an HDHP. This matches my intuition as HDHPs are beneficial to total cost if the person does not anticipate using a lot of healthcare services. If a person does use many healthcare services, the deductible is much higher for HDHP type plans compared to other plans leading to higher total costs which is reflected in our analysis.
 
 
+```{r, include=FALSE}
+print("=============================Works Cited=============================")
+loadedNamespaces() %>%
+map(citation) %>%
+print(style = "text") # Adds citations for each package to end of .rmd file
+knitr::write_bib(file = 'packages.bib') # Constructs a citation file for all packages used in this lecture.
 
-
-
+```
 
 
 

@@ -1,0 +1,43 @@
+```{r}
+library(readxl)
+mydata <- read_xlsx("/Users/aidanbodner/Desktop/HealthExpenses.xlsx")
+```
+
+
+```{r}
+mydata <- mydata %>% mutate(region_ne = ifelse(region == "northeast",1,0),
+                            region_nw = ifelse(region == "northwest",1,0),
+                            region_se = ifelse(region == "southeast",1,0), 
+                                # Create 3 dummy variables for the 4 regions
+                            female = (ifelse(sex == "female",1,0)))   
+
+mymatches_psm <- matchit(coverage ~ age + female + bmi + children + smoker + region_ne + region_nw + region_se, # Matching regression
+                     data=mydata,
+                     method='nearest', # Matching method -- see ?matchit
+                     distance='glm', # generalized linear model for propensity
+                     replace=TRUE, # do we use replacements in matches?
+                     verbose=TRUE) # print output of package process
+summary(mymatches_psm) # Look at new balance and sample size
+
+```
+
+When using propensity score matching, we need to make sure that our **common support assumption** holds in practice, so that we are truly (starting to) match(ing) in an appropriate way. We can test this visually: 
+
+```{r psm-2} 
+regdata_psm <- match.data(mymatches_psm)
+hist(regdata_psm$distance) # Look at overall distribution of propensity scores
+# Test common support assumption 
+ggplot(regdata_psm,aes(x=distance, fill = factor(coverage))) + 
+  geom_histogram(binwidth = .05,color='black') + 
+  theme_minimal() + 
+  labs(x="Propensity Score", y="Count",fill="Coverage") # What should we be looking for here? 
+
+```
+It looks like our common support assumption won't be a problem here. Hence, we can run our regression: 
+```{r psm-3}
+ps_match <- lm(expenses ~ coverage,
+               data = regdata_psm,
+               weights=1/distance) 
+
+msummary(ps_match, stars=c("*" = .1, "**" = .05, "***" = .01))
+```
