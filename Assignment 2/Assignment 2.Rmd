@@ -248,7 +248,7 @@ Common support assumption. No values are centred around 0 or 1 which is good. To
 
 Balance assumption. Looking at the balance table there is sufficient balance given that there are no statistical differences between any of the covariates being matched on apart from the number of prescriptions. This indicates that the balance assumption is mainly met.
 
-The PSM assumptions are mainly met.
+The PSM assumptions are therefore met.
 
 --------------------------------------------------------------------------------
 
