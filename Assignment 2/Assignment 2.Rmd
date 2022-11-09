@@ -23,7 +23,7 @@ library(vtable) #To output summary tables
 
 ```{r Data Cleaning}
 here()
-assign_data <- read_dta("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
+assign_data <- read_dta("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
 
 assign_data %>%
   summarise_all(funs(sum(is.na(.)))) # Returns no NAs, can probably remove
@@ -58,7 +58,7 @@ From the p-values obtained from performing the t-test, we can see that there is 
 
 We might expect to see significant differences in the distribution of HDHP by family size as people with larger families may be incentivized to find innovative ways to save costs. In terms of the number of prescriptions, people who already need more prescriptions will likely enroll in a plan that allows them to save money on future prescriptions. In terms of sex, females are more likely to engage in care seeking or plan for a future medical event than males making it conceivable that they would be statistically likely to be in an HDHP.
 
-
+#maybe ill make mention of the difference of means
 --------------------------------------------------------------------------------
 
 ```{r Question 1b}
@@ -98,9 +98,12 @@ write.csv(regdata, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Que
 
 regdata <- read.csv("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
 
-question1c_unmatched_reg <- lm(pay ~ hdhp, data = assign_data)
+question1c_unmatched_reg <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
+                  num_hospitalizations + num_chronicconditions + num_scrips, data = assign_data)
 
-question1c_reg <- lm(pay ~ hdhp, data = regdata, weights = weights)
+question1c_reg <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
+                   num_chronicconditions + num_scrips, data = regdata, weights = weights)
+#add covariates potentially??????
 
 msummary(list("Unmatched Regression" = question1c_unmatched_reg, 
               "Exact Matching Regression" = question1c_reg),
