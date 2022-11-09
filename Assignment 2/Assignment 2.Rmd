@@ -58,7 +58,6 @@ From the p-values obtained from performing the t-test, we can see that there is 
 
 We might expect to see significant differences in the distribution of HDHP by family size as people with larger families may be incentivized to find innovative ways to save costs. In terms of the number of prescriptions, people who already need more prescriptions will likely enroll in a plan that allows them to save money on future prescriptions. In terms of sex, females are more likely to engage in care seeking or plan for a future medical event than males making it conceivable that they would be statistically likely to be in an HDHP.
 
-# Assumes that 2 is coded as female
 
 --------------------------------------------------------------------------------
 
@@ -68,7 +67,7 @@ one_b_reg_naive <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
                   num_hospitalizations + num_chronicconditions + num_scrips,
                   data = assign_data)
 
-msummary(one_b_reg_naive)
+msummary(list("naive_regression" = one_b_reg_naive))
 
 model_view_1 <- lm(pay~sex, data = assign_data)
 model_view_2 <- lm(pay~famsize, data = assign_data)
@@ -126,7 +125,7 @@ qa_qb_balance_tables <- tbl_merge(tbls = list(unmatched_table,
 
   
 ```
-The back door being closed by matching the HDHP group with the non-HDHP group is the back door associated with inpatient hospitalizations. Through matching both groups on the # of hospitalizations, it is possible to say that both groups are similar with regards to this variable. This means that between the two groups there is no variations with regards to hospitalizations and as a result  we can more accurately depict the relationship between HDHP and spending. With regards to the quality of our match, we can note that there was not many members of the control group that went unmatched (88 people) and there were 0 people discarded from the match. As we noted from 1a. their is no significant differences between the comparison groups and thus as expected there were many matches for the treatment group. The quality of this match is poor because most of the control matched to the treatment group and thus the following regression does not provide any new information prior to the match. 
+The back door being closed by matching the HDHP group with the non-HDHP group is the back door associated with inpatient hospitalizations. Through matching both groups on the # of hospitalizations, it is possible to say that both groups are similar with regards to this variable. This means that between the two groups there is no variations with regards to hospitalizations and as a result  we can more accurately depict the relationship between HDHP and spending. With regards to the quality of our match, we can note that there was not many members of the control group that went unmatched (88 people) and there were 0 people discarded from the match. As we noted from 1a. their is no significant differences between the comparison groups and thus as expected there were many matches for the treatment group. The quality of this match is poor because most of the control matched to the treatment group however we only matched on one variable so there are many back doors between pay and HDHP still open. 
 The regression results show that after matching on inpatient hospitalizations occurred, the regression coefficient of HDHP was 1770.65. Thus, for individuals who are enrolled in the HDHP they had an increased spending of $1770.65 in comparison to those who were not enrolled in an HDHP. In comparison to a regression that looks at the effects of HDHP on spending before matching for inpatient hospitilizations we can see that after matching the effect of HDHP is higher. Prior to matching the regression coefficient was 658.71 which is much lower than 1770.65. 
 
 --------------------------------------------------------------------------------
