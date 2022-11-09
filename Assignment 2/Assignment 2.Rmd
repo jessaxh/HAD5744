@@ -23,7 +23,7 @@ library(vtable) #To output summary tables
 
 ```{r Data Cleaning}
 here()
-assign_data <- read_dta("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
+assign_data <- read_dta("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
 
 assign_data %>%
   summarise_all(funs(sum(is.na(.)))) # Returns no NAs, can probably remove
@@ -176,7 +176,7 @@ qa_qd_balance_tables <- tbl_merge(tbls = list(unmatched_table,
                                           "Nearest Neighbour Matched Balance Table"))
 
 ```
-Looking at the number of observations included in the balance table we can see that there has been a large reduction in the number of people included in our comparison group. It can be observed that the comparison group (non-HDHP) there are 5189 people who have been matched. When all covariates were included and nearest neighbour matching occurred, 224,983 people in the control group were unmatched with the treated group (### Could just say in the sample since its 224,983 across both groups that weren't matched ###). In comparison to the results of (c), only 88 people in the control group were unmatched. This shows that when all covariates are matched on and all the variation associated with these covariates is removed the amount of people who look like the HDHP group is a lot smaller. The regression results for this newly matched sample brings us closer to the true causal effect of HDHP on spending. After this more comprehensive match in comparison that of (c), we can see the regression coefficient for HDHP has increased to 4030.98, thus showing that being enrolled in HDHP has a much larger effect on spending than earlier noted. 
+Looking at the number of observations included in the balance table we can see that there has been a large reduction in the number of people included in our comparison group. It can be observed that the comparison group (non-HDHP) there are 5189 people who have been matched. When all covariates were included and nearest neighbour matching occurred, 224,983 people in the control group were unmatched with the treated group. In comparison to the results of (c), only 88 people in the control group were unmatched. This shows that when all covariates are matched on and all the variation associated with these covariates is removed the amount of people who look like the HDHP group is a lot smaller. The regression results for this newly matched sample brings us closer to the true causal effect of HDHP on spending. After this more comprehensive match in comparison that of (c), we can see the regression coefficient for HDHP has increased to 4030.98, thus showing that being enrolled in HDHP has a much larger effect on spending than earlier noted. 
 
 When looking at the balance table  we can see that the mean age difference between the two groups is 0.28. the difference in mean of sex is 0.01. The difference in mean family size is 0.03, the difference in mean of policyholder is 0.01, the difference in mean of num_hospitilizations is 0.02, the difference in mean for num_chronicconditions is 0.01 and the difference in num_scrips is 0.06. As we can see there is now very little difference between the two groups and thus we know that the variation for these variables has been removed. Moreover, looking at the p-value for the t-tests, we can further see that there is no statistical difference for any of the covariates.
 
@@ -247,8 +247,7 @@ Common support assumption. No values are centred around 0 or 1 which is good. To
 
 Balance assumption. Looking at the balance table there is sufficient balance given that there are no statistical differences between any of the covariates being matched on apart from the number of prescriptions. This indicates that the balance assumption is mainly met.
 
-
-The PSM assumptions are mainly met.
+The PSM assumptions are therefore met.
 
 --------------------------------------------------------------------------------
 
@@ -443,7 +442,7 @@ caliper_tbls_reg
 ```
 
 As the caliper size increases, the sample size also increases. However, this is only true when moving between a caliper size of 0.01 and 0.1; when increasing the caliper size after 0.1, the effective sample size stays the same.
-The tradeoff between larger and smaller caliper sizes is that when the caliper size is larger a greater number of matches can occur however these matches are less exact while when the caliper size is smaller more exact matches can be formed however not as many matches will occur. As narrower calipers lead to matching of more similar groups, it is expected that this leads to less systematic differences between treated and untreated subjects. However the lower number of matches as a result of a narrower caliper may cause higher variance in the estimated treatment effect. Having a wider caliper size has the opposite effects and thus choice of caliper size has effects on the systematic differences between treatment groups as well as effects on the variance of the estimated treatment effect. In reference to the match above, it can be seen that after the caliper size increases to 0.1 more matches are included however increasing the caliper size any further has no effect as that caliper size is sufficient for finding complete matches with the data provided. 
+The tradeoff between larger and smaller caliper sizes is that when the caliper size is larger a greater number of matches can occur, however, these matches are less exact while when the caliper size is smaller more exact matches can be formed although not as many matches will occur. As narrower calipers lead to matching of more similar groups, it is expected that this leads to less systematic differences between treated and untreated subjects. However, the lower number of matches as a result of a narrower caliper may cause higher variance in the estimated treatment effect. Having a wider caliper size has the opposite effects and thus choice of caliper size has effects on the systematic differences between treatment groups as well as effects on the variance of the estimated treatment effect. In reference to the match above, it can be seen that after the caliper size increases to 0.1 more matches are included however increasing the caliper size any further has no effect as that caliper size is sufficient for finding complete matches with the data provided. 
 
 Looking at the balance table comparing the five caliper sizes, we can see that after increasing the caliper size from 0.01 onwards, there is no change in the balance of the covariates. The means of all the covariates apart from number of hospitalizations remain not statistically different.
 
