@@ -59,9 +59,9 @@ unmatched_table <- tbl_summary(data = assign_data, by = "hdhp",
 
 unmatched_table
 ```
-From the p-values obtained from performing the t-test, we can see that there is no statistical differences between people in HDHP compared to other individuals in terms of age, if they are a policyholder, number of hospitalizations, and number of chronic conditions. However, the groups are not comparable in terms of sex, family size, and number of prescriptions.
+From the p-values obtained from performing the t-test, we can see that there is no statistical differences between people in HDHP compared to other individuals in terms of age, number of hospitalizations, and number of chronic conditions. However, the groups are not comparable in terms of sex,if they are a policyholder, family size, and number of prescriptions.
 
-We might expect to see significant differences in the distribution of HDHP by family size as people with larger families may be incentivized to find innovative ways to save costs. In terms of the number of prescriptions, people who already need more prescriptions will likely enroll in a plan that allows them to save money on future prescriptions. In terms of sex, females are more likely to engage in care seeking or plan for a future medical event than males making it conceivable that they would be statistically likely to be in an HDHP.
+We might expect to see significant differences in the distribution of HDHP by family size as people with larger families may be incentivized to find innovative ways to save costs. In terms of the number of prescriptions, people who already need more prescriptions will likely enroll in a plan that allows them to save money on future prescriptions. In terms of sex, females are more likely to engage in care seeking or plan for a future medical event than males making it conceivable that they would be statistically likely to be in an HDHP. In terms of being a policy holder, the policy holder is someone who owns the insurance policy and as such are more inclined to use the insurance they have and as such when enrolled in an HDHP they take greater pride in using it.
 
 --------------------------------------------------------------------------------
 # Question 1b
