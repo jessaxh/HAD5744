@@ -101,14 +101,12 @@ regdata <- read.csv("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Qu
 question1c_unmatched_reg <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
                   num_hospitalizations + num_chronicconditions + num_scrips, data = assign_data)
 
-question1c_reg <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
-                   num_chronicconditions + num_scrips, data = regdata, weights = weights)
-#add covariates potentially??????
+question1c_reg <- lm(pay ~ hdhp + age + sex + famsize + policyholder  +
+                  + num_chronicconditions + num_scrips , data = regdata)
 
 msummary(list("Unmatched Regression" = question1c_unmatched_reg, 
               "Exact Matching Regression" = question1c_reg),
          )
-
 
 
 onlyhospitalizations_matched_balance_table <- tbl_summary(data = regdata, by = "hdhp",
