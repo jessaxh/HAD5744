@@ -86,9 +86,9 @@ summary(question1c_match)
 
 regdata <-  match.data(question1c_match)
 
-write.csv(regdata, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
+write.csv(regdata, "/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
 
-regdata <- read.csv("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
+regdata <- read.csv("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
 
 question1c_unmatched_reg <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
                   num_hospitalizations + num_chronicconditions + num_scrips, data = assign_data)
@@ -145,7 +145,7 @@ summary(question1d_match)
 
 q_d_match_data <-  match.data(question1d_match)
 
-write.csv(q_d_match_data, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
+write.csv(q_d_match_data, "/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
 q_d_match_data <- read.csv("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
 
 q_d_match_data$sex <- as.factor(q_d_match_data$sex) # Convert sex from a character to a factor
@@ -180,7 +180,7 @@ qa_qd_balance_tables <- tbl_merge(tbls = list(unmatched_table,
 ```
 Looking at the number of observations included in the balance table we can see that there has been a large reduction in the number of people included in our comparison group. It can be observed that the comparison group (non-HDHP) now contains 2,534 subjects after matching and there are a total of 5189 people who have been matched. When all covariates were included and nearest neighbour matching occurred, 224,983 people in the control group were unmatched with the treated group. In comparison to the results of (c), only 88 people in the control group were unmatched. This shows that when all covariates are matched on and all the variation associated with these covariates is removed the amount of people who look like the HDHP group is a lot smaller. The regression results for this newly matched sample brings us closer to the true causal effect of HDHP on spending. After this more comprehensive match in comparison that of (c), we can see the regression coefficient for HDHP has increased to 4030.98, thus showing that being enrolled in HDHP has a much larger effect on spending than earlier noted. 
 
-#should we add: When all variables are matched upon and all the variation is removed with regards to the covariates that influence spending, the regression coefficient for HDHP flips from the negative value observed in c. This may occur because now instead of looking at the effects of the covariates indepently when all other covariates are controlled for, the match removes the variation between control and treatment group together. When this occurs we do actually see that HDHP has a positive influence on spending. This further confirms that the quality of the match in c was too poor and left a lot of back doors open. As expected HDHP superutilizers pay a larger amount for helath care than those who are not enrolled in HDHP and this is seen whent the match includes all covariates.
+#When all variables are matched upon and all the variation is removed with regards to the covariates that influence spending, the regression coefficient for HDHP flips from the negative value observed in c. This may occur because now instead of looking at the effects of the covariates indepently when all other covariates are controlled for, the match removes the variation between control and treatment group together. When this occurs we do actually see that HDHP has a positive influence on spending. This further confirms that the quality of the match in c was too poor and left a lot of back doors open. As expected HDHP superutilizers pay a larger amount for helath care than those who are not enrolled in HDHP and this is seen whent the match includes all covariates.
 
 When looking at the balance table  we can see that the mean age difference between the two groups is 0.28. the difference in mean of sex is 0.01. The difference in mean family size is 0.03, the difference in mean of policyholder is 0.01, the difference in mean of number of hospitilizations is 0.02, the difference in mean for number of chronic conditions is 0.01 and the difference in number of prescriptions is 0.06. As we can see there is now very little difference between the two groups and thus we know that the variation for these variables has been removed. Moreover, looking at the p-value for the t-tests, we can further see that there is no statistical difference for any of the covariates.
 
@@ -198,7 +198,7 @@ summary(question1e_match)
 
 
 qe_psmmatch_data <- match.data(question1e_match)
-write.csv(qe_psmmatch_data, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv")
+write.csv(qe_psmmatch_data, "/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv")
 qe_psmmatch_data <- read.csv("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv")
 
 qe_psmmatch_data$sex <- as.factor(qe_psmmatch_data$sex) # Convert sex from a character to a factor
