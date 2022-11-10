@@ -57,7 +57,6 @@ unmatched_table <- tbl_summary(data = assign_data, by = "hdhp",
                   "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
   add_p(test = everything() ~ "t.test")
 
-unmatched_table
 ```
 From the p-values obtained from performing the t-test, we can see that there is no statistical differences between people in HDHP compared to other individuals in terms of age, if they are a policyholder, number of hospitalizations, and number of chronic conditions. However, the groups are not comparable in terms of sex, family size, and number of prescriptions.
 
@@ -74,7 +73,7 @@ one_b_reg_naive <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
 msummary(list("naive_regression" = one_b_reg_naive))
 
 ```
-The results from (a) suggest that for characteristics such as age, number of hospitalizations, and number of chronic conditions, we can likely assume that since there is no statistical difference in the means, that the fit of the regression is fairly good. However, for characteristics such as sex, if they are a policyholder, family size, and number of prescriptions, there are statistical differences in the means indicating that the regression line likely is not able to fit the observations as well. The differences in these groups shown in (a) show more females than males, higher means family size, more likely to be a policyholder, and higher number of prescriptions for those who enroll in high deductibale health plans (HDHPs). Thus when looking at the reported regression coefficients they do not accurately show the true effect these variables have on the outcome variable as there is a statistically significant difference within these variables for those who are in a HDHP. 
+The results from (a) suggest that for characteristics such as age, if they are a policyholder, number of hospitalizations, and number of chronic conditions, we can likely assume that since there is no statistical difference in the means, that the fit of the regression is fairly good. However, for characteristics such as sex, family size, and number of prescriptions, there are statistical differences in the means indicating that the regression line likely is not able to fit the observations as well. The differences in these groups shown in (a) show more females than males, higher means family size, more likely to be a policyholder, and higher number of prescriptions for those who enroll in high deductibale health plans (HDHPs). Thus when looking at the reported regression coefficients they do not accurately show the true effect these variables have on the outcome variable as there is a statistically significant difference within these variables for those who are in a HDHP. 
 
 There is an underestimated effect for these coefficients as a result, as we expect people enrolled in HDHPs to spend more as they are more likely to engage in healthcare seeking due to a higher likelihood of being female, having higher average family sizes, being a policyholder, and having higher average number of prescriptions. 
 We also expect that a HDHP exposes these participants to higher fees and thus through higher deductibles these groups will be expected to spend more on health services than those who are not enrolled in these forms of insurance plans. 
@@ -89,7 +88,6 @@ question1c_match <- matchit(hdhp ~ num_hospitalizations,
                             method = "exact")
 summary(question1c_match)
 
-
 regdata <-  match.data(question1c_match)
 
 write.csv(regdata, "/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
@@ -98,7 +96,6 @@ regdata <- read.csv("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Qu
 
 question1c_unmatched_reg <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
                   num_hospitalizations + num_chronicconditions + num_scrips, data = assign_data)
-
 
 question1c_reg <- lm(pay ~ hdhp, data = regdata, weights = weights) #using matched data with no covariates
 
@@ -121,14 +118,12 @@ onlyhospitalizations_matched_balance_table <- tbl_summary(data = regdata, by = "
                   "num_hospitalizations")) %>%
   add_p(test = everything() ~ "t.test")
 
-onlyhospitalizations_matched_balance_table
-
 qa_qb_balance_tables <- tbl_merge(tbls = list(unmatched_table,
                                       onlyhospitalizations_matched_balance_table),
                           tab_spanner = c("UnMatched Balance Table",
                                           "Only Hospitalizations Balance Table"))
-                                        
-qa_qb_balance_tables
+                                          
+
   
 ```
 The back door being closed by matching the HDHP group with the non-HDHP group is the back door associated with inpatient hospitalizations. Through matching both groups on the # of hospitalizations, it is possible to say that both groups are similar with regards to this variable. This means that between the two groups there is no variations with regards to hospitalizations and as a result, we can more accurately depict the relationship between HDHP and spending. With regards to the quality of our match, we can note that there were not many members of the control group that went unmatched (88 people) and there were 0 people discarded from the match. As we noted from 1a. their are no significant differences between the comparison groups with the number of hospitalizations and thus as expected there were many matches for the treatment group. The quality of this match is poor because most of the control matched to the treatment group however we only matched on one variable so there are many back doors between pay and HDHP still open. 
@@ -177,7 +172,7 @@ q_d_matched_table <- tbl_summary(data = q_d_match_data, by = "hdhp",
                   "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
   add_p(test = everything() ~ "t.test")
 
-q_d_matched_table
+
 
 question1d_reg <- lm(pay ~ hdhp, data = q_d_match_data, weights = weights)
 
@@ -188,7 +183,6 @@ qa_qd_balance_tables <- tbl_merge(tbls = list(unmatched_table,
                           tab_spanner = c("UnMatched Balance Table",
                                           "Nearest Neighbour Matched Balance Table"))
 
-qa_qd_balance_tables
 ```
 Looking at the number of observations included in the balance table we can see that there has been a large reduction in the number of people included in our comparison group. It can be observed that the comparison group (non-HDHP) now contains 2,534 subjects after matching and there are a total of 5189 people who have been matched. When all covariates were included and nearest neighbour matching occurred, 224,983 people in the control group were unmatched with the treated group. In comparison to the results of (c), only 88 people in the control group were unmatched. This shows that when all covariates are matched on and all the variation associated with these covariates is removed the amount of people who look like the HDHP group is a lot smaller. The regression results for this newly matched sample brings us closer to the true causal effect of HDHP on spending. After this more comprehensive match in comparison to that of (c), we can see the regression coefficient for HDHP has increased to 4030.98, thus showing that being enrolled in HDHP has a much larger effect on spending than earlier noted. 
 
@@ -234,14 +228,11 @@ q_e_matched_table <- tbl_summary(data = qe_psmmatch_data, by = "hdhp",
                   "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
   add_p(test = everything() ~ "t.test")
 
-q_e_matched_table
-
 qa_qe_balance_tables <- tbl_merge(tbls = list(unmatched_table,
                                       q_e_matched_table),
                           tab_spanner = c("UnMatched Balance Table",
                                           "Propensity Score Matched Balance Table"))
 
-qa_qe_balance_tables
 
 question1e_reg <- lm(pay ~ hdhp, data = qe_psmmatch_data, weights = 1/distance)
 
@@ -370,7 +361,6 @@ q_f_1_matched_table <- tbl_summary(data = match_data_one, by = "hdhp",
                   "num_hospitalizations", "num_chronicconditions", "num_scrips")) %>%
   add_p(test = everything() ~ "t.test")
 
-
 q_f_2_matched_table <- tbl_summary(data = match_data_two, by = "hdhp",
                         type = list(age ~ "continuous",
                         famsize ~ "continuous",
@@ -432,12 +422,6 @@ q_f_5_matched_table <- tbl_summary(data = match_data_five, by = "hdhp",
   add_p(test = everything() ~ "t.test")
 
 
-q_f_1_matched_table
-q_f_2_matched_table
-q_f_3_matched_table
-q_f_4_matched_table 
-q_f_5_matched_table
-
 caliper_tbls_descr <- tbl_merge(tbls = list(q_f_1_matched_table,
                                       q_f_2_matched_table,
                                       q_f_3_matched_table,
@@ -448,7 +432,6 @@ caliper_tbls_descr <- tbl_merge(tbls = list(q_f_1_matched_table,
                                           "**Caliper Size - 0.2**",
                                           "**Caliper Size - 0.5**",
                                           "**Caliper Size - 1**"))
-caliper_tbls_descr
 
 question1f_one_reg <- lm(pay ~ hdhp, data = match_data_one, weights = 1/weights)
 question1f_two_reg <- lm(pay ~ hdhp, data = match_data_two, weights = 1/weights)
