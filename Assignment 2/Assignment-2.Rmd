@@ -1,7 +1,7 @@
 ---
 title: "Assignment 2 - A Matching Exercise"
 author: "Husayn Jessa and Aidan Bodner"
-date: "28/10/2022"
+date: "11/11/2022"
 output: html_document
 ---
 
@@ -19,11 +19,15 @@ library(MatchIt) # For matching
 library(modelsummary) # For some balance tables
 library(ggplot2) # To create plots
 library(vtable) #To output summary tables
+library(purrr) # To output reference list
 ```
 
 ```{r Data Cleaning}
+name <- Sys.info() 
+name[7]
+
 here()
-assign_data <- read_dta("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
+assign_data <- read_dta("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
 
 assign_data %>%
   summarise_all(funs(sum(is.na(.)))) # Returns no NAs, can probably remove
@@ -31,7 +35,7 @@ assign_data %>%
 ```
 
 --------------------------------------------------------------------------------
-
+# Question 1a
 ``` {r Question 1a }
 
 assign_data$sex <- as.factor(assign_data$sex) # Convert sex from a character to a factor
@@ -59,7 +63,7 @@ From the p-values obtained from performing the t-test, we can see that there is 
 We might expect to see significant differences in the distribution of HDHP by family size as people with larger families may be incentivized to find innovative ways to save costs. In terms of the number of prescriptions, people who already need more prescriptions will likely enroll in a plan that allows them to save money on future prescriptions. In terms of sex, females are more likely to engage in care seeking or plan for a future medical event than males making it conceivable that they would be statistically likely to be in an HDHP.
 
 --------------------------------------------------------------------------------
-
+# Question 1b
 ```{r Question 1b}
 
 one_b_reg_naive <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
@@ -76,7 +80,7 @@ We also expect that a HDHP exposes these participants to higher fees and thus th
 Thus these variables underestimate the true causal effect. 
 
 --------------------------------------------------------------------------------
-
+# Question 1c
 ```{r Question 1c}
 
 question1c_match <- matchit(hdhp ~ num_hospitalizations,
@@ -86,9 +90,9 @@ summary(question1c_match)
 
 regdata <-  match.data(question1c_match)
 
-write.csv(regdata, "/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
+write.csv(regdata, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
 
-regdata <- read.csv("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
+regdata <- read.csv("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
 
 question1c_unmatched_reg <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
                   num_hospitalizations + num_chronicconditions + num_scrips, data = assign_data)
@@ -131,7 +135,7 @@ The regression results show that after matching on inpatient hospitalizations oc
 When the matched regression included the other covariates a large change in the regression coefficient was observed. The regression value for HDHP became -1430.77 when all the other covariates were controlled for. These results were surprising as it suggests that superutilizers enrolled in an HDHP spend less in comparison to those who were not in an HDHP. It appears that the number of hospitalizations play a large role in how much a person in an HDHP will spend on healthcare. When all the variation in the number of hospitilizations is removed (through matching) and the other covariates are controlled for (through regression) we can see that superutilizers enrolled in HDHP spend less. This suggests to us that hospitalizations contribute to large amounts of spending for people in HDHP because they perform a larger array of services and as a result the deductibale a person pays at the hospital is much larger than anywhere else. When we compare the results of this regression with the regression that used the unmatched data and controlled for all the variables, including number of hospitalizations, we see that the regression coefficient for HDHP is 608.81 and the regression coefficient for number of hospitalizations is 38793.51. This indicates that belonging to a HDHP contributes to higher spending and number of hospitalizations has a very large effect on spending. When the variation in hospitalizations is removed by the match it thus explains why the regression coefficient for HDHP becomes negative as number of hospitalizations had a large effect on how much was being spent on healthcare. 
  
 --------------------------------------------------------------------------------
-
+# Question 1d
 ```{r Question 1d}
 
 question1d_match <- matchit(hdhp ~ num_hospitalizations + age + sex + famsize + policyholder +
@@ -145,8 +149,13 @@ summary(question1d_match)
 
 q_d_match_data <-  match.data(question1d_match)
 
-write.csv(q_d_match_data, "/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
-q_d_match_data <- read.csv("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
+
+write.csv(q_d_match_data, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
+q_d_match_data <- read.csv("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
+
+write.csv(q_d_match_data, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
+q_d_match_data <- read.csv("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
+
 
 q_d_match_data$sex <- as.factor(q_d_match_data$sex) # Convert sex from a character to a factor
 q_d_match_data$sex <- as.numeric(q_d_match_data$sex) # Convert sex from a character to a numeric
@@ -178,14 +187,14 @@ qa_qd_balance_tables <- tbl_merge(tbls = list(unmatched_table,
                                           "Nearest Neighbour Matched Balance Table"))
 
 ```
-Looking at the number of observations included in the balance table we can see that there has been a large reduction in the number of people included in our comparison group. It can be observed that the comparison group (non-HDHP) now contains 2,534 subjects after matching and there are a total of 5189 people who have been matched. When all covariates were included and nearest neighbour matching occurred, 224,983 people in the control group were unmatched with the treated group. In comparison to the results of (c), only 88 people in the control group were unmatched. This shows that when all covariates are matched on and all the variation associated with these covariates is removed the amount of people who look like the HDHP group is a lot smaller. The regression results for this newly matched sample brings us closer to the true causal effect of HDHP on spending. After this more comprehensive match in comparison that of (c), we can see the regression coefficient for HDHP has increased to 4030.98, thus showing that being enrolled in HDHP has a much larger effect on spending than earlier noted. 
+Looking at the number of observations included in the balance table we can see that there has been a large reduction in the number of people included in our comparison group. It can be observed that the comparison group (non-HDHP) now contains 2,534 subjects after matching and there are a total of 5189 people who have been matched. When all covariates were included and nearest neighbour matching occurred, 224,983 people in the control group were unmatched with the treated group. In comparison to the results of (c), only 88 people in the control group were unmatched. This shows that when all covariates are matched on and all the variation associated with these covariates is removed the amount of people who look like the HDHP group is a lot smaller. The regression results for this newly matched sample brings us closer to the true causal effect of HDHP on spending. After this more comprehensive match in comparison to that of (c), we can see the regression coefficient for HDHP has increased to 4030.98, thus showing that being enrolled in HDHP has a much larger effect on spending than earlier noted. 
 
-#When all variables are matched upon and all the variation is removed with regards to the covariates that influence spending, the regression coefficient for HDHP flips from the negative value observed in c. This may occur because now instead of looking at the effects of the covariates indepently when all other covariates are controlled for, the match removes the variation between control and treatment group together. When this occurs we do actually see that HDHP has a positive influence on spending. This further confirms that the quality of the match in c was too poor and left a lot of back doors open. As expected HDHP superutilizers pay a larger amount for helath care than those who are not enrolled in HDHP and this is seen whent the match includes all covariates.
+When all variables are matched upon and all the variation is removed with regards to the covariates that influence spending, the regression coefficient for HDHP flips from the negative value observed in (c). This may occur because now instead of looking at the effects of the covariates indepently when all other covariates are controlled for, the match removes the variation between control and treatment group together. When this occurs we do actually see that HDHP has a positive influence on spending. This further confirms that the quality of the match in (c) was too poor and left many of back doors open. As expected HDHP superutilizers pay a larger amount for health care than those who are not enrolled in HDHP and this is seen when the match includes all covariates.
 
-When looking at the balance table  we can see that the mean age difference between the two groups is 0.28. the difference in mean of sex is 0.01. The difference in mean family size is 0.03, the difference in mean of policyholder is 0.01, the difference in mean of number of hospitilizations is 0.02, the difference in mean for number of chronic conditions is 0.01 and the difference in number of prescriptions is 0.06. As we can see there is now very little difference between the two groups and thus we know that the variation for these variables has been removed. Moreover, looking at the p-value for the t-tests, we can further see that there is no statistical difference for any of the covariates.
+When looking at the balance table we can see that the mean age difference between the two groups is 0.28. The difference in mean of sex is 0.01. The difference in mean family size is 0.03, the difference in mean of policyholder is 0.01, the difference in mean of number of hospitilizations is 0.02, the difference in mean for number of chronic conditions is 0.01 and the difference in number of prescriptions is 0.06. As we can see there is now very little difference between the two groups and thus we know that the variation for these variables has been removed. Moreover, looking at the p-value for the t-tests, we can further see that there is no statistical difference for any of the covariates.
 
 --------------------------------------------------------------------------------
-
+# Question 1e
 ```{r Question 1e}
 question1e_match <- matchit(hdhp ~ num_hospitalizations + age + sex + famsize + policyholder +
                   num_hospitalizations + num_chronicconditions + num_scrips,
@@ -198,8 +207,12 @@ summary(question1e_match)
 
 
 qe_psmmatch_data <- match.data(question1e_match)
-write.csv(qe_psmmatch_data, "/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv")
-qe_psmmatch_data <- read.csv("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv")
+
+write.csv(qe_psmmatch_data, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv")
+qe_psmmatch_data <- read.csv("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv")
+
+write.csv(qe_psmmatch_data, "/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv")
+qe_psmmatch_data <- read.csv("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv")
 
 qe_psmmatch_data$sex <- as.factor(qe_psmmatch_data$sex) # Convert sex from a character to a factor
 qe_psmmatch_data$sex <- as.numeric(qe_psmmatch_data$sex) # Convert sex from a character to a numeric
@@ -254,7 +267,7 @@ Balance assumption. Looking at the balance table there is sufficient balance giv
 The PSM assumptions are therefore met.
 
 --------------------------------------------------------------------------------
-
+# Question 1f
 ```{r Question 1f}
 
 # Caliper set to 0.01
@@ -462,13 +475,14 @@ If we had data on all spenders this would allow us to apply a causal statement a
 
 From the analysis done in the previous sections, I conclude that if a person is enrolled in an HDHP it results in higher total costs than if the person is not enrolled in an HDHP. This matches my intuition as HDHPs are beneficial to total cost if the person does not anticipate using a lot of healthcare services. If a person does use many healthcare services, the deductible is much higher for HDHP type plans compared to other plans leading to higher total costs which is reflected in our analysis.
 
+--------------------------------------------------------------------------------
 
-```{r, include=FALSE}
+```{r, Reference List}
 print("=============================Works Cited=============================")
 loadedNamespaces() %>%
-map(citation) %>%
+  map(citation) %>%
 print(style = "text") # Adds citations for each package to end of .rmd file
-knitr::write_bib(file = 'packages.bib') # Constructs a citation file for all packages used in this lecture.
+knitr::write_bib(file = 'packages.bib') # Constructs a citation file for all packages used in this file
 
 ```
 

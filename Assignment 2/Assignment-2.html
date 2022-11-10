@@ -11,6 +11,7 @@
 
 <meta name="author" content="Husayn Jessa and Aidan Bodner" />
 
+<meta name="date" content="2022-11-11" />
 
 <title>Assignment 2 - A Matching Exercise</title>
 
@@ -172,7 +173,7 @@ pre code {
 
 <h1 class="title toc-ignore">Assignment 2 - A Matching Exercise</h1>
 <h4 class="author">Husayn Jessa and Aidan Bodner</h4>
-<h4 class="date">28/10/2022</h4>
+<h4 class="date">11/11/2022</h4>
 
 </div>
 
@@ -954,8 +955,13 @@ qa_qb_balance_tables &lt;- tbl_merge(tbls = list(unmatched_table,
 ## Discarded          0.         0</code></pre>
 <pre class="r"><code>q_d_match_data &lt;-  match.data(question1d_match)
 
+
 write.csv(q_d_match_data, &quot;/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv&quot;)
 q_d_match_data &lt;- read.csv(&quot;/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv&quot;)
+
+write.csv(q_d_match_data, &quot;/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv&quot;)
+q_d_match_data &lt;- read.csv(&quot;/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv&quot;)
+
 
 q_d_match_data$sex &lt;- as.factor(q_d_match_data$sex) # Convert sex from a character to a factor
 q_d_match_data$sex &lt;- as.numeric(q_d_match_data$sex) # Convert sex from a character to a numeric
@@ -1091,9 +1097,9 @@ RMSE
                                       q_d_matched_table),
                           tab_spanner = c(&quot;UnMatched Balance Table&quot;,
                                           &quot;Nearest Neighbour Matched Balance Table&quot;))</code></pre>
-<p>Looking at the number of observations included in the balance table we can see that there has been a large reduction in the number of people included in our comparison group. It can be observed that the comparison group (non-HDHP) now contains 2,534 subjects after matching and there are a total of 5189 people who have been matched. When all covariates were included and nearest neighbour matching occurred, 224,983 people in the control group were unmatched with the treated group. In comparison to the results of (c), only 88 people in the control group were unmatched. This shows that when all covariates are matched on and all the variation associated with these covariates is removed the amount of people who look like the HDHP group is a lot smaller. The regression results for this newly matched sample brings us closer to the true causal effect of HDHP on spending. After this more comprehensive match in comparison that of (c), we can see the regression coefficient for HDHP has increased to 4030.98, thus showing that being enrolled in HDHP has a much larger effect on spending than earlier noted.</p>
-<p>#should we add: When all variables are matched upon and all the variation is removed with regards to the covariates that influence spending, the regression coefficient for HDHP flips from the negative value observed in c. This may occur because now instead of looking at the effects of the covariates indepently when all other covariates are controlled for, the match removes the variation between control and treatment group together. When this occurs we do actually see that HDHP has a positive influence on spending. This further confirms that the quality of the match in c was too poor and left a lot of back doors open. As expected HDHP superutilizers pay a larger amount for helath care than those who are not enrolled in HDHP and this is seen whent the match includes all covariates.</p>
-<p>When looking at the balance table we can see that the mean age difference between the two groups is 0.28. the difference in mean of sex is 0.01. The difference in mean family size is 0.03, the difference in mean of policyholder is 0.01, the difference in mean of number of hospitilizations is 0.02, the difference in mean for number of chronic conditions is 0.01 and the difference in number of prescriptions is 0.06. As we can see there is now very little difference between the two groups and thus we know that the variation for these variables has been removed. Moreover, looking at the p-value for the t-tests, we can further see that there is no statistical difference for any of the covariates.</p>
+<p>Looking at the number of observations included in the balance table we can see that there has been a large reduction in the number of people included in our comparison group. It can be observed that the comparison group (non-HDHP) now contains 2,534 subjects after matching and there are a total of 5189 people who have been matched. When all covariates were included and nearest neighbour matching occurred, 224,983 people in the control group were unmatched with the treated group. In comparison to the results of (c), only 88 people in the control group were unmatched. This shows that when all covariates are matched on and all the variation associated with these covariates is removed the amount of people who look like the HDHP group is a lot smaller. The regression results for this newly matched sample brings us closer to the true causal effect of HDHP on spending. After this more comprehensive match in comparison to that of (c), we can see the regression coefficient for HDHP has increased to 4030.98, thus showing that being enrolled in HDHP has a much larger effect on spending than earlier noted.</p>
+<p>When all variables are matched upon and all the variation is removed with regards to the covariates that influence spending, the regression coefficient for HDHP flips from the negative value observed in (c). This may occur because now instead of looking at the effects of the covariates indepently when all other covariates are controlled for, the match removes the variation between control and treatment group together. When this occurs we do actually see that HDHP has a positive influence on spending. This further confirms that the quality of the match in (c) was too poor and left many of back doors open. As expected HDHP superutilizers pay a larger amount for health care than those who are not enrolled in HDHP and this is seen when the match includes all covariates.</p>
+<p>When looking at the balance table we can see that the mean age difference between the two groups is 0.28. The difference in mean of sex is 0.01. The difference in mean family size is 0.03, the difference in mean of policyholder is 0.01, the difference in mean of number of hospitilizations is 0.02, the difference in mean for number of chronic conditions is 0.01 and the difference in number of prescriptions is 0.06. As we can see there is now very little difference between the two groups and thus we know that the variation for these variables has been removed. Moreover, looking at the p-value for the t-tests, we can further see that there is no statistical difference for any of the covariates.</p>
 <hr />
 <pre class="r"><code>question1e_match &lt;- matchit(hdhp ~ num_hospitalizations + age + sex + famsize + policyholder +
                   num_hospitalizations + num_chronicconditions + num_scrips,
@@ -1159,6 +1165,10 @@ summary(question1e_match)</code></pre>
 ## Unmatched     224995.         0
 ## Discarded          0.         0</code></pre>
 <pre class="r"><code>qe_psmmatch_data &lt;- match.data(question1e_match)
+
+write.csv(qe_psmmatch_data, &quot;/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv&quot;)
+qe_psmmatch_data &lt;- read.csv(&quot;/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv&quot;)
+
 write.csv(qe_psmmatch_data, &quot;/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv&quot;)
 qe_psmmatch_data &lt;- read.csv(&quot;/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv&quot;)
 
@@ -1763,12 +1773,12 @@ caliper_tbls_reg &lt;- msummary(list(&quot;Caliper Size - 0.01&quot; = question1
 
 
 caliper_tbls_descr</code></pre>
-<div id="pbhfsttxhe" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="bxgvjgkxcn" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#pbhfsttxhe .gt_table {
+#bxgvjgkxcn .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1793,7 +1803,7 @@ caliper_tbls_descr</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#pbhfsttxhe .gt_heading {
+#bxgvjgkxcn .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1805,7 +1815,7 @@ caliper_tbls_descr</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#pbhfsttxhe .gt_title {
+#bxgvjgkxcn .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1817,7 +1827,7 @@ caliper_tbls_descr</code></pre>
   border-bottom-width: 0;
 }
 
-#pbhfsttxhe .gt_subtitle {
+#bxgvjgkxcn .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1829,13 +1839,13 @@ caliper_tbls_descr</code></pre>
   border-top-width: 0;
 }
 
-#pbhfsttxhe .gt_bottom_border {
+#bxgvjgkxcn .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#pbhfsttxhe .gt_col_headings {
+#bxgvjgkxcn .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1850,7 +1860,7 @@ caliper_tbls_descr</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#pbhfsttxhe .gt_col_heading {
+#bxgvjgkxcn .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1870,7 +1880,7 @@ caliper_tbls_descr</code></pre>
   overflow-x: hidden;
 }
 
-#pbhfsttxhe .gt_column_spanner_outer {
+#bxgvjgkxcn .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1882,15 +1892,15 @@ caliper_tbls_descr</code></pre>
   padding-right: 4px;
 }
 
-#pbhfsttxhe .gt_column_spanner_outer:first-child {
+#bxgvjgkxcn .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#pbhfsttxhe .gt_column_spanner_outer:last-child {
+#bxgvjgkxcn .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#pbhfsttxhe .gt_column_spanner {
+#bxgvjgkxcn .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1902,7 +1912,7 @@ caliper_tbls_descr</code></pre>
   width: 100%;
 }
 
-#pbhfsttxhe .gt_group_heading {
+#bxgvjgkxcn .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1927,7 +1937,7 @@ caliper_tbls_descr</code></pre>
   vertical-align: middle;
 }
 
-#pbhfsttxhe .gt_empty_group_heading {
+#bxgvjgkxcn .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1942,15 +1952,15 @@ caliper_tbls_descr</code></pre>
   vertical-align: middle;
 }
 
-#pbhfsttxhe .gt_from_md > :first-child {
+#bxgvjgkxcn .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#pbhfsttxhe .gt_from_md > :last-child {
+#bxgvjgkxcn .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#pbhfsttxhe .gt_row {
+#bxgvjgkxcn .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1969,7 +1979,7 @@ caliper_tbls_descr</code></pre>
   overflow-x: hidden;
 }
 
-#pbhfsttxhe .gt_stub {
+#bxgvjgkxcn .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1982,7 +1992,7 @@ caliper_tbls_descr</code></pre>
   padding-right: 5px;
 }
 
-#pbhfsttxhe .gt_stub_row_group {
+#bxgvjgkxcn .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1996,11 +2006,11 @@ caliper_tbls_descr</code></pre>
   vertical-align: top;
 }
 
-#pbhfsttxhe .gt_row_group_first td {
+#bxgvjgkxcn .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#pbhfsttxhe .gt_summary_row {
+#bxgvjgkxcn .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2010,16 +2020,16 @@ caliper_tbls_descr</code></pre>
   padding-right: 5px;
 }
 
-#pbhfsttxhe .gt_first_summary_row {
+#bxgvjgkxcn .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#pbhfsttxhe .gt_first_summary_row.thick {
+#bxgvjgkxcn .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#pbhfsttxhe .gt_last_summary_row {
+#bxgvjgkxcn .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2029,7 +2039,7 @@ caliper_tbls_descr</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#pbhfsttxhe .gt_grand_summary_row {
+#bxgvjgkxcn .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2039,7 +2049,7 @@ caliper_tbls_descr</code></pre>
   padding-right: 5px;
 }
 
-#pbhfsttxhe .gt_first_grand_summary_row {
+#bxgvjgkxcn .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2049,11 +2059,11 @@ caliper_tbls_descr</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#pbhfsttxhe .gt_striped {
+#bxgvjgkxcn .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#pbhfsttxhe .gt_table_body {
+#bxgvjgkxcn .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2062,7 +2072,7 @@ caliper_tbls_descr</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#pbhfsttxhe .gt_footnotes {
+#bxgvjgkxcn .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2076,7 +2086,7 @@ caliper_tbls_descr</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#pbhfsttxhe .gt_footnote {
+#bxgvjgkxcn .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -2085,7 +2095,7 @@ caliper_tbls_descr</code></pre>
   padding-right: 5px;
 }
 
-#pbhfsttxhe .gt_sourcenotes {
+#bxgvjgkxcn .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2099,7 +2109,7 @@ caliper_tbls_descr</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#pbhfsttxhe .gt_sourcenote {
+#bxgvjgkxcn .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2107,64 +2117,64 @@ caliper_tbls_descr</code></pre>
   padding-right: 5px;
 }
 
-#pbhfsttxhe .gt_left {
+#bxgvjgkxcn .gt_left {
   text-align: left;
 }
 
-#pbhfsttxhe .gt_center {
+#bxgvjgkxcn .gt_center {
   text-align: center;
 }
 
-#pbhfsttxhe .gt_right {
+#bxgvjgkxcn .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#pbhfsttxhe .gt_font_normal {
+#bxgvjgkxcn .gt_font_normal {
   font-weight: normal;
 }
 
-#pbhfsttxhe .gt_font_bold {
+#bxgvjgkxcn .gt_font_bold {
   font-weight: bold;
 }
 
-#pbhfsttxhe .gt_font_italic {
+#bxgvjgkxcn .gt_font_italic {
   font-style: italic;
 }
 
-#pbhfsttxhe .gt_super {
+#bxgvjgkxcn .gt_super {
   font-size: 65%;
 }
 
-#pbhfsttxhe .gt_footnote_marks {
+#bxgvjgkxcn .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#pbhfsttxhe .gt_asterisk {
+#bxgvjgkxcn .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#pbhfsttxhe .gt_indent_1 {
+#bxgvjgkxcn .gt_indent_1 {
   text-indent: 5px;
 }
 
-#pbhfsttxhe .gt_indent_2 {
+#bxgvjgkxcn .gt_indent_2 {
   text-indent: 10px;
 }
 
-#pbhfsttxhe .gt_indent_3 {
+#bxgvjgkxcn .gt_indent_3 {
   text-indent: 15px;
 }
 
-#pbhfsttxhe .gt_indent_4 {
+#bxgvjgkxcn .gt_indent_4 {
   text-indent: 20px;
 }
 
-#pbhfsttxhe .gt_indent_5 {
+#bxgvjgkxcn .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -2674,18 +2684,20 @@ RMSE
 <colgroup>
 <col width="100%" />
 </colgroup>
+<thead>
+<tr class="header">
+<th align="left"># Question 1g</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td align="left"># Question 1g</td>
+<td align="left"># Question 1h</td>
 </tr>
 <tr class="even">
-<td align="left">If we had data on all spenders this would allow us to apply a causal statement about the effect of being enrolled in a HDHP on total spending for everyone that uses health services. However, as HDHPs are more advantageous for people who anticipate primarily requiring preventive services, we may expect individuals who are not in the top 1% of spending to be generally enrolled in these types of plans. Therefore, by including all spenders in our matching, we would not be able to isolate the effect of HDHP enrollment on being a superutilizer as we would now be making a more general conclusion about all utilizers of HDHP enrollment on total cost. Due to this reason of not being able to isolate the variation caused from being a superutilizer on costs, I would choose not to utilize all spenders in the study.</td>
+<td align="left">From the analysis done in the previous sections, I conclude that if a person is enrolled in an HDHP it results in higher total costs than if the person is not enrolled in an HDHP. This matches my intuition as HDHPs are beneficial to total cost if the person does not anticipate using a lot of healthcare services. If a person does use many healthcare services, the deductible is much higher for HDHP type plans compared to other plans leading to higher total costs which is reflected in our analysis.</td>
 </tr>
 </tbody>
 </table>
-<div id="question-1h" class="section level1">
-<h1>Question 1h</h1>
-<p>From the analysis done in the previous sections, I conclude that if a person is enrolled in an HDHP it results in higher total costs than if the person is not enrolled in an HDHP. This matches my intuition as HDHPs are beneficial to total cost if the person does not anticipate using a lot of healthcare services. If a person does use many healthcare services, the deductible is much higher for HDHP type plans compared to other plans leading to higher total costs which is reflected in our analysis.</p>
 <pre class="r"><code>print(&quot;=============================Works Cited=============================&quot;)</code></pre>
 <pre><code>## [1] &quot;=============================Works Cited=============================&quot;</code></pre>
 <pre class="r"><code>loadedNamespaces() %&gt;%
@@ -3171,8 +3183,7 @@ print(style = &quot;text&quot;) # Adds citations for each package to end of .rmd
 ## R Core Team (2022). _R: A Language and Environment for Statistical
 ## Computing_. R Foundation for Statistical Computing, Vienna, Austria.
 ## &lt;https://www.R-project.org/&gt;.</code></pre>
-<pre class="r"><code>knitr::write_bib(file = &#39;packages.bib&#39;) # Constructs a citation file for all packages used in this lecture.</code></pre>
-</div>
+<pre class="r"><code>knitr::write_bib(file = &#39;packages.bib&#39;) # Constructs a citation file for all packages used in this file</code></pre>
 
 
 
