@@ -58,7 +58,6 @@ From the p-values obtained from performing the t-test, we can see that there is 
 
 We might expect to see significant differences in the distribution of HDHP by family size as people with larger families may be incentivized to find innovative ways to save costs. In terms of the number of prescriptions, people who already need more prescriptions will likely enroll in a plan that allows them to save money on future prescriptions. In terms of sex, females are more likely to engage in care seeking or plan for a future medical event than males making it conceivable that they would be statistically likely to be in an HDHP.
 
-#maybe ill make mention of the difference of means
 --------------------------------------------------------------------------------
 
 ```{r Question 1b}
@@ -101,11 +100,15 @@ regdata <- read.csv("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Qu
 question1c_unmatched_reg <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
                   num_hospitalizations + num_chronicconditions + num_scrips, data = assign_data)
 
-question1c_reg <- lm(pay ~ hdhp + age + sex + famsize + policyholder  +
-                  + num_chronicconditions + num_scrips , data = regdata)
+question1c_reg <- lm(pay ~ hdhp, data = regdata, weights = weights) #using matched data with no covariates
+
+question1c_reg_with_covariates <- lm(pay ~ hdhp + age + sex + famsize + policyholder  +
+                              + num_chronicconditions + num_scrips , data = regdata) 
+#^using matched data with covariates, did not include num_hospitalizations because it was matched on already
 
 msummary(list("Unmatched Regression" = question1c_unmatched_reg, 
-              "Exact Matching Regression" = question1c_reg),
+              "Exact Matching Regression" = question1c_reg, 
+              "Exact Matching Regression w/ Covariates" = question1c_reg_with_covariates),
          )
 
 
@@ -126,9 +129,15 @@ qa_qb_balance_tables <- tbl_merge(tbls = list(unmatched_table,
 
   
 ```
-The back door being closed by matching the HDHP group with the non-HDHP group is the back door associated with inpatient hospitalizations. Through matching both groups on the # of hospitalizations, it is possible to say that both groups are similar with regards to this variable. This means that between the two groups there is no variations with regards to hospitalizations and as a result  we can more accurately depict the relationship between HDHP and spending. With regards to the quality of our match, we can note that there was not many members of the control group that went unmatched (88 people) and there were 0 people discarded from the match. As we noted from 1a. their is no significant differences between the comparison groups and thus as expected there were many matches for the treatment group. The quality of this match is poor because most of the control matched to the treatment group however we only matched on one variable so there are many back doors between pay and HDHP still open. 
-The regression results show that after matching on inpatient hospitalizations occurred, the regression coefficient of HDHP was 1770.65. Thus, for individuals who are enrolled in the HDHP they had an increased spending of $1770.65 in comparison to those who were not enrolled in an HDHP. In comparison to a regression that looks at the effects of HDHP on spending before matching for inpatient hospitilizations we can see that after matching the effect of HDHP is higher. Prior to matching the regression coefficient was 658.71 which is much lower than 1770.65. 
+The back door being closed by matching the HDHP group with the non-HDHP group is the back door associated with inpatient hospitalizations. Through matching both groups on the # of hospitalizations, it is possible to say that both groups are similar with regards to this variable. This means that between the two groups there is no variations with regards to hospitalizations and as a result  we can more accurately depict the relationship between HDHP and spending. With regards to the quality of our match, we can note that there were not many members of the control group that went unmatched (88 people) and there were 0 people discarded from the match. As we noted from 1a. their are no significant differences between the comparison groups with the number of hospitalizations and thus as expected there were many matches for the treatment group. The quality of this match is poor because most of the control matched to the treatment group however we only matched on one variable so there are many back doors between pay and HDHP still open. 
 
+The regression results show that after matching on inpatient hospitalizations occurred, the regression coefficient of HDHP when no covariates were added to the regression was 1770.65. Thus, for individuals who are enrolled in the HDHP they had an increased spending of $1770.65 in comparison to those who were not enrolled in an HDHP. However this regression does not tell the whole story as it does not include the other covariates that effect how much is being spent on health care.
+
+#In comparison to a regression that looks at the effects of HDHP on spending before matching for inpatient hospitilizations we can see that after matching the effect of HDHP is higher. Prior to matching the regression coefficient was 608.81 which is much lower than 1770.65. 
+#^I think we can remove this part because I explained further down below
+
+When the matched regression included the other covariates a large change in the regression coefficient was observed.The regression value for HDHP became -1430.77 when all the other covariates were controlled for. These results were surprising as it suggests that superutilizers enrolled in an HDHP spend less in comparison to those who were not in an HDHP. It appears that the number of hospitalizations play a large role in how much a person in an HDHP will spend on healthcare. When all the variation in the number of hospitilizations is removed (through matching) and the other covariates are controlled for (through regression) we can see that superutilizers enrolled in HDHP spend less. This suggests to us that hospitilizations contribute to large amounts of spending for people in HDHP because they perform a larger array of services and as a result the deductibale a person pays at the hospital is much larger than anywhere else. When we compare the results of this regression with the regression that used the unmatched data and controlled for all the variables, including number of hospitilizations, we see that the regression coefficient for HDHP is 608.81 and the regression coefficient for number of hospitilizations is 38793.51. This indicates that belonging to a HDHP contributes to higher spending and number of hospitilizations has a very large effect on spending. When the variation in hospitilizations is removed by the match it thus explains why the regression coefficient for HDHP becomes negative as number of hospitilizations had a large effect on how much was being spent on healthcare. 
+ 
 --------------------------------------------------------------------------------
 
 ```{r Question 1d}
