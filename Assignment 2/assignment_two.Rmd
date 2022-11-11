@@ -3,8 +3,8 @@ title: "Assignment 2  A Matching Exercise"
 author: "Husayn Jessa and Aidan Bodner"
 date: "11/11/2022"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -29,7 +29,7 @@ name <- Sys.info()
 name[7]
 
 here()
-assign_data <- read_dta("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
+assign_data <- read_dta("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 2/Dataset2a_Claims (1).dta")
 
 assign_data %>%
   summarise_all(funs(sum(is.na(.)))) # Returns no NAs, can probably remove
