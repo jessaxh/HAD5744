@@ -92,9 +92,6 @@ summary(question1c_match)
 
 regdata <-  match.data(question1c_match)
 
-write.csv(regdata, "/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
-
-regdata <- read.csv("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1c_match_data.csv")
 
 question1c_unmatched_reg <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
                   num_hospitalizations + num_chronicconditions + num_scrips, data = assign_data)
@@ -155,11 +152,6 @@ summary(question1d_match)
 q_d_match_data <-  match.data(question1d_match)
 
 
-
-write.csv(q_d_match_data, "/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
-q_d_match_data <- read.csv("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1d_matched_data.csv")
-
-
 q_d_match_data$sex <- as.factor(q_d_match_data$sex) # Convert sex from a character to a factor
 q_d_match_data$sex <- as.numeric(q_d_match_data$sex) # Convert sex from a character to a numeric
 
@@ -211,10 +203,6 @@ summary(question1e_match)
 
 
 qe_psmmatch_data <- match.data(question1e_match)
-
-
-write.csv(qe_psmmatch_data, "/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv")
-qe_psmmatch_data <- read.csv("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 2/Question_1e_matched_data.csv")
 
 qe_psmmatch_data$sex <- as.factor(qe_psmmatch_data$sex) # Convert sex from a character to a factor
 qe_psmmatch_data$sex <- as.numeric(qe_psmmatch_data$sex) # Convert sex from a character to a numeric
