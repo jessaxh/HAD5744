@@ -36,7 +36,7 @@ assign_data %>%
 
 ```
 
---------------------------------------------------------------------------------
+
 # Question 1a
 
 ``` {r Question 1a }
@@ -66,7 +66,7 @@ From the p-values obtained from performing the t-test, we can see that there is 
 
 We might expect to see significant differences in the distribution of HDHP by family size as people with larger families may be incentivized to find innovative ways to save costs. In terms of the number of prescriptions, people who already need more prescriptions will likely enroll in a plan that allows them to save money on future prescriptions. In terms of sex, females are more likely to engage in care seeking or plan for a future medical event than males making it conceivable that they would be statistically likely to be in an HDHP. In terms of being a policy holder, the policy holder is someone who owns the insurance policy and as such are more inclined to use the insurance they have and as such when enrolled in an HDHP they take greater pride in using it.
 
---------------------------------------------------------------------------------
+
 # Question 1b
 
 ```{r Question 1b}
@@ -84,7 +84,7 @@ There is an underestimated effect for these coefficients as a result, as we expe
 We also expect that a HDHP exposes these participants to higher fees and thus through higher deductibles these groups will be expected to spend more on health services than those who are not enrolled in these forms of insurance plans. 
 Thus these variables underestimate the true causal effect. 
 
---------------------------------------------------------------------------------
+
 # Question 1c
 
 ```{r Question 1c}
@@ -141,7 +141,7 @@ The regression results show that after matching on inpatient hospitalizations oc
 
 When the matched regression included the other covariates a large change in the regression coefficient was observed. The regression value for HDHP became -1430.77 when all the other covariates were controlled for. These results were surprising as it suggests that superutilizers enrolled in an HDHP spend less in comparison to those who were not in an HDHP. It appears that the number of hospitalizations play a large role in how much a person in an HDHP will spend on healthcare. When all the variation in the number of hospitilizations is removed (through matching) and the other covariates are controlled for (through regression) we can see that superutilizers enrolled in HDHP spend less. This suggests to us that hospitalizations contribute to large amounts of spending for people in HDHP because they perform a larger array of services and as a result the deductibale a person pays at the hospital is much larger than anywhere else. When we compare the results of this regression with the regression that used the unmatched data and controlled for all the variables, including number of hospitalizations, we see that the regression coefficient for HDHP is 608.81 and the regression coefficient for number of hospitalizations is 38793.51. This indicates that belonging to a HDHP contributes to higher spending and number of hospitalizations has a very large effect on spending. When the variation in hospitalizations is removed by the match it thus explains why the regression coefficient for HDHP becomes negative as number of hospitalizations had a large effect on how much was being spent on healthcare. 
  
---------------------------------------------------------------------------------
+
 # Question 1d
 
 ```{r Question 1d}
@@ -195,7 +195,7 @@ When all variables are matched upon and all the variation is removed with regard
 
 When looking at the balance table we can see that the mean age difference between the two groups is 0.28. The difference in mean of sex is 0.01. The difference in mean family size is 0.03, the difference in mean of policyholder is 0.01, the difference in mean of number of hospitilizations is 0.02, the difference in mean for number of chronic conditions is 0.01 and the difference in number of prescriptions is 0.06. As we can see there is now very little difference between the two groups and thus we know that the variation for these variables has been removed. Moreover, looking at the p-value for the t-tests, we can further see that there is no statistical difference for any of the covariates.
 
---------------------------------------------------------------------------------
+
 # Question 1e
 
 ```{r Question 1e}
@@ -266,7 +266,7 @@ Balance assumption. Looking at the balance table there is sufficient balance giv
 
 The PSM assumptions are therefore met.
 
---------------------------------------------------------------------------------
+
 # Question 1f
 
 ```{r Question 1f}
@@ -474,17 +474,16 @@ Looking at the balance table comparing the five caliper sizes, we can see that a
 
 When decreasing the caliper size from 0.01 to 0.1, there is a decrease in total spending for those enrolled in a HDHP from 6236.011 to 6071.649 units. This makes sense because as the caliper increases in size, the more bias we introduce into our matches and estimates. There is no further change in the estimated treatment effect when the caliper size increases after 0.1.
 
---------------------------------------------------------------------------------
+
 # Question 1g
 
 If we had data on all spenders this would allow us to apply a causal statement about the effect of being enrolled in a HDHP on total spending for everyone that uses health services. However, as HDHPs are more advantageous for people who anticipate primarily requiring preventive services, we may expect individuals who are not in the top 1% of spending to be generally enrolled in these types of plans. Therefore, by including all spenders in our matching, we would not be able to isolate the effect of HDHP enrollment on being a superutilizer as we would now be making a more general conclusion about all utilizers of HDHP enrollment on total cost. Due to this reason of not being able to isolate the variation caused from being a superutilizer on costs, I would choose not to utilize all spenders in the study.
 
---------------------------------------------------------------------------------
+
 # Question 1h
 
 From the analysis done in the previous sections, I conclude that if a person is enrolled in an HDHP it results in higher total costs than if the person is not enrolled in an HDHP. This matches my intuition as HDHPs are beneficial to total cost if the person does not anticipate using a lot of healthcare services. If a person does use many healthcare services, the deductible is much higher for HDHP type plans compared to other plans leading to higher total costs which is reflected in our analysis.
 
---------------------------------------------------------------------------------
 
 
 
