@@ -2,7 +2,9 @@
 title: "Assignment 2  A Matching Exercise"
 author: "Husayn Jessa and Aidan Bodner"
 date: "11/11/2022"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -36,6 +38,7 @@ assign_data %>%
 
 --------------------------------------------------------------------------------
 # Question 1a
+
 ``` {r Question 1a }
 
 assign_data$sex <- as.factor(assign_data$sex) # Convert sex from a character to a factor
@@ -65,6 +68,7 @@ We might expect to see significant differences in the distribution of HDHP by fa
 
 --------------------------------------------------------------------------------
 # Question 1b
+
 ```{r Question 1b}
 
 one_b_reg_naive <- lm(pay ~ hdhp + age + sex + famsize + policyholder +
@@ -82,6 +86,7 @@ Thus these variables underestimate the true causal effect.
 
 --------------------------------------------------------------------------------
 # Question 1c
+
 ```{r Question 1c}
 
 question1c_match <- matchit(hdhp ~ num_hospitalizations,
@@ -138,6 +143,7 @@ When the matched regression included the other covariates a large change in the 
  
 --------------------------------------------------------------------------------
 # Question 1d
+
 ```{r Question 1d}
 
 question1d_match <- matchit(hdhp ~ num_hospitalizations + age + sex + famsize + policyholder +
@@ -191,6 +197,7 @@ When looking at the balance table we can see that the mean age difference betwee
 
 --------------------------------------------------------------------------------
 # Question 1e
+
 ```{r Question 1e}
 question1e_match <- matchit(hdhp ~ num_hospitalizations + age + sex + famsize + policyholder +
                   num_hospitalizations + num_chronicconditions + num_scrips,
@@ -261,6 +268,7 @@ The PSM assumptions are therefore met.
 
 --------------------------------------------------------------------------------
 # Question 1f
+
 ```{r Question 1f}
 
 # Caliper set to 0.01
@@ -468,7 +476,6 @@ When decreasing the caliper size from 0.01 to 0.1, there is a decrease in total 
 
 --------------------------------------------------------------------------------
 # Question 1g
-
 
 If we had data on all spenders this would allow us to apply a causal statement about the effect of being enrolled in a HDHP on total spending for everyone that uses health services. However, as HDHPs are more advantageous for people who anticipate primarily requiring preventive services, we may expect individuals who are not in the top 1% of spending to be generally enrolled in these types of plans. Therefore, by including all spenders in our matching, we would not be able to isolate the effect of HDHP enrollment on being a superutilizer as we would now be making a more general conclusion about all utilizers of HDHP enrollment on total cost. Due to this reason of not being able to isolate the variation caused from being a superutilizer on costs, I would choose not to utilize all spenders in the study.
 
