@@ -2,7 +2,9 @@
 title: "Assignment 2  A Matching Exercise"
 author: "Husayn Jessa and Aidan Bodner"
 date: "11/11/2022"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -468,7 +470,6 @@ When decreasing the caliper size from 0.01 to 0.1, there is a decrease in total 
 
 --------------------------------------------------------------------------------
 # Question 1g
-
 
 If we had data on all spenders this would allow us to apply a causal statement about the effect of being enrolled in a HDHP on total spending for everyone that uses health services. However, as HDHPs are more advantageous for people who anticipate primarily requiring preventive services, we may expect individuals who are not in the top 1% of spending to be generally enrolled in these types of plans. Therefore, by including all spenders in our matching, we would not be able to isolate the effect of HDHP enrollment on being a superutilizer as we would now be making a more general conclusion about all utilizers of HDHP enrollment on total cost. Due to this reason of not being able to isolate the variation caused from being a superutilizer on costs, I would choose not to utilize all spenders in the study.
 
