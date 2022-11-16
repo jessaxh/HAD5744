@@ -1,0 +1,10 @@
+---
+title: "Assignment 3"
+author: "Husayn Jessa and Aidan Bodner"
+date: "16/11/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
