@@ -40,7 +40,7 @@ assign_data$date <- as.numeric(assign_data$date)
 q1_line_graph <- ggplot(assign_data, (aes(x = date, y = hits, group = keyword))) + 
   geom_line(aes(color = keyword)) + theme_linedraw() + labs(x = "Date", y = "Hits") +
   geom_vline(xintercept = as.numeric(assign_data$date[75]), 
-    color = "#D52F0C") + geom_text(aes(x = as.numeric(date[120]), label="Start of Pandemic (2020-03-15)", y=90), color = "red") +
+    color = "red") + geom_text(aes(x = as.numeric(date[120]), label="Start of Pandemic (2020-03-15)", y=90), color = "red") +
   scale_x_discrete(breaks = c("2020-01-01",
                               "2020-02-01",
                               "2020-03-01",
