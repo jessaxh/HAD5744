@@ -8,3 +8,59 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# Load Packages
+```{r Packages}
+library(here)
+library(dplyr)
+library(ggplot2)
+library(tidyverse)
+library(ggrepel)
+library(ggtext)
+library(showtext)
+library(stringr)
+```
+
+# Data and Cleaning
+```{r Data and Cleaning}
+name <- Sys.info() 
+name[7]
+
+assign_data <- read.csv("a3_p1_sourdough_trends.csv")
+
+```
+
+# Question 1a
+```{r Question 1a}
+
+assign_data$date <- str_replace_all(assign_data$date, "T00:00:00Z", "")
+assign_data$date <- as.factor(assign_data$date)
+
+q1_line_graph <- ggplot(assign_data, (aes(x = date, y = hits, group = keyword))) + 
+  geom_line(aes(color = keyword)) + theme_linedraw() + labs(x = "Date", y = "Hits") +
+  geom_vline(aes(xintercept = 2020-03-15), 
+    color = "grey40",
+)
+
+
+
+```
+
+# Question 1b
+```{r Question 1b}
+
+```
+
+# Question 1c
+```{r Question 1c}
+
+```
+
+# Question 1d
+```{r Question 1d}
+
+```
+
+
+
+
