@@ -35,7 +35,7 @@ assign_data <- read.csv("a3_p1_sourdough_trends.csv")
 
 assign_data$date <- str_replace_all(assign_data$date, "T00:00:00Z", "")
 assign_data$date <- as.factor(assign_data$date)
-assign_data$date <- as.numeric(assign_data$date)
+assign_data$date <- as.numeric(assign_data$date) #idk if we should do this
 
 q1_line_graph <- ggplot(assign_data, (aes(x = date, y = hits, group = keyword))) + 
   geom_line(aes(color = keyword)) + theme_linedraw() + labs(x = "Date", y = "Hits") +
