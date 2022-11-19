@@ -20,6 +20,7 @@ library(ggtext)
 library(showtext)
 library(stringr)
 library(fastDummies)
+library(modelsummary)
 ```
 
 # Data and Cleaning
@@ -68,62 +69,51 @@ hq1_line_graph <- ggplot(assign_data, aes(x = date, y = hits, colour = keyword, 
                               "2020-08-01")) + ggtitle("Interest in Food Types Over Time")
 
 hq1_line_graph
+
+# Look at plot at pre-treatment, to gauge trend lines and similarities or differences: 
+
+hq1_line_graph + coord_cartesian(xlim= c(0,76))
+#we can see before the start of the pandemic sourdough looked similar to cereal but did not look anything like soup or sandwich so considering droping thos
+
+
+
 ```
+
+
 
 # Question 1b
 ```{r Question 1b}
 
-# Look at plots for each food individually, to gauge trend lines: 
-sourdough_plot <- ggplot(assign_data[which(assign_data$keyword=="sourdough"),],aes(x=date,y=hits,group=keyword, colour = keyword)) + geom_line() +
-  theme_classic() + labs(x="Time",y="Hits") + 
-  geom_vline(xintercept = assign_data$date[75], show.legend = FALSE)  + annotate("text", x=assign_data$date[70], y=15, label="Start of Pandemic (2020-03-15)", angle=90) + geom_line() +scale_x_discrete(breaks = c("2020-01-01",
-                              "2020-02-01",
-                              "2020-03-01",
-                              "2020-04-01",
-                              "2020-05-01",
-                              "2020-06-01",
-                              "2020-07-01",
-                              "2020-08-01"))
+#Create Treated Variable for sourdough https://www.princeton.edu/~otorres/DID101R.pdf
 
-cereal_plot <- ggplot(assign_data[which(assign_data$keyword=="cereal"),],aes(x=date,y=hits,group=keyword, colour = keyword)) + geom_line() +
-  theme_classic() + labs(x="Time",y="Hits") + 
-  geom_vline(xintercept = assign_data$date[75], show.legend = FALSE)  + annotate("text", x=assign_data$date[70], y=15, label="Start of Pandemic (2020-03-15)", angle=90) + geom_line() +scale_x_discrete(breaks = c("2020-01-01",
-                              "2020-02-01",
-                              "2020-03-01",
-                              "2020-04-01",
-                              "2020-05-01",
-                              "2020-06-01",
-                              "2020-07-01",
-                              "2020-08-01"))
+regdata <- assign_data %>% mutate(treated = ifelse(keyword == "sourdough", 1, 0)) 
 
-sandwich_plot <- ggplot(assign_data[which(assign_data$keyword=="sandwich"),],aes(x=date,y=hits,group=keyword, colour = keyword)) + geom_line() +
-  theme_classic() + labs(x="Time",y="Hits") + 
-  geom_vline(xintercept = assign_data$date[75], show.legend = FALSE)  + annotate("text", x=assign_data$date[70], y=15, label="Start of Pandemic (2020-03-15)", angle=90) + geom_line() +scale_x_discrete(breaks = c("2020-01-01",
-                              "2020-02-01",
-                              "2020-03-01",
-                              "2020-04-01",
-                              "2020-05-01",
-                              "2020-06-01",
-                              "2020-07-01",
-                              "2020-08-01"))
-  
-soup_plot <- ggplot(assign_data[which(assign_data$keyword=="soup"),],aes(x=date,y=hits,group=keyword, colour = keyword)) + geom_line() +
-  theme_classic() + labs(x="Time",y="Hits") + 
-  geom_vline(xintercept = assign_data$date[75], show.legend = FALSE)  + annotate("text", x=assign_data$date[70], y=15, label="Start of Pandemic (2020-03-15)", angle=90) + geom_line() +scale_x_discrete(breaks = c("2020-01-01",
-                              "2020-02-01",
-                              "2020-03-01",
-                              "2020-04-01",
-                              "2020-05-01",
-                              "2020-06-01",
-                              "2020-07-01",
-                              "2020-08-01"))
+# Create a dummy variable to indicate the time when the treatment started. 
 
-cereal_plot
-sandwich_plot
-soup_plot
-sourdough_plot
+regdata <- regdata %>% mutate(pandemic_begun = ifelse(date >= "2020-03-15", 1, 0))
 
+#Create interaction variable between treated and beginning of pandemic
 
+regdata <- regdata %>% mutate(interaction = treated*pandemic_begun)
+
+# Statistical tests: are the two groups' trends different?
+pretrend_test <- lm(hits ~ treated + pandemic_begun + interaction, data=regdata)
+msummary(list(pretrend_test),
+         vcov=c(rep("robust",1)),
+         stars=c('*' = .1, '**' = .05, '***' = .01)) # Interpret each coefficient here
+
+#Dropping Control Groups
+
+new_regdata<- regdata %>% filter(keyword %in% c("sourdough","cereal"))
+
+unique(new_regdata$keyword)
+
+new_pretrend_test <- lm(hits ~ treated + pandemic_begun + interaction, data=new_regdata)
+msummary(list(pretrend_test,new_pretrend_test),
+         vcov=c(rep("robust",1)),
+         stars=c('*' = .1, '**' = .05, '***' = .01)) # Interpret each coefficient here
+
+#i think this is how you do it but im not sure
 
 
 ```
