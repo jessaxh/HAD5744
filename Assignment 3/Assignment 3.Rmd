@@ -58,7 +58,14 @@ q1_line_graph
 assign_data$date <- str_replace_all(assign_data$date, "T00:00:00Z", "")
 
 hq1_line_graph <- ggplot(assign_data, aes(x = date, y = hits, colour = keyword, group = keyword)) +
-                theme_classic()  + geom_vline(xintercept = assign_data$date[75], show.legend = FALSE) + annotate("text", x=assign_data$date[70], y=86, label="Start of Pandemic", angle=90) + geom_line()
+                theme_classic()  + geom_vline(xintercept = assign_data$date[75], show.legend = FALSE) + annotate("text", x=assign_data$date[70], y=86, label="Start of Pandemic ", angle=90) + geom_line() +  scale_x_discrete(breaks = c("2020-01-01",
+                              "2020-02-01",
+                              "2020-03-01",
+                              "2020-04-01",
+                              "2020-05-01",
+                              "2020-06-01",
+                              "2020-07-01",
+                              "2020-08-01")) + ggtitle("Interest in Food Types Over Time")
 
 hq1_line_graph
 ```
@@ -66,9 +73,55 @@ hq1_line_graph
 # Question 1b
 ```{r Question 1b}
 
-#Create Treated indicator for Sourdough  - by creating dummy variables where Sourdough = 1
+# Look at plots for each food individually, to gauge trend lines: 
+sourdough_plot <- ggplot(assign_data[which(assign_data$keyword=="sourdough"),],aes(x=date,y=hits,group=keyword, colour = keyword)) + geom_line() +
+  theme_classic() + labs(x="Time",y="Hits") + 
+  geom_vline(xintercept = assign_data$date[75], show.legend = FALSE)  + annotate("text", x=assign_data$date[70], y=15, label="Start of Pandemic (2020-03-15)", angle=90) + geom_line() +scale_x_discrete(breaks = c("2020-01-01",
+                              "2020-02-01",
+                              "2020-03-01",
+                              "2020-04-01",
+                              "2020-05-01",
+                              "2020-06-01",
+                              "2020-07-01",
+                              "2020-08-01"))
 
-assign_data <- dummy_cols(assign_data, select_columns = 'keyword')
+cereal_plot <- ggplot(assign_data[which(assign_data$keyword=="cereal"),],aes(x=date,y=hits,group=keyword, colour = keyword)) + geom_line() +
+  theme_classic() + labs(x="Time",y="Hits") + 
+  geom_vline(xintercept = assign_data$date[75], show.legend = FALSE)  + annotate("text", x=assign_data$date[70], y=15, label="Start of Pandemic (2020-03-15)", angle=90) + geom_line() +scale_x_discrete(breaks = c("2020-01-01",
+                              "2020-02-01",
+                              "2020-03-01",
+                              "2020-04-01",
+                              "2020-05-01",
+                              "2020-06-01",
+                              "2020-07-01",
+                              "2020-08-01"))
+
+sandwich_plot <- ggplot(assign_data[which(assign_data$keyword=="sandwich"),],aes(x=date,y=hits,group=keyword, colour = keyword)) + geom_line() +
+  theme_classic() + labs(x="Time",y="Hits") + 
+  geom_vline(xintercept = assign_data$date[75], show.legend = FALSE)  + annotate("text", x=assign_data$date[70], y=15, label="Start of Pandemic (2020-03-15)", angle=90) + geom_line() +scale_x_discrete(breaks = c("2020-01-01",
+                              "2020-02-01",
+                              "2020-03-01",
+                              "2020-04-01",
+                              "2020-05-01",
+                              "2020-06-01",
+                              "2020-07-01",
+                              "2020-08-01"))
+  
+soup_plot <- ggplot(assign_data[which(assign_data$keyword=="soup"),],aes(x=date,y=hits,group=keyword, colour = keyword)) + geom_line() +
+  theme_classic() + labs(x="Time",y="Hits") + 
+  geom_vline(xintercept = assign_data$date[75], show.legend = FALSE)  + annotate("text", x=assign_data$date[70], y=15, label="Start of Pandemic (2020-03-15)", angle=90) + geom_line() +scale_x_discrete(breaks = c("2020-01-01",
+                              "2020-02-01",
+                              "2020-03-01",
+                              "2020-04-01",
+                              "2020-05-01",
+                              "2020-06-01",
+                              "2020-07-01",
+                              "2020-08-01"))
+
+cereal_plot
+sandwich_plot
+soup_plot
+sourdough_plot
 
 
 
