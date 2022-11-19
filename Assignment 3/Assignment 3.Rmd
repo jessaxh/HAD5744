@@ -19,6 +19,7 @@ library(ggrepel)
 library(ggtext)
 library(showtext)
 library(stringr)
+library(fastDummies)
 ```
 
 # Data and Cleaning
@@ -52,10 +53,25 @@ q1_line_graph <- ggplot(assign_data, (aes(x = date, y = hits, group = keyword)))
 
 q1_line_graph
 
+
+#I wanted to make a line graph without converting our dates to numeric:
+assign_data$date <- str_replace_all(assign_data$date, "T00:00:00Z", "")
+
+hq1_line_graph <- ggplot(assign_data, aes(x = date, y = hits, colour = keyword, group = keyword)) +
+                theme_classic()  + geom_vline(xintercept = assign_data$date[75], show.legend = FALSE) + annotate("text", x=assign_data$date[70], y=86, label="Start of Pandemic", angle=90) + geom_line()
+
+hq1_line_graph
 ```
 
 # Question 1b
 ```{r Question 1b}
+
+#Create Treated indicator for Sourdough  - by creating dummy variables where Sourdough = 1
+
+assign_data <- dummy_cols(assign_data, select_columns = 'keyword')
+
+
+
 
 ```
 
