@@ -37,7 +37,7 @@ assign_data <- read.csv("a3_p1_sourdough_trends.csv")
 
 assign_data$date <- str_replace_all(assign_data$date, "T00:00:00Z", "")
 assign_data$date <- as.factor(assign_data$date)
-assign_data$date <- as.numeric(assign_data$date) #idk if we should do this
+assign_data$date <- as.numeric(assign_data$date) 
 
 q1_line_graph <- ggplot(assign_data, (aes(x = date, y = hits, group = keyword))) + 
   geom_line(aes(color = keyword)) + theme_linedraw() + labs(x = "Date", y = "Hits") +
@@ -106,6 +106,7 @@ msummary(list(pretrend_test),
 
 #Dropping Control Groups
 
+#dropping soup and sandwich from data 
 new_regdata<- regdata %>% filter(keyword %in% c("sourdough","cereal"))
 
 unique(new_regdata$keyword)
@@ -122,6 +123,20 @@ msummary(list(pretrend_test,new_pretrend_test),
 
 # Question 1c
 ```{r Question 1c}
+
+#create a realtive_month variable by shifting the "date" variable back 15 days and then taking the month of the resulting date
+
+
+
+#create an "After" variable equal to 1/0 or True/False if the date is March 15 or afterwards 
+
+
+
+
+
+#illustrate how the values of "relative_month" line up with "date" and subtracte a number from "relative_month" so the last period just before treatment (Feb 16 - Mar 14)  is 0. (Also, change the Jan 1 -14 month so it's one less than the Jan 15- Feb 14 month) 
+
+
 
 ```
 
