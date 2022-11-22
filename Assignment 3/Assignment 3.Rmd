@@ -21,6 +21,8 @@ library(showtext)
 library(stringr)
 library(fastDummies)
 library(modelsummary)
+library(lubridate)
+
 ```
 
 # Data and Cleaning
@@ -56,7 +58,11 @@ q1_line_graph
 
 
 #I wanted to make a line graph without converting our dates to numeric:
+
+#create column new_date to change the date variable into dates
 assign_data$date <- str_replace_all(assign_data$date, "T00:00:00Z", "")
+assign_data$new_date <- ymd(assign_data$date)
+class(assign_data$new_date)
 
 hq1_line_graph <- ggplot(assign_data, aes(x = date, y = hits, colour = keyword, group = keyword)) +
                 theme_classic()  + geom_vline(xintercept = assign_data$date[75], show.legend = FALSE) + annotate("text", x=assign_data$date[70], y=86, label="Start of Pandemic ", angle=90) + geom_line() +  scale_x_discrete(breaks = c("2020-01-01",
@@ -124,18 +130,23 @@ msummary(list(pretrend_test,new_pretrend_test),
 # Question 1c
 ```{r Question 1c}
 
-#create a realtive_month variable by shifting the "date" variable back 15 days and then taking the month of the resulting date
 
+#create a relative_month variable by shifting the "date" variable back 15 days (so that the treatment day is the first day of the month)  and then taking the month of the resulting date 
+new_regdata <- new_regdata %>% mutate(relative_month = new_date - 14)     
+#shift date back 15 days, used new_date instead of date as date is a character while new date is the class date
+#minused 14 so that the treatment day is may first rather than february 29  
 
 
 #create an "After" variable equal to 1/0 or True/False if the date is March 15 or afterwards 
 
-
-
+new_regdata <- new_regdata %>% mutate(After = ifelse(relative_month >= "2020-03-15", 1, 0 )) 
 
 
 #illustrate how the values of "relative_month" line up with "date" and subtracte a number from "relative_month" so the last period just before treatment (Feb 16 - Mar 14)  is 0. (Also, change the Jan 1 -14 month so it's one less than the Jan 15- Feb 14 month) 
 
+relative_month_date_illustration <- new_regdata %>% select(relative_month, new_date)
+
+#table with relative month and new date next to eachother 
 
 
 ```
