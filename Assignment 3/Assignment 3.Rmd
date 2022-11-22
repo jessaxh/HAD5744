@@ -22,6 +22,7 @@ library(stringr)
 library(fastDummies)
 library(modelsummary)
 library(lubridate)
+library(gtsummary)
 
 ```
 
@@ -92,7 +93,7 @@ Sourdough bread will be considered our Treated group and thus when looking at th
 # Question 1b
 ```{r Question 1b}
 
-#Create Treated Variable for sourdough https://www.princeton.edu/~otorres/DID101R.pdf
+# Create Treated Variable for sourdough https://www.princeton.edu/~otorres/DID101R.pdf
 
 regdata <- assign_data %>% mutate(treated = ifelse(keyword == "sourdough", 1, 0)) 
 
@@ -100,7 +101,7 @@ regdata <- assign_data %>% mutate(treated = ifelse(keyword == "sourdough", 1, 0)
 
 regdata <- regdata %>% mutate(pandemic_begun = ifelse(date >= "2020-03-15", 1, 0))
 
-#Create interaction variable between treated and beginning of pandemic
+# Create interaction variable between treated and beginning of pandemic
 
 regdata <- regdata %>% mutate(interaction = treated*pandemic_begun)
 
@@ -110,15 +111,16 @@ msummary(list(pretrend_test),
          vcov=c(rep("robust",1)),
          stars=c('*' = .1, '**' = .05, '***' = .01)) # Interpret each coefficient here
 
-#Dropping Control Groups
+# Dropping Control Groups
 
-#dropping soup and sandwich from data 
-new_regdata<- regdata %>% filter(keyword %in% c("sourdough","cereal"))
+# Dropping soup and sandwich from data 
+new_regdata <- regdata %>% filter(keyword %in% c("sourdough","cereal"))
 
 unique(new_regdata$keyword)
 
 new_pretrend_test <- lm(hits ~ treated + pandemic_begun + interaction, data=new_regdata)
-msummary(list(pretrend_test,new_pretrend_test),
+
+msummary(list(pretrend_test, new_pretrend_test),
          vcov=c(rep("robust",1)),
          stars=c('*' = .1, '**' = .05, '***' = .01)) # Interpret each coefficient here
 
@@ -126,15 +128,20 @@ msummary(list(pretrend_test,new_pretrend_test),
 
 
 ```
+The regression results for either the model where we keep all the control groups or the model where we drop soup and sandwich are not concerning. If we hypothesize that sourdough popularity only begun at the pandemic start date (2020-03-15), then it would be likely that any given search for sourdough would result in an increase in hits. Similarly, it is difficult to say that internet traffic (hits), for any of the dates after the pandemic start would be more or less than that before the pandemic. Therefore, the negative coefficients for treated and pandemic_begun variables are not concerning. The interaction term makes sense given our hypothesis as it indicates a positive change in hits for sourdough after the pandemic start date compared to before. 
+
+When we drop the other control variables, our standard errors decrease and our R^2 increases, indicating a more precise estimate of the number of hits and better model fit. For this reasons as well, we are not concerned.
+
 
 # Question 1c
 ```{r Question 1c}
 
 
 #create a relative_month variable by shifting the "date" variable back 15 days (so that the treatment day is the first day of the month)  and then taking the month of the resulting date 
+new_regdata <- assign_data
 new_regdata <- new_regdata %>% mutate(relative_month = new_date - 14)     
 #shift date back 15 days, used new_date instead of date as date is a character while new date is the class date
-#minused 14 so that the treatment day is may first rather than february 29  
+# I used 14 so that the treatment day is may first rather than February 29  
 
 
 #create an "After" variable equal to 1/0 or True/False if the date is March 15 or afterwards 
@@ -142,11 +149,16 @@ new_regdata <- new_regdata %>% mutate(relative_month = new_date - 14)
 new_regdata <- new_regdata %>% mutate(After = ifelse(relative_month >= "2020-03-15", 1, 0 )) 
 
 
-#illustrate how the values of "relative_month" line up with "date" and subtracte a number from "relative_month" so the last period just before treatment (Feb 16 - Mar 14)  is 0. (Also, change the Jan 1 -14 month so it's one less than the Jan 15- Feb 14 month) 
+#illustrate how the values of "relative_month" line up with "date" and subtract a number from "relative_month" so the last period just before treatment (Feb 16 - Mar 14)  is 0. (Also, change the Jan 1 -14 month so it's one less than the Jan 15- Feb 14 month) 
 
 relative_month_date_illustration <- new_regdata %>% select(relative_month, new_date)
 
-#table with relative month and new date next to eachother 
+#table with relative month and new date next to each other 
+relative_month_date_illustration <- relative_month_date_illustration %>% mutate(diff_bt_date = difftime(new_date, relative_month, units = "days"))
+
+plot(relative_month_date_illustration$diff_bt_date)
+
+q_c_table <- tibble(relative_month_date_illustration)
 
 
 ```
