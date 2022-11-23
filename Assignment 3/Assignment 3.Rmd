@@ -23,6 +23,7 @@ library(fastDummies)
 library(modelsummary)
 library(lubridate)
 library(gtsummary)
+library(fixest)
 
 ```
 
@@ -138,7 +139,6 @@ When we drop the other control variables, our standard errors decrease and our R
 
 
 #create a relative_month variable by shifting the "date" variable back 15 days (so that the treatment day is the first day of the month)  and then taking the month of the resulting date 
-new_regdata <- assign_data
 new_regdata <- new_regdata %>% mutate(relative_month = new_date - 14)     
 #shift date back 15 days, used new_date instead of date as date is a character while new date is the class date
 # I used 14 so that the treatment day is may first rather than February 29  
@@ -166,6 +166,15 @@ q_c_table <- tibble(relative_month_date_illustration)
 # Question 1d
 ```{r Question 1d}
 
+#Use two-way fixed effects to estimate the difference-in-difference estimate of the effect of lockdown on sourdough popularity. What are your two fixed effects? 
+
+fixed_effects_model <- feols(hits~treated + pandemic_begun + interaction, data = new_regdata) #idk what fixed effects we have to include here also not sure if we include all 3 of these variables in the ols 
+fixed_effects_model
+
+
+#report and interper results, with standard errors clustered at keyword level 
+
+msummary(fixed_effects_model, vcov= ~keyword, fmt = '%#.8f') #is this how you cluster by keyword level haha
 ```
 
 
