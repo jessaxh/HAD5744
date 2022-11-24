@@ -168,7 +168,7 @@ q_c_table <- tibble(relative_month_date_illustration)
 
 #Use two-way fixed effects to estimate the difference-in-difference estimate of the effect of lockdown on sourdough popularity. What are your two fixed effects? 
 
-fixed_effects_model <- feols(hits~treated + pandemic_begun + interaction, data = new_regdata) #idk what fixed effects we have to include here also not sure if we include all 3 of these variables in the ols 
+fixed_effects_model <- feols(hits~treated + pandemic_begun + interaction, data = new_regdata) #idk what fixed effects we have to include here also not sure if we include all 3 of these variables in the ols  (maybe include keyword as the fixed effect but that introduces colineaarity with treated)
 fixed_effects_model
 
 
