@@ -177,6 +177,16 @@ fixed_effects_model
 msummary(fixed_effects_model, vcov= ~keyword, fmt = '%#.8f') #is this how you cluster by keyword level haha
 ```
 
+#PART 3 Quantile and Nonparametric Regression
+
+```{r Data and Cleaning}
+name <- Sys.info() 
+name[7]
+
+here()
+load("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 3/a3_p3_medicare.RData")
+
+```
 
 # Question 3a
 ```{r Question 3a}
@@ -186,10 +196,10 @@ mydata <- mydata %>% mutate(medicare = ifelse(agex >= 65, 1, 0))
 medicare <- mydata[mydata$medicare == 1, ]
 no_medicare <- mydata[mydata$medicare == 0, ]
 
-# View distribution of out-of-pocket medical spending for spending before Medicare coverage
+# View distribution of out-of-pocket medical spending for spending after Medicare coverage
 ggplot(medicare, aes(x=totexp)) + geom_histogram() + geom_histogram(bins = 100) + xlim(0, 100000) + ylim(0, 20000)
 
-# View distribution of out-of-pocket medical spending for spending after Medicare coverage
+# View distribution of out-of-pocket medical spending for spending before Medicare coverage
 ggplot(no_medicare, aes(x=totexp)) + geom_histogram() + geom_histogram(bins = 100) + xlim(0, 25000) + ylim(0, 100000)
 
 ```
@@ -199,6 +209,16 @@ Examining the two histograms shows that those with Medicare incur less out-of po
 # Question 3b
 ```{r Question 3b}
 naive_ols <- lm(totexp ~ medicare + cancerdx + sex + racex + faminc, data = mydata, weights = perwt) # We will have to figure out what we want to control for
+summary(naive_ols)
+
+attach(mydata)
+
+hist(totexp)
+hist(log(totexp))
+#based on the histograms we decide to log totexp
+
+naive_ols <- lm(log(totexp) ~ medicare + cancerdx + sex + racex + faminc, data = mydata, weights = perwt) # We will have to figure out what we want to control for 
+#idk why log(totexp) not running but i know we need to 
 summary(naive_ols)
 
 ```
