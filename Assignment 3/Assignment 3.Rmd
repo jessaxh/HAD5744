@@ -210,27 +210,22 @@ Examining the two histograms shows that those with Medicare incur less out-of po
 
 # Question 3b
 ```{r Question 3b}
-naive_ols <- lm(totexp ~ medicare + cancerdx + sex + racex + faminc, data = mydata, weights = perwt) # We will have to figure out what we want to control for
+naive_ols <- lm(totexp ~ medicare + sex + educyr + racex + faminc, data = mydata, weights = perwt) # We will have to figure out what we want to control for
 summary(naive_ols)
 
 attach(mydata)
 
 hist(totexp)
-hist(log(totexp))
+hist(asinh(totexp))
 #based on the histograms we decide to log totexp
 
-view(mydata$log_totexp)
-
-naive_ols <- lm(log(totexp) ~ medicare + cancerdx + sex + racex + faminc, data = mydata, weights = perwt) # We will have to figure out what we want to control for 
-#idk why log(totexp) not running but i know we need to 
-summary(naive_ols)
 
 ```
 # Question 3c
 ```{r Question 3c}
 library(quantreg)
 
-quant_reg <- rq(totexp ~ medicare + cancerdx + sex + racex + faminc, tau= c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75,
+quant_reg <- rq(totexp ~ medicare + educyear + sex + racex + faminc, tau= c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75,
             0.8, 0.85, 0.9, 0.95, 0.1) , data = mydata, weights = perwt)
 
 
@@ -244,21 +239,13 @@ ub <- rep(NA, 20) # empty vector: 95% UB
 for (t in 1:20) {
   mytau[t] <- t/20 # indicate which decile I am using
   print(paste0("Considering quantile ",mytau[t],sep=" "))
-quantreg <- rq(totexp ~ medicare + cancerdx + sex + racex + faminc, data = mydata, weights = perwt,
+quantreg <- rq(totexp ~ medicare + educyear + sex + racex + faminc, data = mydata, weights = perwt,
               tau = mytau[t]) # tau ranges from 0 to 1
   coefs[t] <- quantreg$coefficients[2]
   quantsummary <- summary(quantreg)
 }
 
 
-
-# Construct a figure of coefficients across distribution
-plotdata <- data.frame(mytau,coefs,lb,ub)
-plotdata %>%ggplot(aes(x=mytau))+
-  geom_point(aes(y=coefs),size=2,color='blue') + 
-  geom_errorbar(aes(ymin = lb, ymax = ub),width=0.03) + 
-  scale_y_continuous(labels=scales::dollar_format()) + 
-  theme_classic() + labs(x="Quantile", y="Estimated Marginal Effect of Activity Limitation on Health Spending")
 
 
 ```
