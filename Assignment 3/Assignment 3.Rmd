@@ -168,7 +168,8 @@ q_c_table <- tibble(relative_month_date_illustration)
 
 #Use two-way fixed effects to estimate the difference-in-difference estimate of the effect of lockdown on sourdough popularity. What are your two fixed effects? 
 
-fixed_effects_model <- feols(hits ~ treated | pandemic_begun + interaction, data = new_regdata) #idk what fixed effects we have to include here also not sure if we include all 3 of these variables in the ols  (maybe include keyword as the fixed effect but that introduces colineaarity with treated)
+fixed_effects_model <- feols(hits ~ treated | pandemic_begun + interaction, data = new_regdata)
+#idk what fixed effects we have to include here also not sure if we include all 3 of these variables in the ols  (maybe include keyword as the fixed effect but that introduces colineaarity with treated)
 fixed_effects_model
 
 
@@ -217,6 +218,8 @@ hist(totexp)
 hist(log(totexp))
 #based on the histograms we decide to log totexp
 
+view(mydata$log_totexp)
+
 naive_ols <- lm(log(totexp) ~ medicare + cancerdx + sex + racex + faminc, data = mydata, weights = perwt) # We will have to figure out what we want to control for 
 #idk why log(totexp) not running but i know we need to 
 summary(naive_ols)
@@ -224,15 +227,40 @@ summary(naive_ols)
 ```
 # Question 3c
 ```{r Question 3c}
+library(quantreg)
+
+quant_reg <- rq(faminc ~ medicare + cancerdx + sex + racex, tau= c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75,
+            0.8, 0.85, 0.9, 0.95, 0.1) , data = mydata, weights = perwt)
+
+
+summary(quant_reg)
+
 
 
 ```
 
+```{r Question 3d}
+
+```
 
 
+```{r Question 3e}
+
+```
 
 
+```{r Question 3f}
+
+```
 
 
+```{r Question 3g}
+
+```
+
+
+```{r Question 3h}
+
+```
 
 
