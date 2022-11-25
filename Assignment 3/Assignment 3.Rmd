@@ -186,7 +186,7 @@ name <- Sys.info()
 name[7]
 
 here()
-load("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 3/a3_p3_medicare.RData")
+load("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 3/a3_p3_medicare.RData")
 
 ```
 
@@ -210,13 +210,13 @@ Examining the two histograms shows that those with Medicare incur less out-of po
 
 # Question 3b
 ```{r Question 3b}
-naive_ols <- lm(totexp ~ medicare + sex + educyr + racex + faminc, data = mydata, weights = perwt) # We will have to figure out what we want to control for
+naive_ols <- lm(log(totexp) ~ medicare + sex + educyr + racex + faminc, data = mydata, weights = perwt) # We will have to figure out what we want to control for
 summary(naive_ols)
 
 attach(mydata)
 
 hist(totexp)
-hist(asinh(totexp))
+hist(log(totexp))
 #based on the histograms we decide to log totexp
 
 
@@ -232,6 +232,7 @@ quant_reg <- rq(totexp ~ medicare + educyear + sex + racex + faminc, tau= c(0.05
 summary(quant_reg)
 
 
+
 mytau <- rep(NA,20) # empty vector: quantiles
 coefs <- rep(NA, 20) # empty vector: coefficients
 lb <- rep(NA, 20) # empty vector: 95% LB
@@ -239,12 +240,16 @@ ub <- rep(NA, 20) # empty vector: 95% UB
 for (t in 1:20) {
   mytau[t] <- t/20 # indicate which decile I am using
   print(paste0("Considering quantile ",mytau[t],sep=" "))
-quantreg <- rq(totexp ~ medicare + educyear + sex + racex + faminc, data = mydata, weights = perwt,
+quantreg <- rq(totexp ~ medicare + educyr + sex + racex + faminc, data = mydata, weights = perwt,
               tau = mytau[t]) # tau ranges from 0 to 1
   coefs[t] <- quantreg$coefficients[2]
-  quantsummary <- summary(quantreg)
+  quantsummary <- summary(quantreg, se = "boot")
+  lb[t] <- coefs[t]-1.96*mysum$coefficients[2,2]
+  ub[t] <- coefs[t]+1.96*mysum$coefficients[2,2]  
 }
 
+
+plotdata <- data.frame(mytau,coefs,lb,ub)
 
 
 
@@ -253,12 +258,15 @@ quantreg <- rq(totexp ~ medicare + educyear + sex + racex + faminc, data = mydat
 ```{r Question 3d}
 
 # Construct a figure of coefficients across distribution
-plotdata <- data.frame(mytau,coefs,lb,ub)
-plotdata %>%ggplot(aes(x=mytau))+
+myquants <- quantile(mydata$totexp,probs=c(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1),na.rm=TRUE)
+plotdata %>% mutate(coefs = coefs / myquants, 
+                    lb = lb / myquants, 
+                    ub = ub / myquants) %>% 
+  ggplot(aes(x=mytau))+
   geom_point(aes(y=coefs),size=2,color='blue') + 
   geom_errorbar(aes(ymin = lb, ymax = ub),width=0.03) + 
-  scale_y_continuous(labels=scales::dollar_format()) + 
-  theme_classic() + labs(x="Quantile", y="Estimated Marginal Effect of Activity Limitation on Health Spending")
+  geom_hline(yintercept=1,color='red',linetype='dashed') + 
+  theme_classic() + labs(x="Quantile", y="Health Spending")
 ```
 
 
