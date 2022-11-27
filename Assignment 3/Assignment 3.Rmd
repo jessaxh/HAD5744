@@ -188,7 +188,7 @@ name <- Sys.info()
 name[7]
 
 here()
-load("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 3/a3_p3_medicare.RData")
+load("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 3/a3_p3_medicare.RData")
 
 ```
 
@@ -273,6 +273,26 @@ plotdata %>% mutate(coefs = coefs / myquants,
 
 
 ```{r Question 3e}
+
+library(binsreg) # For binscatters
+library(nprobust) # Local linear regression
+
+# Check this site for helpful coding tips for nonparametric techniques: https://nppackages.github.io/
+# Binscatter: relationship between income and spending
+mydata %>% ggplot(aes(x=faminc ,y=totexp)) + 
+  geom_point() + 
+  theme_classic() + 
+  scale_y_continuous(labels=scales::dollar_format()) + 
+  labs(x="faminc",y="Total Health Expenditures") # This is hard to interpret
+
+# Let's bin the data more
+binsreg(y=totexp, x=faminc,
+        w= ~ medicare + sex + educyr + racex,
+        data=mydata)
+
+
+
+```
 
 ```
 
