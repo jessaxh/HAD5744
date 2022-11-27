@@ -178,9 +178,11 @@ fixed_effects_model
 
 msummary(fixed_effects_model, vcov= ~keyword, fmt = '%#.14f') #is this how you cluster by keyword level haha
 ```
+Our two fixed effects are the date for the beginning of the pandemic (pandemic_begun) and whether the keyword is sourdough (treated). The model shows that for keyword searches of sourdough at the start or after the pandemic had -4.90 hits. Moreover, with our standard errors clustered at the "keyword" level (0.00000000000005), our estimate of the interaction is extremely precised. This indicates that despite sourdough having the appearance of having increased hits after the start of the pandemic (compared to before), this is in fact not the case.
+
+
 
 #PART 3 Quantile and Nonparametric Regression
-
 ```{r Data and Cleaning}
 name <- Sys.info() 
 name[7]
@@ -210,7 +212,7 @@ Examining the two histograms shows that those with Medicare incur less out-of po
 
 # Question 3b
 ```{r Question 3b}
-naive_ols <- lm(log(totexp) ~ medicare + sex + educyr + racex + faminc, data = mydata, weights = perwt) # We will have to figure out what we want to control for
+naive_ols <- lm(totexp ~ medicare + sex + educyr + racex + faminc, data = mydata, weights = perwt) # We will have to figure out what we want to control for
 summary(naive_ols)
 
 attach(mydata)
@@ -225,11 +227,11 @@ hist(log(totexp))
 ```{r Question 3c}
 library(quantreg)
 
-quant_reg <- rq(totexp ~ medicare + educyear + sex + racex + faminc, tau= c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75,
-            0.8, 0.85, 0.9, 0.95, 0.1) , data = mydata, weights = perwt)
+quant_reg <- rq(totexp ~ medicare + educyr + sex + racex + faminc, tau= c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75,
+            0.8, 0.85, 0.9, 0.95, 0.1), data = mydata, weights = perwt)
 
 
-summary(quant_reg)
+quant_reg_summary <- summary(quant_reg)
 
 
 
@@ -243,9 +245,9 @@ for (t in 1:20) {
 quantreg <- rq(totexp ~ medicare + educyr + sex + racex + faminc, data = mydata, weights = perwt,
               tau = mytau[t]) # tau ranges from 0 to 1
   coefs[t] <- quantreg$coefficients[2]
-  quantsummary <- summary(quantreg, se = "boot")
-  lb[t] <- coefs[t]-1.96*mysum$coefficients[2,2]
-  ub[t] <- coefs[t]+1.96*mysum$coefficients[2,2]  
+  quantsummary <- summary(quantreg)
+  lb[t] <- coefs[t]-1.96*quantsummary$coefficients[2,2]
+  ub[t] <- coefs[t]+1.96*quantsummary$coefficients[2,2]  
 }
 
 
