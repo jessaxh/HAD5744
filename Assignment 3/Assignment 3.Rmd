@@ -252,6 +252,7 @@ quantreg <- rq(totexp ~ medicare + educyr + sex + racex + faminc, data = mydata,
   ub[t] <- coefs[t]+1.96*quantsummary$coefficients[2,2]  
 }
 
+msummary(quantreg)
 
 plotdata <- data.frame(mytau,coefs,lb,ub)
 
