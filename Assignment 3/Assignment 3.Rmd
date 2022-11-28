@@ -122,7 +122,7 @@ unique(new_regdata$keyword)
 
 new_pretrend_test <- lm(hits ~ treated + pandemic_begun + interaction, data=new_regdata)
 
-msummary(list(pretrend_test, new_pretrend_test),
+msummary(list("All control groups" =pretrend_test,"Dropped Control Groups"= new_pretrend_test),
          vcov=c(rep("robust",1)),
          stars=c('*' = .1, '**' = .05, '***' = .01)) # Interpret each coefficient here
 
@@ -178,8 +178,7 @@ fixed_effects_model
 
 msummary(fixed_effects_model, vcov= ~keyword, fmt = '%#.14f') #is this how you cluster by keyword level haha
 ```
-Our two fixed effects are the date for the beginning of the pandemic (pandemic_begun) and whether the keyword is sourdough (treated). The model shows that for keyword searches of sourdough at the start or after the pandemic had -4.90 hits. Moreover, with our standard errors clustered at the "keyword" level (0.00000000000005), our estimate of the interaction is extremely precised. This indicates that despite sourdough having the appearance of having increased hits after the start of the pandemic (compared to before), this is in fact not the case.
-
+Our two fixed effects are the date for the beginning of the pandemic (pandemic_begun) and whether the keyword is sourdough (treated). The model shows that for keyword searches of sourdough at the start or after the pandemic had 8.1 more hits than its controls. Moreover, with our standard errors clustered at the "keyword" level (0.00000000000008), our estimate of the interaction is extremely precised. This indicates that sourdough popularity was in fact higher once the pandemic began however the results do not appear as significant. 
 
 
 #PART 3 Quantile and Nonparametric Regression
@@ -207,13 +206,13 @@ ggplot(medicare, aes(x=totexp)) + geom_histogram() + geom_histogram(bins = 100) 
 ggplot(no_medicare, aes(x=totexp)) + geom_histogram() + geom_histogram(bins = 100) + xlim(0, 25000) + ylim(0, 100000)
 
 ```
-Examining the two histograms shows that those with Medicare incur less out-of pocket expenses than those with no Medicare coverage. While these histograms give us a good starting point to believe that this may be the case, we cannot claim that this is a causal relationship as we have not accounted for unexplained variation between these two groups.
+Examining the two histograms shows that those with Medicare incur less out-of pocket expenses than those with no Medicare coverage. This shows us that, medicare may provide financial protection however further analysis is required to know if this is actually the case.  While these histograms give us a good starting point to believe that this may be the case, we cannot claim that this is a causal relationship as we have not accounted for unexplained variation between these two groups.
 
 
 # Question 3b
 ```{r Question 3b}
 naive_ols <- lm(totexp ~ medicare + sex + educyr + racex + faminc, data = mydata, weights = perwt) # We will have to figure out what we want to control for
-summary(naive_ols)
+msummary(naive_ols)
 
 attach(mydata)
 
@@ -223,7 +222,10 @@ hist(log(totexp))
 
 
 ```
+The naive OLS estimate for the effect of Medicare on total expenditures is that being on Medicare increases an individuals total spending by $5644.32.This is counter-intuitive to what we would have expected as in part A the distribution of total spending made it appear that Medicare offered financial protection.
+
 # Question 3c
+
 ```{r Question 3c}
 library(quantreg)
 
@@ -245,7 +247,7 @@ for (t in 1:20) {
 quantreg <- rq(totexp ~ medicare + educyr + sex + racex + faminc, data = mydata, weights = perwt,
               tau = mytau[t]) # tau ranges from 0 to 1
   coefs[t] <- quantreg$coefficients[2]
-  quantsummary <- summary(quantreg)
+  quantsummary <- summary(quantreg, se = "iid")
   lb[t] <- coefs[t]-1.96*quantsummary$coefficients[2,2]
   ub[t] <- coefs[t]+1.96*quantsummary$coefficients[2,2]  
 }
@@ -253,8 +255,10 @@ quantreg <- rq(totexp ~ medicare + educyr + sex + racex + faminc, data = mydata,
 
 plotdata <- data.frame(mytau,coefs,lb,ub)
 
+write.csv(plotdata, "Dataframe_for_Question3c", row.names = FALSE)
 
 
+here()
 ```
 
 ```{r Question 3d}
