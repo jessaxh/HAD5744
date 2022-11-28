@@ -323,14 +323,17 @@ binsreg(y=totexp,x=faminc,by=medicare,
 ```
 The difference between the two curves begins to converge as family income increases. We can see at the lower end of family income (approaching zero) that the differences in total expenditure are greatest between people who receive and do not receive medicare. When family income increases the curves begin to converge which suggests that regardless of medicare coverage people who earn more will incur less cost on the healthcare system. This also suggests that as lower income individuals will require more healthcare services, being enrolled in medicare can be very beneficial in ensuring access to care. 
 
-#QUESTION 3F 
+# Question 3f 
 
 
 
 
-#QUESTION 3G
+# Question 3g
 
-
+- Medicare protects low-income people 65 years or older from the risk of high out-of-pocket health expenditures as well as eliminating a financial barrier in accessing care. We can see this in (e), where there is a substantial difference in total expenditure, this is primarily among low-income individuals
+- We can also see that medicare coverage has implications for substantially lowering the differences in health spending between quantiles as seen in (d)
+- Potential open back doors: As we see large differences in quantiles on total expenditure in (d), a potential open back door that may be influencing this result is health status. Regardless of medicare coverage, health status will increase health expenditure.
+Policy Implications: Our findings point to the need for policymakers to give greater public insurance coverage to low-income people as our findings indicate that this group contributes to substantial health expenditure when covered by medicare compared to when not covered by medicare. Moreover, the gaps in expediture quantiles when considering medicare status shows substantial differences between the 25th and 30th quantile of people who contribute to health expenditure indicating a stark disparity.
 
 
 
