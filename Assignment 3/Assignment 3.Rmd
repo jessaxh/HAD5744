@@ -187,7 +187,7 @@ name <- Sys.info()
 name[7]
 
 here()
-load("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 3/a3_p3_medicare.RData")
+load("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 3/a3_p3_medicare.RData")
 
 ```
 
@@ -227,7 +227,6 @@ The naive OLS estimate for the effect of Medicare on total expenditures is that 
 # Question 3c
 
 ```{r Question 3c}
-library(quantreg)
 
 quant_reg <- rq(totexp ~ medicare + educyr + sex + racex + faminc, tau= c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75,
             0.8, 0.85, 0.9, 0.95, 0.1), data = mydata, weights = perwt)
@@ -254,18 +253,35 @@ quantreg <- rq(totexp ~ medicare + educyr + sex + racex + faminc, data = mydata,
 
 msummary(quantreg)
 
-plotdata <- data.frame(mytau,coefs,lb,ub)
+plotdata <- read.csv("Dataframe_for_Question3c")
 
-write.csv(plotdata, "Dataframe_for_Question3c", row.names = FALSE)
+# Look at distribution of coefficients 
+plotdata %>%ggplot(aes(x=mytau)) +
+  geom_point(aes(y=coefs),size=2,color='blue') + 
+  geom_errorbar(aes(ymin = lb, ymax = ub),width=0.03) + 
+  scale_y_continuous(labels=scales::dollar_format()) + 
+  scale_x_binned(n.breaks = 20, limits = c(0.05, 1.00)) +
+  theme_classic() + labs(x="Quantile", y="Estimated Marginal Effect of Medicare Enrolment on Health Spending")
 
-#hi
-here()
+# Look to see if the dropping people who contribute negative costs makes the plot more readable
+plotdata %>% filter(mytau < 0.95) %>% ggplot(aes(x=mytau)) +
+  geom_point(aes(y=coefs),size=2,color='blue') + 
+  geom_errorbar(aes(ymin = lb, ymax = ub),width=0.03) + 
+  scale_y_continuous(labels=scales::dollar_format()) + 
+  scale_x_binned(n.breaks = 20, limits = c(0.05, 1.00)) +
+  theme_classic() + labs(x="Quantile", y="Estimated Marginal Effect of Medicare Enrolment on Health Spending")
+# The plot is not that much more readable and even takes away from the story of medicare enrolment on health spending as negative spending is still an important component to understanding what medicare does to health spending.
+
 ```
+We can see from the plots of spending quantiles that as the quantile increases, so does health expenditure. This up until the twentieth quantile, when medicare enrollment causes negative spending. This may be because this quantile is composed of superutilizers who cost the system the most and therefore may activate a more substantial tier of medicare that covers more expenses for this group. We can also see from our plot that our coefficients have non-overlaping confidence intervals indicating that the level changes between each quantile is significantly different from one another.
 
+
+# Question 3d
 ```{r Question 3d}
 
 # Construct a figure of coefficients across distribution
-myquants <- quantile(mydata$totexp,probs=c(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1),na.rm=TRUE)
+myquants <- quantile(mydata$totexp,probs=c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75,
+            0.8, 0.85, 0.9, 0.95, 0.1), na.rm=TRUE)
 plotdata %>% mutate(coefs = coefs / myquants, 
                     lb = lb / myquants, 
                     ub = ub / myquants) %>% 
@@ -273,10 +289,12 @@ plotdata %>% mutate(coefs = coefs / myquants,
   geom_point(aes(y=coefs),size=2,color='blue') + 
   geom_errorbar(aes(ymin = lb, ymax = ub),width=0.03) + 
   geom_hline(yintercept=1,color='red',linetype='dashed') + 
-  theme_classic() + labs(x="Quantile", y="Health Spending")
+  theme_classic() + labs(x="Quantile", y="Estimated Marginal Effect of Medicare Enrolment on Health Spending")
 ```
+This scaling changes the interpretation as it allows us to determine where the largest changes in health spending occur between quantiles. Here, we can see that the largest change occurs between the 25th and 30th quantile, where there is an approximately an 8 times reduction in health spending. In this instance, medicare coverage makes a very large difference in health spending, as it changes individuals from being relatively lower spending to increasing their spending by approximately 26 times.
 
 
+# Question 3e
 ```{r Question 3e}
 
 library(binsreg) # For binscatters
@@ -284,22 +302,26 @@ library(nprobust) # Local linear regression
 
 # Check this site for helpful coding tips for nonparametric techniques: https://nppackages.github.io/
 # Binscatter: relationship between income and spending
-mydata %>% ggplot(aes(x=faminc ,y=totexp)) + 
+mydata%>% ggplot(aes(x=faminc ,y=totexp)) + 
   geom_point() + 
   theme_classic() + 
   scale_y_continuous(labels=scales::dollar_format()) + 
   labs(x="faminc",y="Total Health Expenditures") # This is hard to interpret
 
+# Omit missing observations on educyr
+mydata <- mydata[!is.na(mydata$educyr), ]
+
 # Let's bin the data more
-binsreg(y=totexp, x=faminc,
-        w= ~ medicare + sex + educyr + racex,
-        data=mydata)
+binsreg(y=totexp,x=faminc,by=medicare,
+        w= ~ sex + educyr + factor(racex),
+        data=mydata,
+        plotxrange = c(0, 250000),                               
+        line=c(3,3)) # If we want any confidence intervals on points
 
 
 
 ```
-
-```
+The difference between the two curves begins to converge as family income increases. We can see at the lower end of family income (approaching zero) that the differences in total expenditure are greatest between people who receive and do not receive medicare. When family income increases the curves begin to converge which suggests that regardless of medicare coverage people who earn more will incur less cost on the healthcare system. This also suggests that as lower income individuals will require more healthcare services, being enrolled in medicare can be very beneficial in ensuring access to care. 
 
 #QUESTION 3F 
 
