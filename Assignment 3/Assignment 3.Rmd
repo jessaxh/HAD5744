@@ -318,15 +318,18 @@ binsreg(y=totexp,x=faminc,by=medicare,
 ```
 The difference between the two curves begins to converge as family income increases. We can see at the lower end of family income (approaching zero) that the differences in total expenditure are greatest between people who receive and do not receive medicare. When family income increases the curves begin to converge which suggests that regardless of medicare coverage people who earn more will incur less cost on the healthcare system. This also suggests that as lower income individuals will require more healthcare services, being enrolled in medicare can be very beneficial in ensuring access to care. 
 
-#QUESTION 3F 
+# Question 3f 
 
 The results from (e) imply that the use of nonparametric regression could be a valid approach when working with this data. From e, we could identify the trends between the total expenditure on health and how that related to family income distribution. We were also able to identify how being old enough for medicare effects the trends between those two variables. The shape of the relationship appears to provide a clear story about how income distribution influences total expenditure for both the medicare and non-medicare group and as a result it appears to provide valuable insight into the data. A framework that may be used to recover a nonparametric conditional density estimator of the effect of Medicare coverage over the income distribution is through using the kernel based density estimator. For this to be a valid framework, the kernel function must be symmetrical. The symmetric property of kernel functions allow for the maximum value of the function to be in the middle of the curve created by the function. Second the area under the curve of the kernel function must also equal 1. Finally the value of the kernel function can't be negative. To ensure the data fits appropriately with the kernel function, an optimal bandwith value is also required. A low value for bandwith estimates the density value with lots of variance while a high bandwith value creates large amount of bias. The choice of kernal size also is important as too large value leads to boundaries between classes less distinct but allows for a reduction of the noise effect on classification while a too small kernal size has the opposite effects If all these conditions are met then it is possible to obtain a conditional density estimator for our data using this method. 
 
 https://medium.com/analytics-vidhya/kernel-density-estimation-kernel-construction-and-bandwidth-optimization-using-maximum-b1dfce127073 <- information on kernel density estimation was obtained here
 
-#QUESTION 3G
+# Question 3g
 
-
+- Medicare protects low-income people 65 years or older from the risk of high out-of-pocket health expenditures as well as eliminating a financial barrier in accessing care. We can see this in (e), where there is a substantial difference in total expenditure, this is primarily among low-income individuals
+- We can also see that medicare coverage has implications for substantially lowering the differences in health spending between quantiles as seen in (d)
+- Potential open back doors: As we see large differences in quantiles on total expenditure in (d), a potential open back door that may be influencing this result is health status. Regardless of medicare coverage, health status will increase health expenditure.
+Policy Implications: Our findings point to the need for policymakers to give greater public insurance coverage to low-income people as our findings indicate that this group contributes to substantial health expenditure when covered by medicare compared to when not covered by medicare. Moreover, the gaps in expediture quantiles when considering medicare status shows substantial differences between the 25th and 30th quantile of people who contribute to health expenditure indicating a stark disparity.
 
 
 
