@@ -2,6 +2,10 @@
 title: "Assignment 3"
 author: "Husayn Jessa and Aidan Bodner"
 date: "16/11/2022"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -164,7 +168,7 @@ Our two fixed effects are the date for the beginning of the pandemic (pandemic_b
 #PART 3 Quantile and Nonparametric Regression
 ```{r part 3 Data and Cleaning}
 here()
-load("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 3/a3_p3_medicare.RData")
+load("/Users/aidanbodner/Documents/GitHub/HAD5744/Assignment 3/a3_p3_medicare.RData")
 
 ```
 
