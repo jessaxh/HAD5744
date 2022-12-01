@@ -29,8 +29,9 @@ library(binsreg) # For binscatters
 library(nprobust) # Local linear regression
 
 ```
+#PART 1 Diff-in-Diff
 
-# Data and Cleaning
+## Data and Cleaning
 ```{r Data and Cleaning}
 name <- Sys.info() 
 name[7]
@@ -40,7 +41,7 @@ assign_data <- read.csv("a3_p1_sourdough_trends.csv")
 
 ```
 
-# Question 1a
+## Question 1a
 ```{r Question 1a}
 
 #create column new_date to change the date variable into dates
@@ -72,7 +73,7 @@ Based on the graph we created, when the pandemic started there were temporary ef
 
 Sourdough bread will be considered our Treated group and thus when looking at the other foods as controls, some are more appropriate than others. When the graph was zoomed in to look at the popularity trends before the pandemic began it can be noted that the trend of sourdough bread looks most like that of cereal. They both experience low peaks and dips in their popularity trend line and have very similar locations at where these peaks and dips occur. Sourdough's trend line and sandwich's trend line do not look as similar, as sandwich popularity appears to have much more changes and sharper dips and peaks than that of sourdough's. The trend line for soup is the most distinct from that of sourdoughs as it has large variation in popularity over time and it has a clear downward trend in popularity. Based on the pre-pandemic trend lines, it appears that cereal would serve as the best control group for sourdough as the two trend lines look very similar and thus without any impactful events (such as a pandemic) it could be predicted that their trend lines would look similar if extrapolated. 
 
-#Question 1B
+## Question 1B
 ```{r}
 assign_data$date = as.Date(assign_data$date)
 
@@ -103,7 +104,7 @@ One thing that was interesting and a bit concerning was that the graph made soup
 
 
 
-# Question 1c
+## Question 1c
 ```{r Question 1c}
 # Create Treated Variable for sourdough https://www.princeton.edu/~otorres/DID101R.pdf
 
@@ -143,7 +144,7 @@ q_c_table <- tibble(relative_month_date_illustration)
 
 ```
 
-# Question 1d
+## Question 1d
 ```{r Question 1d}
 
 #Use two-way fixed effects to estimate the difference-in-difference estimate of the effect of lockdown on sourdough popularity. What are your two fixed effects? 
@@ -152,25 +153,23 @@ fixed_effects_model <- feols(hits ~ interaction | pandemic_begun + treated, data
 
 fixed_effects_model
 
+#the pandemic begun variable represents when the pandemic began in the date variable, treated variable represents sourdough as 1 and cereal as 2, the interaction is how pandemic beginning and being the treatment variable interact 
 
 #report and interpert results, with standard errors clustered at keyword level 
 
 msummary(fixed_effects_model, vcov= ~keyword, fmt = '%#.14f', stars=c('*' = .1, '**' = .05, '***' = .01)) 
 ```
-Our two fixed effects are the date for the beginning of the pandemic (pandemic_begun) and whether the keyword is sourdough (treated). The model shows that for keyword searches of sourdough after the pandemic began had 8.1 more hits than its controls (this result was deemed significant). Moreover, with our standard errors clustered at the "keyword" level (0.00000000000008), our estimate of the interaction is extremely precised. This indicates that sourdough popularity was in fact higher once the pandemic began however the results do not appear as significant. 
+Our two fixed effects are the date for the beginning of the pandemic (pandemic_begun) and whether the keyword is sourdough (treated). These two fixed effects represent both the time fixed effects and the unit fixed effects respectively for our model.  The model shows that for keyword searches of sourdough after the pandemic began had 8.1 more hits than its controls (this result was deemed significant). Moreover, with our standard errors clustered at the "keyword" level (0.00000000000008), our estimate of the interaction is extremely precised. This indicates that sourdough popularity was in fact higher once the pandemic began however the results do not appear as significant. 
 
 
 #PART 3 Quantile and Nonparametric Regression
-```{r Data and Cleaning}
-name <- Sys.info() 
-name[7]
-
+```{r part 3 Data and Cleaning}
 here()
 load("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 3/a3_p3_medicare.RData")
 
 ```
 
-# Question 3a
+## Question 3a
 ```{r Question 3a}
 
 # Construct Medicare coverage variable (1 = covered; 0 = not covered)
@@ -191,17 +190,17 @@ ggplot(no_medicare, aes(x=totexp)) + geom_histogram() + geom_histogram(bins = 10
 Examining the two histograms shows that those with Medicare incur less out-of pocket expenses than those with no Medicare coverage. The scatter plot comparing individuals aged 65 and older with those who are younger than 65 also indicates that individuals covered by medicare have less total expenditure. This shows us that, medicare may provide financial protection however further analysis is required to know if this is actually the case.  While these histograms give us a good starting point to believe that this may be the case, we cannot claim that this is a causal relationship as we have not accounted for unexplained variation between these two groups.
 
 
-# Question 3b
+## Question 3b
 ```{r Question 3b}
 naive_ols <- lm(totexp ~ medicare + sex + educyr + racex + faminc, data = mydata, weights = perwt) 
-msummary(naive_ols, vcov = c(rep("robust",1)), stars=c('*' = .1, '**' = .05, '***' = .01))
+msummary(list("naive_ols"=naive_ols), vcov = c(rep("robust",1)), stars=c('*' = .1, '**' = .05, '***' = .01))
 
 attach(mydata)
 
 ```
 The naive OLS estimate for the effect of Medicare on total expenditures is that being on Medicare increases an individuals total spending by $5644.33 (this result was significant) when all controls are held constant.This is counter-intuitive to what we would have expected as in part A the distribution of total spending made it appear that Medicare offered financial protection. One explanation for this may be that elderly individuals use more health services and thus even though medicare provides some financial protection, people older than 65 still use more health services and incur greater costs. 
 
-# Question 3c
+## Question 3c
 
 ```{r Question 3c}
 
@@ -242,11 +241,10 @@ plotdata %>% filter(mytau < 1) %>% ggplot(aes(x=mytau)) +
 # The plot is not that much more readable and even takes away from the story of medicare enrolment on health spending as negative spending is still an important component to understanding what medicare does to health spending.
 
 ```
-We can see from the plots of spending quantiles that as the quantile increases, so does the marginal effect of medicare on health expenditure. This may be due to individuals in higher quantiles of health spending already having high total health expenditures and as a result medicare has less of an effect on reducing the costs for these individuals. An interesting thing to note about the trend is that it occurs up until the twentieth quantile, when medicare enrollment causes negative spending. This may be because this quantile is composed of superutilizers who cost the system the most and therefore may activate a more substantial tier of medicare that covers more expenses for this group. We can also see from our plot that our coefficients have non-overlaping confidence intervals indicating that the level changes between each quantile is significantly different from one another. 
+We can see from the plots of spending quantiles that as the quantile increases, so does the marginal effect of medicare on health expenditure. This may be due to individuals in higher quantiles of health spending already having high total health expenditures and as a result medicare has less of an effect on reducing the costs for these individuals. Also, the cumulative health spending in these groups may already be high so after receiving medicare their expenditure continues to be high or they access more services due to now having medicare. An interesting thing to note about the trend is that it occurs up until the twentieth quantile, when medicare enrollment causes negative spending. This may be because this quantile is composed of superutilizers who cost the system the most and therefore may activate a more substantial tier of medicare that covers more expenses for this group. We can also see from our plot that our coefficients have non-overlaping confidence intervals indicating that the level changes between each quantile is significantly different from one another. 
 
-#this is talked about in the lecture at 1:25
 
-# Question 3d
+## Question 3d
 ```{r Question 3d}
 
 # Construct a figure of coefficients across distribution
@@ -265,10 +263,10 @@ plotdata %>% mutate(coefs = coefs / myquants,
 
 This scaling changes the interpretation as it allows us to determine where the largest changes in health spending due to medicare occur within in each quantile. We can see that in the first 3 quantiles, the marginal effect of medicare on health spending is infinite as the quantile of spending in the first 3 groups is 0. As we move across the quantiles we can see that the marginal effect on health spending decreases as the quantiles get larger. This plot shows that the lower spending quantiles are affected largely by having medicare as it greatly increases their total expenditure. In the 4th quantile, medicares effect is approximately 140x the spending within that quantile. As the quantiles increase towards the 19th quantile, medicare has less of an effect on how much is being spent on healthcare as they approach the dashed line which represent about 1x the amount spent in the quantile. We can  see that for individuals in the 20th quantile, medicare almost has no influence in the amount they spend on health care which can be hypothesized to be a result of medicare saving this group money where they would have already spent it or that they were already super spenders who will spend regardless of having medicare or not. 
 
-This plot also shows us that the effect of medicare largely drops when moving from the 4th quantile to the 5th quantile as the effect of medicare on the spending in that quantile goes from approximately 140x the spending in that quantile to about 25x the spending in the next quantile. The effects of medicare drops further drop from quantile to quantile as these groups already have high expenditures on health care. There expenditures thus may not be influenced as much by obtaining medicare. It also suggests that something may be occurring within the lower quantile groups such as prior to medicare these groups resisted interacting with the healthcare system due to fear of taking on the cost of care. 
+This plot also shows us that the effect of medicare largely drops when moving from the 4th quantile to the 5th quantile as the effect of medicare on the spending in that quantile goes from approximately 140x the spending in that quantile to about 25x the spending in the next quantile. The effects of medicare drops further  from quantile to quantile as these groups already have high expenditures on health care. Their expenditures thus may not be influenced as much by obtaining medicare. It also suggests that something may be occurring within the lower quantile groups such as prior to medicare these groups resisted interacting with the healthcare system due to fear of taking on the cost of care. 
 
 
-# Question 3e
+## Question 3e
 ```{r Question 3e}
 
 # Check this site for helpful coding tips for nonparametric techniques: https://nppackages.github.io/
@@ -310,8 +308,12 @@ Potential open back doors: As we see large differences in quantiles on total exp
 
 Policy Implications: Our findings point to the need for policymakers to give greater public insurance coverage to low-income people as our findings indicate that this group contributes to substantial health expenditure when covered by medicare compared to when not covered by medicare. By providing health care to these groups at an earlier stage it may mitigate the increased level of spending these groups have when they receive medicare after 65. 
 
-
-
-
+```{r, Reference List}
+print("=============================Works Cited=============================")
+loadedNamespaces() %>%
+  map(citation) %>%
+print(style = "text") # Adds citations for each package to end of .rmd file
+knitr::write_bib(file = 'packages.bib') # Constructs a citation file for all packages used in this file
+```
 
 
