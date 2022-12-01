@@ -73,7 +73,7 @@ Based on the graph we created, when the pandemic started there were temporary ef
 Sourdough bread will be considered our Treated group and thus when looking at the other foods as controls, some are more appropriate than others. When the graph was zoomed in to look at the popularity trends before the pandemic began it can be noted that the trend of sourdough bread looks most like that of cereal. They both experience low peaks and dips in their popularity trend line and have very similar locations at where these peaks and dips occur. Sourdough's trend line and sandwich's trend line do not look as similar, as sandwich popularity appears to have much more changes and sharper dips and peaks than that of sourdough's. The trend line for soup is the most distinct from that of sourdoughs as it has large variation in popularity over time and it has a clear downward trend in popularity. Based on the pre-pandemic trend lines, it appears that cereal would serve as the best control group for sourdough as the two trend lines look very similar and thus without any impactful events (such as a pandemic) it could be predicted that their trend lines would look similar if extrapolated. 
 
 ## Question 1B
-```{r}
+```{r Question 1b}
 assign_data$date = as.Date(assign_data$date)
 
 prior_trends_data <- assign_data %>% mutate(treated = ifelse(keyword == "sourdough", 1, 0), 
@@ -218,7 +218,6 @@ quantreg <- rq(totexp ~ medicare + educyr + sex + racex + faminc, data = mydata,
   ub[t] <- coefs[t]+1.96*quantsummary$coefficients[2,2]  
 }
 
-msummary(quantreg)
 
 plotdata <- read.csv("Dataframe_for_Question3c")
 
