@@ -70,20 +70,39 @@ Based on the graph we created, when the pandemic started there were temporary ef
 
 Sourdough bread will be considered our Treated group and thus when looking at the other foods as controls, some are more appropriate than others. When the graph was zoomed in to look at the popularity trends before the pandemic began it can be noted that the trend of sourdough bread looks most like that of cereal. They both experience low peaks and dips in their popularity trend line and have very similar locations at where these peaks and dips occur. Sourdough's trend line and sandwich's trend line do not look as similar, as sandwich popularity appears to have much more changes and sharper dips and peaks than that of sourdough's. The trend line for soup is the most distinct from that of sourdoughs as it has large variation in popularity over time and it has a clear downward trend in popularity. Based on the pre-pandemic trend lines, it appears that cereal would serve as the best control group for sourdough as the two trend lines look very similar and thus without any impactful events (such as a pandemic) it could be predicted that their trend lines would look similar if extrapolated. 
 
-#question 1 b
+#Question 1B
 ```{r}
-FIXED DOING DIFF IN DIFF
+assign_data$date = as.Date(assign_data$date)
+
+prior_trends_data <- assign_data %>% mutate(treated = ifelse(keyword == "sourdough", 1, 0), 
+                              interaction = ifelse(keyword == "sourdough",date,0))
+prior_trends_data <- prior_trends_data %>% filter(date < "2020-03-15")
+
+prior_trends_test<- lm(hits ~ date + interaction, data=prior_trends_data)
+
+msummary(list("all_controls" = prior_trends_test), vcov=c(rep("robust",1)), fmt = "%#.5f",
+         stars=c('*' = .1, '**' = .05, '***' = .01))
+
+
+prior_trends_test_droppedcontrols <- prior_trends_data %>% filter(keyword %in% c("sourdough","cereal"))
+
+new_prior_trends_test<- lm(hits ~ date + interaction, data=prior_trends_test_droppedcontrols)
+
+msummary(list("dropped_controls"=new_prior_trends_test), vcov=c(rep("robust",1)), fmt = "%#.5f",
+         stars=c('*' = .1, '**' = .05, '***' = .01))
 
 
 
 ```
 
+Two tests were performed to identify whether the prior trends differ between the treated and control groups. In the first prior trends test, all control groups for sourdough were included.The data was filtered to only include dates before the pandemic began to ensure only prior trends were being evaluated. In the test that included all the controls, the coefficient for the interaction term was -0.00158. This value was quite small and at first glance indicates that the all the other food items, soup, sandwich and cereal may be good controls. However, in part a, graphically we were able to identify that cereal served as the best control for sourdough and thus the test was re-run with only cereal as the control group. When this was completed the coefficient for the interaction term got closer to 0 as it was -0.00037. This can be interpreted as cereal and sourdough having little differences between them before the pandemic began. As the coefficient got smaller, we know that cereal by itself serves as the better control as the coefficient represents little difference between the two groups. When we drop the other control variables, our standard errors decrease and our R^2 increases too, indicating a more precise estimate of the number of hits and better model fit.
+
+One thing that was interesting and a bit concerning was that the graph made soup appear as a very bad control so it was expected that the test that included all the control groups would have a larger coefficient for the interaction term to represent how different sourdough was from all the other controls. 
 
 
 
-# Question 1b
-```{r Question 1b}
-             
+# Question 1c
+```{r Question 1c}
 # Create Treated Variable for sourdough https://www.princeton.edu/~otorres/DID101R.pdf
 
 regdata <- assign_data %>% mutate(treated = ifelse(keyword == "sourdough", 1, 0)) 
@@ -92,49 +111,15 @@ regdata <- assign_data %>% mutate(treated = ifelse(keyword == "sourdough", 1, 0)
 
 regdata <- regdata %>% mutate(pandemic_begun = ifelse(date >= "2020-03-15", 1, 0))
 
-# Create interaction variable between treated and beginning of pandemic
-
-regdata <- regdata %>% mutate(interaction = treated*pandemic_begun)
-
-
-# Statistical tests: are the two groups' trends different?
-pretrend_test <- lm(hits ~ treated + pandemic_begun + interaction, data=regdata)
-msummary(list(pretrend_test),
-         vcov=c(rep("robust",1)),
-         stars=c('*' = .1, '**' = .05, '***' = .01)) # Interpret each coefficient here
-
-# Dropping Control Groups
-
-# Dropping soup and sandwich from data 
 new_regdata <- regdata %>% filter(keyword %in% c("sourdough","cereal"))
 
-unique(new_regdata$keyword)
-
-new_pretrend_test <- lm(hits ~ treated + pandemic_begun + interaction, data=new_regdata)
-
-msummary(list("All control groups" =pretrend_test,"Dropped Control Groups"= new_pretrend_test),
-         vcov=c(rep("robust",1)),
-         stars=c('*' = .1, '**' = .05, '***' = .01)) # Interpret each coefficient here
-
-
-
-```
-The regression results for either the model where we keep all the control groups or the model where we drop soup and sandwich are not concerning. If we hypothesize that sourdough popularity only begun at the pandemic start date (2020-03-15), then it would be likely that any given search for sourdough would result in an increase in hits. Similarly, it is difficult to say that internet traffic (hits), for any of the dates after the pandemic start would be more or less than that before the pandemic. Therefore, the negative coefficients for treated and pandemic_begun variables are not concerning. The interaction term makes sense given our hypothesis as it indicates a positive change in hits for sourdough after the pandemic start date compared to before. 
-#One thing that does concern us is the large negative coefficient associated with the pandemic_begun variable for the All control groups model. The coefficient of -8.053 which indicates that if all other regressors were held constant there is a large decrease in popularity when the pandemic began which is an interesting result. When looking for control groups we would ideally want the control group and the treatment group to have similar prior trends and with all things held constant nothing to change into the future. When the model drops the soup and sandwich control groups and the coefficient for pandemic_begun is looked at again we can see that the coefficient is now -0.493. This indicates that just having the pandemic begin with all other regressors held constant the treatment and control group are more similar. This confirms that dropping soup and sandwich is the right decision for moving forward. 
-When we drop the other control variables, our standard errors decrease and our R^2 increases, indicating a more precise estimate of the number of hits and better model fit. For this reasons as well, we are not concerned. 
-#When we drop soup and sandwich we aslo see the the regression coefficient for the interaction between being the treated variable and the pandemic begining decreases indicating the increased popularity effect is more true to what is really going on. 
-
-
-
-
-# Question 1c
-```{r Question 1c}
+new_regdata <- new_regdata %>% mutate(interaction = treated*pandemic_begun)
 
 
 #create a relative_month variable by shifting the "date" variable back 15 days (so that the treatment day is the first day of the month)  and then taking the month of the resulting date 
 new_regdata <- new_regdata %>% mutate(relative_month = new_date - 14)     
-#shift date back 15 days, used new_date instead of date as date is a character while new date is the class date
-# I used 14 so that the treatment day is may first rather than February 29  
+#shift date back 14 days, used new_date instead of date as date is a character while new date is the class date
+# I used 14 so that the treatment day is may 1 rather than February 29  
 
 
 #create an "After" variable equal to 1/0 or True/False if the date is March 15 or afterwards 
@@ -162,15 +147,15 @@ q_c_table <- tibble(relative_month_date_illustration)
 #Use two-way fixed effects to estimate the difference-in-difference estimate of the effect of lockdown on sourdough popularity. What are your two fixed effects? 
 
 fixed_effects_model <- feols(hits ~ interaction | pandemic_begun + treated, data = new_regdata)
-#idk what fixed effects we have to include here also not sure if we include all 3 of these variables in the ols  (maybe include keyword as the fixed effect but that introduces colineaarity with treated)
+
 fixed_effects_model
 
 
-#report and interper results, with standard errors clustered at keyword level 
+#report and interpert results, with standard errors clustered at keyword level 
 
 msummary(fixed_effects_model, vcov= ~keyword, fmt = '%#.14f') #is this how you cluster by keyword level haha
 ```
-Our two fixed effects are the date for the beginning of the pandemic (pandemic_begun) and whether the keyword is sourdough (treated). The model shows that for keyword searches of sourdough at the start or after the pandemic had 8.1 more hits than its controls. Moreover, with our standard errors clustered at the "keyword" level (0.00000000000008), our estimate of the interaction is extremely precised. This indicates that sourdough popularity was in fact higher once the pandemic began however the results do not appear as significant. 
+Our two fixed effects are the date for the beginning of the pandemic (pandemic_begun) and whether the keyword is sourdough (treated). The model shows that for keyword searches of sourdough after the pandemic began had 8.1 more hits than its controls. Moreover, with our standard errors clustered at the "keyword" level (0.00000000000008), our estimate of the interaction is extremely precised. This indicates that sourdough popularity was in fact higher once the pandemic began however the results do not appear as significant. 
 
 
 #PART 3 Quantile and Nonparametric Regression
@@ -185,11 +170,14 @@ load("/Users/husaynjessa/Documents/GitHub/HAD5744/Assignment 3/a3_p3_medicare.RD
 
 # Question 3a
 ```{r Question 3a}
+
 # Construct Medicare coverage variable (1 = covered; 0 = not covered)
 mydata <- mydata %>% mutate(medicare = ifelse(agex >= 65, 1, 0)) 
 
 medicare <- mydata[mydata$medicare == 1, ]
 no_medicare <- mydata[mydata$medicare == 0, ]
+
+ggplot(mydata, aes(x = (agex > 65), y = totexp)) + geom_point() #this also demonstrates not having medicare increases total expenditure 
 
 # View distribution of out-of-pocket medical spending for spending after Medicare coverage
 ggplot(medicare, aes(x=totexp)) + geom_histogram() + geom_histogram(bins = 100) + xlim(0, 100000) + ylim(0, 20000) + ggtitle("Medicare Coverage")
@@ -203,7 +191,7 @@ Examining the two histograms shows that those with Medicare incur less out-of po
 
 # Question 3b
 ```{r Question 3b}
-naive_ols <- lm(totexp ~ medicare + sex + educyr + racex + faminc, data = mydata, weights = perwt) # We will have to figure out what we want to control for
+naive_ols <- lm(totexp ~ medicare + sex + educyr + racex + faminc, data = mydata, weights = perwt) 
 msummary(naive_ols)
 
 attach(mydata)
@@ -265,13 +253,13 @@ plotdata %>% mutate(coefs = coefs / myquants,
                     lb = lb / myquants, 
                     ub = ub / myquants) %>% 
   ggplot(aes(x=mytau))+
-  geom_point(aes(y=coefs),size=2,color='blue') + 
+  geom_point(aes(y=coefs),size=2,color='blue') +
   geom_errorbar(aes(ymin = lb, ymax = ub),width=0.03) + 
   geom_hline(yintercept=1,color='red',linetype='dashed') + 
-  theme_classic() + labs(x="Quantile", y="Estimated Marginal Effect of Medicare Enrolment on Health Spending")
+  theme_classic() + 
+  labs(x="Quantile", y="Estimated Marginal Effect of Medicare Enrolment on Health Spending")
 ```
-This scaling changes the interpretation as it allows us to determine where the largest changes in health spending occur between quantiles. Here, we can see that the largest change occurs between the 25th and 30th quantile, where there is an approximately an 8 times reduction in health spending. In this instance, medicare coverage makes a very large difference in health spending, as it changes individuals from being relatively lower spending to increasing their spending by approximately 26 times. 
-#hey aidan how'd we get 26 times?
+This scaling changes the interpretation as it allows us to determine where the largest changes in health spending occur between quantiles. Here, we can see that the largest change occurs between the 20th and 25th quantile, where there is a large reduction in the effect of medicare on health spending. In this instance, medicare coverage makes a very large difference in health spending, as it changes individuals from being relatively lower spending to a lot higher levels. 
 
 
 # Question 3e
